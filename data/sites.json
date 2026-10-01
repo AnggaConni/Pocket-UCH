@@ -1,0 +1,14 @@
+[
+  {
+    "id": "demo-001",
+    "name": "Demo UCH Site",
+    "country": "Indonesia",
+    "region": "Example",
+    "lat": -6.2,
+    "lon": 106.8,
+    "depth_m": null,
+    "type": "shipwreck",
+    "status": "monitor",
+    "notes": "Replace with verified UCH site coordinates."
+  }
+]
