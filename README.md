@@ -65,3 +65,31 @@ It does **not** use TinyFish Agent or Browser, and it does not call an external 
 Set the GitHub Actions secret `TINYFISH_API_KEY` to enable it. The scraper is configured to run the TinyFish layer at most once per UTC day.
 
 If the secret is absent, the official data feeds continue to run normally.
+
+## Convention-aware monitoring
+
+The pipeline is designed around the UNESCO 2001 Convention and its Annex Rules, but it does **not** make legal compliance determinations.
+
+The scraper can operationalize observable signals related to:
+- Article 5 incidental effects;
+- Articles 9–12 maritime-zone reporting/protection context;
+- Articles 14–19 illicit recovery, dealing, enforcement and cooperation;
+- Article 22 inventories/competent-authority context;
+- Annex Rules 1–8 general principles;
+- Rules 9–16 project design and preliminary assessment;
+- Rules 22–29 competence, conservation, documentation, safety and environment;
+- Rules 30–36 reporting, archives and dissemination.
+
+The machine-readable control framework is in convention.yml.
+
+## External data layers
+
+Optional/non-AI layers now include:
+- Copernicus Data Space STAC: Sentinel-2 L2A and Sentinel-1 GRD scene discovery.
+- Global Fishing Watch 4Wings: recent apparent fishing effort around a monitored site. Requires GFW_API_TOKEN for non-commercial API access.
+- Marine Regions WFS: EEZ spatial context.
+- EMODnet Human Activities WFS: regional human-activity context where available, including cultural heritage and activities such as dredging, shipping, fisheries and infrastructure.
+- BMKG, USGS and NASA EONET for hazards and marine/environmental events.
+- TinyFish Search/Fetch for deterministic web discovery only; no TinyFish Agent/Browser and no LLM is used by Pocket-UCH.
+
+All external sources are optional and fail gracefully so one unavailable source does not stop the scraper.
