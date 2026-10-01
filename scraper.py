@@ -358,9 +358,25 @@ def main() -> int:
             x.get("recommendation") for x in actionable[:3] if x.get("recommendation")
         ]
         row["external_observations"] = ext
+
+        assessment_events = list(site_events)
+        gfw_obs = ext.get("global_fishing_watch", {})
+        if float(gfw_obs.get("fishing_hours", 0) or 0) > 0:
+            assessment_events.append({
+                "type": "external",
+                "threat_categories": ["fishing"],
+            })
+
+        emodnet_obs = ext.get("emodnet_human_activities", {})
+        if emodnet_obs.get("feature_count", 0):
+            assessment_events.append({
+                "type": "external",
+                "threat_categories": ["construction"],
+            })
+
         row["convention_assessment"] = assess_convention(
             next((s for s in sites if str(s.get("id")) == str(row["site_id"])), {}),
-            site_events,
+            assessment_events,
             matches,
             convention_framework,
         )
