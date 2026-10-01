@@ -11,7 +11,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -197,7 +200,7 @@ body{min-height:100vh;overflow-x:hidden}
 
   <div class="glass rounded-3xl p-4 sm:p-5">
     <div class="mini">Site health</div>
-    <div id="site-health" class="mt-4 space-y-3"></div>
+    <div id="site-health" class="mt-4 space-y-3 max-h-[560px] overflow-y-auto pr-1"></div>
     <div class="mt-5 soft rounded-2xl p-4">
       <div class="mini mb-2">Status legend</div>
       <div class="text-xs leading-6 muted">
@@ -274,7 +277,7 @@ body{min-height:100vh;overflow-x:hidden}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const DATA_URL = 'data/data.json';
-const state = { data:null, map:null, layers:[] };
+const state = { data:null, map:null, layers:[], markerGroup:null };
 
 function esc(v){
   return String(v ?? '').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
@@ -307,6 +310,12 @@ function initMap(){
     maxZoom:19,
     attribution:'© OpenStreetMap contributors'
   }).addTo(state.map);
+  state.markerGroup=L.markerClusterGroup({
+    chunkedLoading:true,
+    maxClusterRadius:48,
+    showCoverageOnHover:false,
+    spiderfyOnMaxZoom:true
+  }).addTo(state.map);
 }
 
 function siteMarkerIcon(status){
@@ -325,7 +334,10 @@ function addSiteToMap(site,status){
   if(loc.representation==='point' && loc.geometry.type==='Point'){
     const [lon,lat]=loc.geometry.coordinates;
     layer=L.marker([lat,lon],{icon:siteMarkerIcon(status)}).bindPopup(
-      '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div><div class="text-xs text-slate-400 mt-3">Public location · real point</div></div>'
+      '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div>'+
+      '<div class="text-xs text-slate-400 mt-3">Public location · real point</div>'+
+      (site.inventory?.source ? '<div class="text-[10px] text-slate-500 mt-1">Inventory: '+esc(site.inventory.source)+'</div>' : '')+
+      '</div>'
     );
   }else{
     const style={color:'#55d8e6',weight:1.2,fillColor:'#55d8e6',fillOpacity:.06};
@@ -335,12 +347,20 @@ function addSiteToMap(site,status){
       '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div><div class="text-xs text-slate-400 mt-3">Protected location · generalized area</div></div>'
     );
   }
-  if(layer){ layer.addTo(state.map); state.layers.push(layer); }
+  if(layer){
+    if(loc.representation==='point' && state.markerGroup){
+      state.markerGroup.addLayer(layer);
+    }else{
+      layer.addTo(state.map);
+      state.layers.push(layer);
+    }
+  }
 }
 
 function renderMap(data){
   if(!state.map) initMap();
   state.layers.forEach(l=>state.map.removeLayer(l)); state.layers=[];
+  if(state.markerGroup) state.markerGroup.clearLayers();
   const statusById=Object.fromEntries((data.site_status||[]).map(x=>[String(x.site_id),x]));
   (data.sites||[]).forEach(site=>addSiteToMap(site,statusById[String(site.id)]?.status||'stable'));
   if((data.sites||[]).length===1){
