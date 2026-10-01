@@ -623,14 +623,21 @@ def build_public_sites(sites: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "precision_m": 0,
             }
         else:
+            existing_geometry = location_cfg.get("geometry")
             item["location"] = {
                 "visibility": "protected",
                 "representation": "area",
-                "geometry": make_generalized_area(
-                    float(lat),
-                    float(lon),
-                    radius_km,
-                ) if lat is not None and lon is not None else None,
+                "geometry": (
+                    existing_geometry
+                    if existing_geometry
+                    else (
+                        make_generalized_area(
+                            float(lat),
+                            float(lon),
+                            radius_km,
+                        ) if lat is not None and lon is not None else None
+                    )
+                ),
                 "generalization_radius_km": radius_km,
                 "precision_m": round(radius_km * 1000),
             }
@@ -718,6 +725,25 @@ def build_structured_data(
 def main() -> int:
     cfg = load_config()
     sites = load_json(ROOT / cfg["monitoring"]["sites_file"], [])
+
+    # Optional private exact coordinates. Never written to public data.json.
+    private_blob = os.environ.get("UCH_PRIVATE_SITES_JSON")
+    if private_blob:
+        try:
+            private_sites = json.loads(private_blob)
+            private_by_id = {
+                str(item.get("id")): item
+                for item in private_sites
+                if isinstance(item, dict) and item.get("id")
+            }
+            for site in sites:
+                override = private_by_id.get(str(site.get("id")), {})
+                if override.get("lat") is not None and override.get("lon") is not None:
+                    site["lat"] = override["lat"]
+                    site["lon"] = override["lon"]
+        except Exception as exc:
+            print(f"WARNING: UCH_PRIVATE_SITES_JSON could not be loaded: {exc}")
+
     convention_path = ROOT / cfg["output"].get("convention_rules_file", "convention.yml")
     convention_framework = load_convention(convention_path)
 
