@@ -48,7 +48,14 @@ def _normalise_country(value: Any) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
-    return text or None
+    if not text:
+        return None
+    aliases = {
+        "ASTRALIA": "Australia",
+        "AUSTRAILIA": "Australia",
+        "AUS": "Australia",
+    }
+    return aliases.get(text.upper(), text)
 
 
 def _site_template(
