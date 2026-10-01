@@ -280,7 +280,8 @@ def build_baseline(site_id: str, history: list[dict[str, Any]], linked_events: l
 
     for snap in history:
         try:
-            ts = datetime.fromisoformat(str(snap.get("generated_at", "")).replace("Z", "+00:00"))
+            timestamp_text = snap.get("generated_at") or snap.get("metadata", {}).get("generated_at")
+            ts = datetime.fromisoformat(str(timestamp_text).replace("Z", "+00:00"))
         except Exception:
             continue
         if ts >= cutoff:
@@ -631,6 +632,7 @@ def build_structured_data(
             },
         },
         "sites": sites,
+        "site_status": site_status,
         "observations": observations,
         "baselines": baselines,
         "signals": signals,
