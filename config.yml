@@ -1,0 +1,53 @@
+project:
+  name: Pocket UCH
+  version: "0.1.0"
+  timezone: Asia/Jakarta
+
+sources:
+  usgs_earthquakes:
+    enabled: true
+    url: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson
+  bmkg_earthquakes:
+    enabled: true
+    url: https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json
+  bmkg_marine:
+    enabled: true
+    url: https://peta-maritim.bmkg.go.id/api
+  nasa_eonet:
+    enabled: true
+    url: https://eonet.gsfc.nasa.gov/api/v3/events
+    params:
+      status: open
+      limit: 100
+  copernicus_stac:
+    enabled: false
+    url: https://catalogue.dataspace.copernicus.eu/stac/
+  gebco_wms:
+    enabled: true
+    url: https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv
+
+monitoring:
+  default_radius_km: 100
+  earthquake:
+    min_magnitude: 4.5
+  eonet:
+    categories:
+      - Wildfires
+      - Severe Storms
+      - Volcanoes
+      - Earthquakes
+      - Floods
+      - Landslides
+      - Drought
+      - Dust Haze
+      - Sea and Lake Ice
+      - Snow
+      - Temp Extremes
+    max_age_days: 30
+  sites_file: data/sites.json
+
+output:
+  data_file: data/data.json
+  history_file: data/history.json
+  status_file: data/status.json
+  max_history_days: 180
