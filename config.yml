@@ -1,6 +1,7 @@
 project:
   name: Pocket UCH
-  version: "0.1.0"
+  version: "0.2.0"
+  schema_version: "0.3.0"
   timezone: Asia/Jakarta
 
 sources:
@@ -37,9 +38,6 @@ sources:
     params:
       status: open
       limit: 100
-  copernicus_stac:
-    enabled: true
-    url: https://stac.dataspace.copernicus.eu/v1/
   gebco_wms:
     enabled: true
     url: https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv
