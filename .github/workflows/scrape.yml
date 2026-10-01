@@ -1,5 +1,9 @@
 name: Pocket-UCH Scraper
 
+concurrency:
+  group: pocket-uch-scraper
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
   push:
