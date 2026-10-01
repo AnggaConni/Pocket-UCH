@@ -578,6 +578,68 @@ def build_provenance(source_reports: list[dict[str, Any]], cfg: dict[str, Any]) 
     return items
 
 
+
+def make_generalized_area(lat: float, lon: float, radius_km: float = 10.0, vertices: int = 16) -> dict[str, Any]:
+    radius_lat = radius_km / 111.32
+    radius_lon = radius_km / max(1.0, 111.32 * math.cos(math.radians(lat)))
+    coords = []
+    for i in range(vertices):
+        angle = 2 * math.pi * i / vertices
+        coords.append([
+            round(lon + radius_lon * math.cos(angle), 6),
+            round(lat + radius_lat * math.sin(angle), 6),
+        ])
+    coords.append(coords[0])
+    return {
+        "type": "Polygon",
+        "coordinates": [coords],
+    }
+
+
+def build_public_sites(sites: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    public_sites = []
+
+    for site in sites:
+        item = deepcopy(site)
+        lat = item.get("lat")
+        lon = item.get("lon")
+        location_cfg = item.get("location") or {}
+        visibility = str(location_cfg.get("visibility", "protected")).lower()
+        radius_km = float(location_cfg.get("generalization_radius_km", 10))
+
+        # Keep internal coordinates available to the scraper, but control
+        # what is emitted into the public data contract.
+        item.pop("lat", None)
+        item.pop("lon", None)
+
+        if visibility == "public" and lat is not None and lon is not None:
+            item["location"] = {
+                "visibility": "public",
+                "representation": "point",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [float(lon), float(lat)],
+                },
+                "precision_m": 0,
+            }
+        else:
+            item["location"] = {
+                "visibility": "protected",
+                "representation": "area",
+                "geometry": make_generalized_area(
+                    float(lat),
+                    float(lon),
+                    radius_km,
+                ) if lat is not None and lon is not None else None,
+                "generalization_radius_km": radius_km,
+                "precision_m": round(radius_km * 1000),
+            }
+
+        public_sites.append(item)
+
+    return public_sites
+
+
 def build_structured_data(
     cfg: dict[str, Any],
     sites: list[dict[str, Any]],
@@ -638,7 +700,7 @@ def build_structured_data(
                 for state in ("stable", "watch", "elevated")
             },
         },
-        "sites": sites,
+        "sites": build_public_sites(sites),
         "site_status": site_status,
         "observations": observations,
         "baselines": baselines,
