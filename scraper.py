@@ -416,17 +416,11 @@ def build_observations(sites: list[dict[str, Any]], linked_events: list[dict[str
                     "marine_regions": mr,
                     "emodnet_human_activities": emodnet,
                 },
-                "source_urls": {
-                    "copernicus": cfg_source_url_placeholder(),
-                },
             }
         )
 
     return observations
 
-
-def cfg_source_url_placeholder() -> None:
-    return None
 
 
 def build_signals(site_status: list[dict[str, Any]], linked_events: list[dict[str, Any]], web_signals: list[dict[str, Any]], external_observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -797,7 +791,10 @@ def main() -> int:
     trimmed = []
     for item in history:
         try:
-            ts = datetime.fromisoformat(item["generated_at"].replace("Z", "+00:00"))
+            timestamp_text = item.get("generated_at")
+            if not timestamp_text:
+                timestamp_text = item.get("metadata", {}).get("generated_at")
+            ts = datetime.fromisoformat(str(timestamp_text).replace("Z", "+00:00"))
             if ts >= cutoff:
                 trimmed.append(item)
         except Exception:
