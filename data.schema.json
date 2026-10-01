@@ -18,10 +18,74 @@
   ],
   "properties": {
     "metadata": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "schema_version",
+        "pipeline_version",
+        "generated_at",
+        "timezone",
+        "history_window_days",
+        "baseline_window_days",
+        "ai_used",
+        "global_mode"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string"
+        },
+        "pipeline_version": {
+          "type": "string"
+        },
+        "generated_at": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "history_window_days": {
+          "type": "integer"
+        },
+        "baseline_window_days": {
+          "type": "integer"
+        },
+        "ai_used": {
+          "type": "boolean"
+        },
+        "global_mode": {
+          "type": "boolean"
+        }
+      }
     },
     "summary": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "site_count",
+        "observation_count",
+        "signal_count",
+        "recommendation_count",
+        "convention_flagged_sites",
+        "status_counts"
+      ],
+      "properties": {
+        "site_count": {
+          "type": "integer"
+        },
+        "observation_count": {
+          "type": "integer"
+        },
+        "signal_count": {
+          "type": "integer"
+        },
+        "recommendation_count": {
+          "type": "integer"
+        },
+        "convention_flagged_sites": {
+          "type": "integer"
+        },
+        "status_counts": {
+          "type": "object"
+        }
+      }
     },
     "sites": {
       "type": "array"
