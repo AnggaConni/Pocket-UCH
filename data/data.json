@@ -30,8 +30,6 @@
       ],
       "country": "Indonesia",
       "region": "Example",
-      "lat": -6.2,
-      "lon": 106.8,
       "depth_m": null,
       "type": "shipwreck",
       "status": "monitor",
@@ -61,6 +59,39 @@
         "sensitive_data_policy": "restricted",
         "public_information": "unknown",
         "cooperation_partners": []
+      },
+      "location": {
+        "visibility": "protected",
+        "representation": "area",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                106.686,
+                -6.173
+              ],
+              [
+                106.914,
+                -6.173
+              ],
+              [
+                106.914,
+                -6.227
+              ],
+              [
+                106.686,
+                -6.227
+              ],
+              [
+                106.686,
+                -6.173
+              ]
+            ]
+          ]
+        },
+        "generalization_radius_km": 10,
+        "precision_m": 10000
       }
     }
   ],
@@ -491,8 +522,8 @@
         "timestamp": "2026-10-01T05:34:10.634000+00:00",
         "lat": 6.1116,
         "lon": 123.8599,
-        "depth_km": 10.0,
-        "magnitude": 5.0,
+        "depth_km": 10,
+        "magnitude": 5,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyq7",
         "place": "38 km WSW of Palimbang, Philippines"
       },
@@ -543,7 +574,7 @@
         "timestamp": "2026-10-01T00:28:22.644000+00:00",
         "lat": 19.2756,
         "lon": -43.0353,
-        "depth_km": 10.0,
+        "depth_km": 10,
         "magnitude": 4.9,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tynp",
         "place": "northern Mid-Atlantic Ridge"
@@ -556,7 +587,7 @@
         "timestamp": "2026-09-30T21:55:26.169000+00:00",
         "lat": 9.7526,
         "lon": -86.5063,
-        "depth_km": 8.0,
+        "depth_km": 8,
         "magnitude": 5.6,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tymj",
         "place": "94 km SW of Tamarindo, Costa Rica"
@@ -569,7 +600,7 @@
         "timestamp": "2026-09-30T21:11:57.694000+00:00",
         "lat": 25.2167,
         "lon": 128.5077,
-        "depth_km": 10.0,
+        "depth_km": 10,
         "magnitude": 4.6,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tym9",
         "place": "131 km SE of Itoman, Japan"
@@ -595,8 +626,8 @@
         "timestamp": "2026-09-30T18:21:19.257000+00:00",
         "lat": 52.3167,
         "lon": 160.3332,
-        "depth_km": 35.0,
-        "magnitude": 5.0,
+        "depth_km": 35,
+        "magnitude": 5,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyku",
         "place": "142 km SE of Petropavlovsk-Kamchatsky, Russia"
       },
@@ -609,7 +640,7 @@
         "lat": -9.9243,
         "lon": 123.6462,
         "depth_km": 19.368,
-        "magnitude": 5.0,
+        "magnitude": 5,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyjb",
         "place": "27 km N of Kupang, Indonesia"
       },
@@ -658,7 +689,7 @@
         "type": "eonet_event",
         "title": "Hurricane Rachel",
         "timestamp": "2026-10-01T00:00:00+00:00",
-        "lat": 19.0,
+        "lat": 19,
         "lon": -108.3,
         "categories": [
           "Severe Storms"
@@ -775,7 +806,7 @@
         "type": "eonet_event",
         "title": "Hurricane Polo",
         "timestamp": "2026-09-30T00:00:00+00:00",
-        "lat": 30.0,
+        "lat": 30,
         "lon": -108.5,
         "categories": [
           "Severe Storms"
@@ -802,7 +833,7 @@
         "title": "Tropical Storm Fay",
         "timestamp": "2026-09-27T21:00:00+00:00",
         "lat": 28.9,
-        "lon": -44.0,
+        "lon": -44,
         "categories": [
           "Severe Storms"
         ],
