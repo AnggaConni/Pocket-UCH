@@ -2,7 +2,9 @@
   {
     "id": "demo-001",
     "name": "Demo UCH Site",
-    "aliases": ["Example Shipwreck"],
+    "aliases": [
+      "Example Shipwreck"
+    ],
     "country": "Indonesia",
     "region": "Example",
     "lat": -6.2,
@@ -36,6 +38,10 @@
       "sensitive_data_policy": "restricted",
       "public_information": "unknown",
       "cooperation_partners": []
+    },
+    "location": {
+      "visibility": "protected",
+      "generalization_radius_km": 10
     }
   }
 ]
