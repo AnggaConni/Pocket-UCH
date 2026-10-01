@@ -154,6 +154,8 @@ def collect(
         for site in sites:
             if len(site_queries) >= 2:
                 break
+            if site.get("inventory"):
+                continue
             name = str(site.get("name", "")).strip()
             if name:
                 country = str(site.get("country", "")).strip()
