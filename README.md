@@ -54,3 +54,14 @@ The intended next steps are:
 5. PWA interface.
 
 No AI dependency is required for the core pipeline.
+
+
+## Optional TinyFish web monitoring
+
+Pocket-UCH can optionally use TinyFish **Search + Fetch** as a web-monitoring layer.
+
+It does **not** use TinyFish Agent or Browser, and it does not call an external LLM API.
+
+Set the GitHub Actions secret `TINYFISH_API_KEY` to enable it. The scraper is configured to run the TinyFish layer at most once per UTC day.
+
+If the secret is absent, the official data feeds continue to run normally.
