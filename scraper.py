@@ -555,7 +555,7 @@ def build_provenance(source_reports: list[dict[str, Any]], cfg: dict[str, Any]) 
         items.append(
             {
                 "source": report.get("source"),
-                "status": "ok" if report.get("ok") else ("skipped" if report.get("optional") else "error"),
+                "status": "ok" if report.get("ok") else ("skipped" if report.get("optional", False) else "error"),
                 "checked_at": report.get("checked_at") or iso_now(),
                 "message": report.get("message", ""),
                 "coverage": report.get("coverage", "unspecified"),
