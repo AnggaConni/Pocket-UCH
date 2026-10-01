@@ -25,6 +25,7 @@ from typing import Any
 
 import requests
 import yaml
+from tinyfish import collect as collect_tinyfish
 
 ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / "config.yml"
