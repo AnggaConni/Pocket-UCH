@@ -47,8 +47,8 @@ sources:
     enabled: true
     url: https://stac.dataspace.copernicus.eu/v1/search
     collections:
-      - SENTINEL-2
-      - SENTINEL-1
+      - sentinel-2-l2a
+      - sentinel-1-grd
     days_back: 30
     max_items_per_site: 5
   global_fishing_watch:
@@ -62,6 +62,7 @@ sources:
   emodnet_human_activities:
     enabled: true
     wfs_url: https://ows.emodnet-humanactivities.eu/wfs
+    max_layers_per_site: 3
 
 monitoring:
   default_radius_km: 100
