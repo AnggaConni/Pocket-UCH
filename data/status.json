@@ -1,11 +1,25 @@
 {
-  "generated_at": "2026-10-01T07:55:34.994106+00:00",
+  "generated_at": "2026-10-01T08:04:30.099654+00:00",
   "source_status": [
+    {
+      "source": "Australian Government MCH Features",
+      "ok": true,
+      "message": "300 public record(s)",
+      "coverage": "Australia / Australasian",
+      "optional": true
+    },
+    {
+      "source": "EMODnet Human Activities — heritage shipwrecks",
+      "ok": true,
+      "message": "300 public record(s)",
+      "coverage": "Europe",
+      "optional": true
+    },
     {
       "source": "USGS",
       "ok": true,
       "message": "11 earthquakes",
-      "checked_at": "2026-10-01T07:55:28.128525+00:00",
+      "checked_at": "2026-10-01T08:04:27.731885+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -13,7 +27,7 @@
       "source": "BMKG earthquake",
       "ok": true,
       "message": "1 event(s)",
-      "checked_at": "2026-10-01T07:55:28.227870+00:00",
+      "checked_at": "2026-10-01T08:04:27.917643+00:00",
       "coverage": "Indonesia",
       "optional": true
     },
@@ -21,7 +35,7 @@
       "source": "NASA EONET",
       "ok": true,
       "message": "57 event(s)",
-      "checked_at": "2026-10-01T07:55:30.178903+00:00",
+      "checked_at": "2026-10-01T08:04:29.987925+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -35,41 +49,41 @@
     {
       "source": "Copernicus STAC",
       "ok": true,
-      "sites": 1,
+      "sites": 0,
       "coverage": "global",
       "optional": false
     },
     {
       "source": "Global Fishing Watch",
-      "ok": false,
-      "sites": 1,
+      "ok": true,
+      "sites": 0,
       "coverage": "global",
       "optional": true
     },
     {
       "source": "Marine Regions",
       "ok": true,
-      "sites": 1,
+      "sites": 0,
       "coverage": "global",
       "optional": false
     },
     {
       "source": "EMODnet Human Activities",
       "ok": true,
-      "sites": 1,
+      "sites": 0,
       "coverage": "Europe",
       "optional": true
     }
   ],
-  "site_count": 1,
+  "site_count": 500,
   "event_count": 69,
   "linked_event_count": 0,
   "web_signal_count": 0,
   "web_actionable_signal_count": 0,
-  "external_observation_count": 1,
+  "external_observation_count": 0,
   "convention_flagged_sites": 0,
   "site_status_counts": {
-    "stable": 1,
+    "stable": 500,
     "watch": 0,
     "elevated": 0
   }
