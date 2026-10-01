@@ -127,3 +127,27 @@ legacy
 The JSON contract is documented in `data.schema.json`.
 
 This structure is intentionally AI-independent. A future UI can be built entirely from `data/data.json` without calling an AI service.
+
+## Location disclosure
+
+Pocket-UCH does not generate fake coordinates.
+
+Each site has a location disclosure policy:
+
+- `public`: the public `data.json` contains the real point.
+- `protected`: the public `data.json` contains a generalized area polygon, not a fake point.
+- Exact protected coordinates can be injected at runtime through the GitHub Actions secret `UCH_PRIVATE_SITES_JSON`. They are used for monitoring calculations but are never written to `data/data.json`.
+
+Example private secret payload:
+
+```json
+[
+  {
+    "id": "UCH-001",
+    "lat": -5.123456,
+    "lon": 105.654321
+  }
+]
+```
+
+This keeps the operational monitoring coordinate separate from the public visualization layer.
