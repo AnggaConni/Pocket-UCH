@@ -81,6 +81,26 @@ sources:
     optional: true
     wfs_url: https://ows.emodnet-humanactivities.eu/wfs
     max_layers_per_site: 3
+  uch_inventory:
+    enabled: true
+    max_total_sites: 500
+    australia_mch:
+      enabled: true
+      coverage: Australia / Australasian
+      optional: true
+      service_url: https://gis.environment.gov.au/gispub/rest/services/heritage/shipwrecks_query/MapServer/32
+      query_url: https://gis.environment.gov.au/gispub/rest/services/heritage/shipwrecks_query/MapServer/32/query
+      max_records: 300
+    emodnet_heritage:
+      enabled: true
+      coverage: Europe
+      optional: true
+      catalog_url: https://ows.emodnet-humanactivities.eu/
+      wfs_url: https://ows.emodnet-humanactivities.eu/wfs
+      layer: emodnet:heritageshipwrecks
+      bbox: -31,-36,45,72
+      max_records: 300
+
 
 monitoring:
   default_radius_km: 100
