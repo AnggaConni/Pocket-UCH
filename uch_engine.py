@@ -168,6 +168,15 @@ def assess_convention(site: dict[str, Any], linked_events: list[dict[str, Any]],
     categories = set()
     for event in linked_events:
         categories.update(event.get("threat_categories", []))
+        if event.get("type") == "earthquake":
+            categories.add("major_hazard")
+            try:
+                if float(event.get("magnitude", 0)) >= 6:
+                    categories.add("intrusive_activity")
+            except (TypeError, ValueError):
+                pass
+        if str(event.get("tsunami") or "").lower() not in ("", "tidak berpotensi tsunami", "none", "false"):
+            categories.add("major_hazard")
     for signal in web_signals:
         categories.update(signal.get("threat_categories", []))
 
