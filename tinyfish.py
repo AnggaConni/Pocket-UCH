@@ -10,6 +10,7 @@ Important:
 
 from __future__ import annotations
 
+import hashlib
 import re
 from datetime import datetime, timezone
 from typing import Any
@@ -204,7 +205,7 @@ def collect(
 
         signals.append(
             {
-                "id": f"tinyfish:{abs(hash(url))}",
+                "id": f"tinyfish:{hashlib.sha1(url.encode('utf-8')).hexdigest()[:16]}",
                 "source": "TinyFish Search/Fetch",
                 "retrieved_at": now,
                 "title": title,
