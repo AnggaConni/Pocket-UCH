@@ -6,25 +6,39 @@ Free, deterministic monitoring engine for Underwater Cultural Heritage (UCH).
 
 Pocket-UCH intentionally uses **no AI API** in its data pipeline.
 
-The first layer collects public/open feeds and links environmental or hazard events to user-defined UCH monitoring sites.
+The first layer combines public/open UCH inventories with hazard, environmental and web signals.
 
-Current sources:
+Current inventory sources:
+- Australian Government maritime cultural heritage GIS / MCH Features
+- EMODnet Human Activities heritage shipwrecks layer (Europe)
+
+Current monitoring sources:
 - USGS earthquake GeoJSON
 - BMKG earthquake feed
 - NASA EONET
-- Configurable placeholders for Copernicus STAC / marine data
-- UCH monitoring sites in `data/sites.json`
+- Copernicus STAC
+- Marine Regions
+- EMODnet Human Activities
+- Optional Global Fishing Watch
+- Optional TinyFish Search + Fetch
+- Optional manual records in `data/sites.json`
 
 ## Architecture
 
 ```
-Public APIs
+Public UCH inventories
+   ↓
+inventory.py
+   ↓
+site registry
+   ↓
+hazard / EO / maritime / web signals
    ↓
 scraper.py
    ↓
 data/data.json
    ↓
-future PWA / desktop-mobile UI
+PWA / desktop-mobile UI
 ```
 
 ## Run locally
@@ -151,3 +165,18 @@ Example private secret payload:
 ```
 
 This keeps the operational monitoring coordinate separate from the public visualization layer.
+
+
+## Public UCH inventory model
+
+Pocket-UCH no longer uses a hard-coded demo site as the production registry. The scraper discovers public UCH records from configured inventory services and merges them with optional curated records in `data/sites.json`.
+
+The current public inventory adapters are intentionally explicit about coverage:
+- Australian Government MCH Features: Australia / Australasian coverage.
+- EMODnet Human Activities heritage shipwrecks: Europe.
+
+This is a **global monitoring interface with partial public-inventory coverage**, not a claim that every UCH site worldwide is represented.
+
+Inventory records retain their source URL and source record ID. Public source points are displayed as real public points. Sensitive/private records can still be injected through `UCH_PRIVATE_SITES_JSON` and generalized before publication.
+
+Inventory points are kept lightweight: hazard/event linking is enabled by default, while expensive deep per-site external queries such as Copernicus and Global Fishing Watch are reserved for curated sites. This prevents an expanding public inventory from turning into hundreds of paid/API-heavy calls per run.
