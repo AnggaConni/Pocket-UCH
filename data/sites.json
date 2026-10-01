@@ -2,6 +2,7 @@
   {
     "id": "demo-001",
     "name": "Demo UCH Site",
+    "aliases": ["Example Shipwreck"],
     "country": "Indonesia",
     "region": "Example",
     "lat": -6.2,
@@ -9,6 +10,32 @@
     "depth_m": null,
     "type": "shipwreck",
     "status": "monitor",
-    "notes": "Replace with verified UCH site coordinates."
+    "notes": "Replace with a verified UCH site. Do not publish sensitive exact coordinates where disclosure could increase risk.",
+    "monitoring": {
+      "satellite": true,
+      "fishing": true,
+      "marine_weather": true,
+      "natural_hazards": true,
+      "web_monitoring": true
+    },
+    "convention_profile": {
+      "maritime_zone": "unknown",
+      "state_party": "Indonesia",
+      "state_vessel": false,
+      "human_remains": false,
+      "venerated_site": false,
+      "significance": "unknown",
+      "vulnerability": "unknown",
+      "in_situ": true,
+      "monitoring_enabled": true,
+      "authorization_status": "unknown",
+      "documentation_status": "unknown",
+      "competent_authority": null,
+      "inventory_id": null,
+      "reporting_channel": null,
+      "sensitive_data_policy": "restricted",
+      "public_information": "unknown",
+      "cooperation_partners": []
+    }
   }
 ]
