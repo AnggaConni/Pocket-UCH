@@ -40,8 +40,8 @@
       "cooperation_partners": []
     },
     "location": {
-      "visibility": "protected",
-      "generalization_radius_km": 10
+      "visibility": "public",
+      "generalization_radius_km": 0
     }
   }
 ]
