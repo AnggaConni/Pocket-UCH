@@ -4,6 +4,22 @@ project:
   timezone: Asia/Jakarta
 
 sources:
+  tinyfish:
+    enabled: true
+    search_endpoint: https://api.search.tinyfish.ai
+    fetch_endpoint: https://api.fetch.tinyfish.ai
+    max_searches_per_run: 6
+    max_results_per_query: 5
+    max_fetches_per_run: 12
+    run_once_per_day: true
+    queries:
+      - underwater cultural heritage shipwreck monitoring
+      - underwater cultural heritage site damage
+      - shipwreck archaeology storm sediment erosion
+      - underwater archaeological site conservation
+      - maritime archaeology shipwreck threat
+      - submerged cultural heritage coastal development
+
   usgs_earthquakes:
     enabled: true
     url: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson
