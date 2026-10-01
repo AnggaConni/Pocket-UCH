@@ -623,6 +623,7 @@ def build_structured_data(
             "history_window_days": int(cfg["output"].get("max_history_days", 180)),
             "baseline_window_days": baseline_days,
             "ai_used": False,
+            "global_mode": bool(cfg.get("monitoring", {}).get("global_mode", True)),
         },
         "summary": {
             "site_count": len(sites),
