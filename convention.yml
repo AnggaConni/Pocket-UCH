@@ -1,0 +1,79 @@
+framework:
+  name: UNESCO 2001 Convention on the Protection of the Underwater Cultural Heritage
+  purpose: "Operational monitoring support. This is not a legal compliance determination."
+  source: https://www.unesco.org/en/legal-affairs/convention-protection-underwater-cultural-heritage
+
+articles:
+  "1": {focus: "Definition and scope", automatable: "context", required_site_fields: [name, year_estimate, type]}
+  "2": {focus: "Objectives and general principles", automatable: "partial", indicators: [in_situ, commercial_exploitation, human_remains]}
+  "3": {focus: "Consistency with UNCLOS", automatable: "context", required_site_fields: [maritime_zone]}
+  "4": {focus: "Salvage and law of finds", automatable: "manual", indicators: [authorization_status]}
+  "5": {focus: "Activities incidentally affecting UCH", automatable: "high", triggers: [construction, dredging, fishing, anchoring, sediment, pollution, coastal_erosion]}
+  "6": {focus: "Bilateral regional or multilateral agreements", automatable: "manual", required_site_fields: [cooperation_partners]}
+  "7": {focus: "Internal waters, archipelagic waters and territorial sea", automatable: "context", required_site_fields: [maritime_zone]}
+  "8": {focus: "Contiguous zone", automatable: "context", required_site_fields: [maritime_zone]}
+  "9": {focus: "Reporting and notification in EEZ and continental shelf", automatable: "partial", required_site_fields: [maritime_zone, reporting_channel]}
+  "10": {focus: "Protection in EEZ and continental shelf", automatable: "partial", required_site_fields: [maritime_zone, coordinating_state, authorization_status]}
+  "11": {focus: "Reporting and notification in the Area", automatable: "partial", required_site_fields: [maritime_zone, reporting_channel]}
+  "12": {focus: "Protection in the Area", automatable: "partial", required_site_fields: [maritime_zone, coordinating_state]}
+  "13": {focus: "Sovereign immunity", automatable: "context", required_site_fields: [state_vessel]}
+  "14": {focus: "Control of illicit entry, dealing and possession", automatable: "partial", triggers: [looting, commercial_exploitation, trafficking]}
+  "15": {focus: "Prohibition on use of jurisdictional areas supporting non-compliant activity", automatable: "partial", triggers: [looting, commercial_exploitation]}
+  "16": {focus: "Measures relating to nationals and vessels", automatable: "partial", triggers: [looting, fishing, anchoring]}
+  "17": {focus: "Sanctions", automatable: "manual", required_site_fields: [enforcement_contact]}
+  "18": {focus: "Seizure and disposition", automatable: "manual", required_site_fields: [seizure_procedure]}
+  "19": {focus: "Cooperation and information-sharing", automatable: "partial", required_site_fields: [competent_authority, sensitive_data_policy]}
+  "20": {focus: "Public awareness", automatable: "partial", required_site_fields: [public_information]}
+  "21": {focus: "Training in underwater archaeology", automatable: "manual", required_site_fields: [trained_team]}
+  "22": {focus: "Competent authorities and inventory", automatable: "partial", required_site_fields: [competent_authority, inventory_id]}
+  "23": {focus: "Meeting of States Parties", automatable: "context"}
+  "24": {focus: "Secretariat", automatable: "context"}
+  "25": {focus: "Peaceful settlement of disputes", automatable: "manual"}
+  "26": {focus: "Ratification, acceptance, approval or accession", automatable: "context", required_site_fields: [state_party]}
+  "27": {focus: "Entry into force", automatable: "context", required_site_fields: [state_party]}
+  "28": {focus: "Application to inland waters not of a maritime character", automatable: "context", required_site_fields: [inland_waters_declaration]}
+  "29": {focus: "Limitations to geographical scope", automatable: "context", required_site_fields: [geographical_declarations]}
+  "30": {focus: "Reservations", automatable: "context"}
+  "31": {focus: "Amendments", automatable: "context"}
+  "32": {focus: "Denunciation", automatable: "context"}
+  "33": {focus: "Annex Rules form an integral part", automatable: "context"}
+  "34": {focus: "Registration with the United Nations", automatable: "context"}
+  "35": {focus: "Authoritative texts", automatable: "context"}
+
+rules:
+  "1": {focus: "In situ preservation first", automatable: "partial", checks: [in_situ, intrusive_activity]}
+  "2": {focus: "No commercial exploitation", automatable: "partial", triggers: [commercial_exploitation, looting, trafficking]}
+  "3": {focus: "Minimize adverse effect", automatable: "high", triggers: [construction, dredging, fishing, anchoring, pollution, sediment]}
+  "4": {focus: "Prefer non-destructive techniques", automatable: "partial", required_site_fields: [preferred_method]}
+  "5": {focus: "Avoid unnecessary disturbance of human remains or venerated sites", automatable: "partial", required_site_fields: [human_remains, venerated_site]}
+  "6": {focus: "Strict recording", automatable: "partial", required_site_fields: [documentation_status]}
+  "7": {focus: "Responsible public access", automatable: "partial", required_site_fields: [access_policy]}
+  "8": {focus: "International cooperation", automatable: "partial", required_site_fields: [cooperation_partners]}
+  "9": {focus: "Project design before activity", automatable: "manual", required_site_fields: [project_id, authorization_status]}
+  "10": {focus: "Project design contents", automatable: "manual", required_site_fields: [project_statement, methodology, funding, timetable, team, conservation_programme, site_management, documentation_programme, safety_policy, environmental_policy, collaboration, report_plan, archive_plan, publication_plan]}
+  "11": {focus: "Work according to approved project design", automatable: "manual", required_site_fields: [authorization_status, project_id]}
+  "12": {focus: "Review/amend when circumstances change", automatable: "high", triggers: [new_environmental_signal, changed_context]}
+  "13": {focus: "Urgency/chance discovery protection", automatable: "high", triggers: [looting, major_hazard, new_discovery]}
+  "14": {focus: "Preliminary significance and vulnerability assessment", automatable: "partial", required_site_fields: [significance, vulnerability]}
+  "15": {focus: "Historical, archaeological and environmental background", automatable: "partial", required_site_fields: [historical_context, archaeological_context, environmental_baseline]}
+  "16": {focus: "Methods as non-intrusive as possible", automatable: "manual", required_site_fields: [methodology]}
+  "17": {focus: "Adequate funding", automatable: "manual", required_site_fields: [funding]}
+  "18": {focus: "Ability to fund to completion", automatable: "manual", required_site_fields: [funding_commitment]}
+  "19": {focus: "Funding interruption contingency", automatable: "manual", required_site_fields: [funding_contingency]}
+  "20": {focus: "Adequate project timetable", automatable: "manual", required_site_fields: [timetable]}
+  "21": {focus: "Project termination contingency", automatable: "manual", required_site_fields: [termination_contingency]}
+  "22": {focus: "Qualified underwater archaeologist", automatable: "manual", required_site_fields: [lead_archaeologist]}
+  "23": {focus: "Qualified project team", automatable: "manual", required_site_fields: [team_qualifications]}
+  "24": {focus: "Conservation programme", automatable: "partial", required_site_fields: [conservation_programme]}
+  "25": {focus: "Site management, stabilization, monitoring, protection against interference", automatable: "high", checks: [monitoring_enabled], triggers: [all_threats]}
+  "26": {focus: "Documentation programme", automatable: "partial", required_site_fields: [documentation_programme]}
+  "27": {focus: "Comprehensive site record", automatable: "partial", required_site_fields: [site_plan, photographs, provenance_record]}
+  "28": {focus: "Safety policy", automatable: "high", triggers: [storm_wave, marine_warning, earthquake]}
+  "29": {focus: "Environmental policy", automatable: "high", triggers: [pollution, sediment, coastal_erosion, construction, dredging]}
+  "30": {focus: "Interim and final reports", automatable: "partial", required_site_fields: [report_schedule]}
+  "31": {focus: "Report contents and recommendations", automatable: "partial", required_site_fields: [last_report]}
+  "32": {focus: "Project archive arrangements", automatable: "manual", required_site_fields: [archive_plan]}
+  "33": {focus: "Keep project archives intact and available", automatable: "partial", required_site_fields: [archive_location]}
+  "34": {focus: "Professional archive standards", automatable: "manual", required_site_fields: [archive_standard]}
+  "35": {focus: "Public education and presentation", automatable: "partial", required_site_fields: [public_information]}
+  "36": {focus: "Final synthesis and public record", automatable: "partial", required_site_fields: [final_synthesis, public_record]}
