@@ -1,0 +1,11 @@
+{
+  "name": "Pocket-UCH",
+  "short_name": "Pocket-UCH",
+  "description": "Underwater Cultural Heritage Radar",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06131d",
+  "theme_color": "#06131d",
+  "icons": []
+}
