@@ -81,12 +81,14 @@ def safe_get_json(url: str, params: dict[str, Any] | None = None) -> Any:
     return resp.json()
 
 
-def source_status(name: str, ok: bool, message: str = "") -> dict[str, Any]:
+def source_status(name: str, ok: bool, message: str = "", coverage: str = "unspecified", optional: bool = False) -> dict[str, Any]:
     return {
         "source": name,
         "ok": ok,
         "message": message,
         "checked_at": iso_now(),
+        "coverage": coverage,
+        "optional": optional,
     }
 
 
@@ -671,18 +673,18 @@ def main() -> int:
             payload = safe_get_json(sources["usgs_earthquakes"]["url"])
             rows = parse_usgs(payload, cfg)
             all_events.extend(rows)
-            source_reports.append(source_status("USGS", True, f"{len(rows)} earthquakes"))
+            source_reports.append(source_status("USGS", True, f"{len(rows)} earthquakes", "global", False))
         except Exception as exc:
-            source_reports.append(source_status("USGS", False, str(exc)))
+            source_reports.append(source_status("USGS", False, str(exc), "global", False))
 
     if sources.get("bmkg_earthquakes", {}).get("enabled"):
         try:
             payload = safe_get_json(sources["bmkg_earthquakes"]["url"])
             rows = parse_bmkg_quake(payload)
             all_events.extend(rows)
-            source_reports.append(source_status("BMKG earthquake", True, f"{len(rows)} event(s)"))
+            source_reports.append(source_status("BMKG earthquake", True, f"{len(rows)} event(s)", "Indonesia", True))
         except Exception as exc:
-            source_reports.append(source_status("BMKG earthquake", False, str(exc)))
+            source_reports.append(source_status("BMKG earthquake", False, str(exc), "Indonesia", True))
 
     if sources.get("nasa_eonet", {}).get("enabled"):
         try:
@@ -690,9 +692,9 @@ def main() -> int:
             payload = safe_get_json(block["url"], block.get("params"))
             rows = parse_eonet(payload, cfg)
             all_events.extend(rows)
-            source_reports.append(source_status("NASA EONET", True, f"{len(rows)} event(s)"))
+            source_reports.append(source_status("NASA EONET", True, f"{len(rows)} event(s)", "global", False))
         except Exception as exc:
-            source_reports.append(source_status("NASA EONET", False, str(exc)))
+            source_reports.append(source_status("NASA EONET", False, str(exc), "global", False))
 
     if sources.get("tinyfish", {}).get("enabled"):
         try:
@@ -701,7 +703,7 @@ def main() -> int:
             )
             source_reports.extend(tinyfish_reports)
         except Exception as exc:
-            source_reports.append(source_status("TinyFish", False, str(exc)))
+            source_reports.append(source_status("TinyFish", False, str(exc), "global", True))
     save_json(tinyfish_state_path, tinyfish_state)
 
     external_observations: list[dict[str, Any]] = []
@@ -712,7 +714,7 @@ def main() -> int:
         )
         source_reports.extend(external_reports)
     except Exception as exc:
-        source_reports.append(source_status("External marine/EO engines", False, str(exc)))
+        source_reports.append(source_status("External marine/EO engines", False, str(exc), "mixed", True))
 
     linked_events = link_events_to_sites(sites, all_events, cfg)
 
