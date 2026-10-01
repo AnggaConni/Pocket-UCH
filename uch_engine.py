@@ -412,8 +412,9 @@ def run_external_engines(sites: list[dict[str, Any]], cfg: dict[str, Any], frame
             }
         )
 
-    reports.append({"source": "Copernicus STAC", "ok": all(x["copernicus"].get("ok", True) for x in site_external), "sites": len(site_external)})
-    reports.append({"source": "Global Fishing Watch", "ok": all(x["global_fishing_watch"].get("ok", True) for x in site_external), "sites": len(site_external)})
-    reports.append({"source": "Marine Regions", "ok": all(x["marine_regions"].get("ok", True) for x in site_external), "sites": len(site_external)})
-    reports.append({"source": "EMODnet Human Activities", "ok": all(x["emodnet_human_activities"].get("ok", True) for x in site_external), "sites": len(site_external)})
+    src = cfg.get("sources", {})
+    reports.append({"source": "Copernicus STAC", "ok": all(x["copernicus"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("copernicus_stac", {}).get("coverage", "global"), "optional": src.get("copernicus_stac", {}).get("optional", False)})
+    reports.append({"source": "Global Fishing Watch", "ok": all(x["global_fishing_watch"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("global_fishing_watch", {}).get("coverage", "global"), "optional": src.get("global_fishing_watch", {}).get("optional", True)})
+    reports.append({"source": "Marine Regions", "ok": all(x["marine_regions"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("marine_regions", {}).get("coverage", "global"), "optional": src.get("marine_regions", {}).get("optional", False)})
+    reports.append({"source": "EMODnet Human Activities", "ok": all(x["emodnet_human_activities"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("emodnet_human_activities", {}).get("coverage", "Europe"), "optional": src.get("emodnet_human_activities", {}).get("optional", True)})
     return site_external, reports
