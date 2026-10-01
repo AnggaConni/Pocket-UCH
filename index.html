@@ -141,16 +141,16 @@ body{min-height:100vh;overflow-x:hidden}
     <div class="flex flex-col justify-center">
       <div class="mini mb-3">Protection · Research · Education · Responsible Access</div>
       <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight max-w-4xl">
-        Monitoring the <span class="text-cyan-300">underwater past</span> through today's signals.
+        Protecting the <span class="text-cyan-300">underwater past</span> through today's signals.
       </h1>
       <p class="muted max-w-3xl mt-4 text-sm sm:text-base leading-7">
-        A non-AI monitoring layer combining hazards, satellite availability, maritime activity and web intelligence with a UNESCO 2001 Convention-aware context.
+        Pocket-UCH connects underwater heritage sites with nearby hazards, environmental change and human activity — then shows what to check next.
       </p>
       <div class="flex flex-wrap gap-2 mt-5">
-        <span class="tag">NO LLM</span>
-        <span class="tag">GLOBAL MODE</span>
-        <span class="tag">SITE-CENTRIC</span>
-        <span class="tag">CONVENTION-AWARE</span>
+        <span class="tag">1 · FIND THE SITE</span>
+        <span class="tag">2 · DETECT CHANGE</span>
+        <span class="tag">3 · ASSESS EXPOSURE</span>
+        <span class="tag">4 · CHECK WHAT'S NEXT</span>
       </div>
     </div>
 
@@ -174,12 +174,30 @@ body{min-height:100vh;overflow-x:hidden}
   </div>
 </section>
 
+<section class="grid sm:grid-cols-3 gap-3 mt-4">
+  <div class="soft rounded-2xl p-4">
+    <div class="mini">01 · Locate</div>
+    <div class="font-semibold text-sm mt-1">Know what heritage exists</div>
+    <div class="muted text-xs leading-5 mt-2">Public inventory records become the monitored site layer.</div>
+  </div>
+  <div class="soft rounded-2xl p-4">
+    <div class="mini">02 · Detect</div>
+    <div class="font-semibold text-sm mt-1">See what is changing nearby</div>
+    <div class="muted text-xs leading-5 mt-2">Hazards, environmental events and human activity are linked to sites.</div>
+  </div>
+  <div class="soft rounded-2xl p-4">
+    <div class="mini">03 · Anticipate</div>
+    <div class="font-semibold text-sm mt-1">Decide what to check next</div>
+    <div class="muted text-xs leading-5 mt-2">Deterministic rules turn signals into monitoring and review steps.</div>
+  </div>
+</section>
+
 <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
-  <div class="glass rounded-2xl p-4"><div class="mini">Sites</div><div id="m-sites" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">monitored</div></div>
+  <div class="glass rounded-2xl p-4"><div class="mini">Heritage sites</div><div id="m-sites" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">monitored</div></div>
   <div class="glass rounded-2xl p-4"><div class="mini">Stable</div><div id="m-stable" class="metric-value text-2xl text-emerald-300 mt-1">—</div><div class="muted text-[11px] mt-1">no active trigger</div></div>
-  <div class="glass rounded-2xl p-4"><div class="mini">Watch</div><div id="m-watch" class="metric-value text-2xl text-amber-300 mt-1">—</div><div class="muted text-[11px] mt-1">review signals</div></div>
-  <div class="glass rounded-2xl p-4"><div class="mini">Elevated</div><div id="m-elevated" class="metric-value text-2xl text-rose-300 mt-1">—</div><div class="muted text-[11px] mt-1">priority attention</div></div>
-  <div class="glass rounded-2xl p-4 col-span-2 lg:col-span-1"><div class="mini">Signals</div><div id="m-signals" class="metric-value text-2xl text-cyan-300 mt-1">—</div><div class="muted text-[11px] mt-1">deterministic</div></div>
+  <div class="glass rounded-2xl p-4"><div class="mini">Watch</div><div id="m-watch" class="metric-value text-2xl text-amber-300 mt-1">—</div><div class="muted text-[11px] mt-1">sites with active signals</div></div>
+  <div class="glass rounded-2xl p-4"><div class="mini">Elevated</div><div id="m-elevated" class="metric-value text-2xl text-rose-300 mt-1">—</div><div class="muted text-[11px] mt-1">higher-priority triggers</div></div>
+  <div class="glass rounded-2xl p-4 col-span-2 lg:col-span-1"><div class="mini">External signals</div><div id="m-signals" class="metric-value text-2xl text-cyan-300 mt-1">—</div><div class="muted text-[11px] mt-1">deterministic</div></div>
 </section>
 
 <section class="grid xl:grid-cols-[1.6fr_.8fr] gap-4 mt-4">
@@ -187,7 +205,7 @@ body{min-height:100vh;overflow-x:hidden}
     <div class="p-4 sm:p-5 flex flex-wrap justify-between gap-3 border-b border-white/5">
       <div>
         <div class="mini">Geospatial monitor</div>
-        <h2 class="font-display text-lg sm:text-xl font-semibold mt-1">Global UCH Watch Map</h2>
+        <h2 class="font-display text-lg sm:text-xl font-semibold mt-1">Where is the heritage?</h2>
       </div>
       <div class="flex flex-wrap items-center gap-2 text-[11px]">
         <span class="flex items-center gap-1.5"><span class="status-dot status-stable"></span>Stable</span>
@@ -200,7 +218,7 @@ body{min-height:100vh;overflow-x:hidden}
   </div>
 
   <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="mini">Site health</div>
+    <div class="mini">Sites under watch</div>
     <div id="site-health" class="mt-4 space-y-3 max-h-[560px] overflow-y-auto pr-1"></div>
     <div class="mt-5 soft rounded-2xl p-4">
       <div class="mini mb-2">Status legend</div>
@@ -215,8 +233,8 @@ body{min-height:100vh;overflow-x:hidden}
   <div class="glass rounded-3xl p-4 sm:p-5">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <div class="mini">Signal radar</div>
-        <h2 class="font-display text-lg font-semibold mt-1">What the system is seeing</h2>
+        <div class="mini">Change detection</div>
+        <h2 class="font-display text-lg font-semibold mt-1">What changed around the sites?</h2>
       </div>
       <div class="text-right"><div class="mini">Current</div><div id="signal-total" class="metric-value text-xl text-cyan-300">—</div></div>
     </div>
@@ -236,8 +254,8 @@ body{min-height:100vh;overflow-x:hidden}
 
 <section class="grid xl:grid-cols-[.9fr_1.1fr] gap-4 mt-4">
   <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="mini">Foresight layer</div>
-    <h2 class="font-display text-lg font-semibold mt-1">Operational recommendations</h2>
+    <div class="mini">Next-step foresight</div>
+    <h2 class="font-display text-lg font-semibold mt-1">What should be checked next?</h2>
     <div id="recommendations" class="mt-4 space-y-3"></div>
   </div>
 
@@ -459,6 +477,11 @@ function renderSources(data){
 
 async function loadData(){
   const btn=document.getElementById('refresh-btn');
+  document.getElementById('m-sites').textContent='…';
+  document.getElementById('m-stable').textContent='…';
+  document.getElementById('m-watch').textContent='…';
+  document.getElementById('m-elevated').textContent='…';
+  document.getElementById('m-signals').textContent='…';
   btn.disabled=true;
   try{
     const response=await fetch(DATA_URL+'?v='+Date.now(),{cache:'no-store'});
@@ -469,7 +492,7 @@ async function loadData(){
     document.getElementById('live-dot').className='status-dot status-stable';
   }catch(err){
     console.error(err);
-    document.getElementById('source-list').innerHTML='<div class="soft rounded-2xl p-4 text-sm text-rose-200">Could not load data/data.json. Run the scraper first or check GitHub Pages deployment.</div>';
+    document.getElementById('source-list').innerHTML='<div class="soft rounded-2xl p-4 text-sm text-rose-200">Live dataset could not be loaded. The scraper may be running or GitHub Pages may still be deploying. Refresh after deployment completes.</div>';
     document.getElementById('live-dot').className='status-dot status-elevated';
   }finally{
     btn.disabled=false;
