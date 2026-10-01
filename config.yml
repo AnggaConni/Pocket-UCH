@@ -13,6 +13,8 @@ sources:
   bmkg_marine:
     enabled: true
     base_url: https://maritim.bmkg.go.id/marine2026-data/
+    metadata_url: https://maritim.bmkg.go.id/marine2026-data/meta/area_province.json
+    locations_url: https://maritim.bmkg.go.id/marine2026-data/meta/wilmetos.min.geojson
   nasa_eonet:
     enabled: true
     url: https://eonet.gsfc.nasa.gov/api/v3/events
