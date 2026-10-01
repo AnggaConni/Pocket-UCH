@@ -61,37 +61,16 @@
         "cooperation_partners": []
       },
       "location": {
-        "visibility": "protected",
-        "representation": "area",
+        "visibility": "public",
+        "representation": "point",
         "geometry": {
-          "type": "Polygon",
+          "type": "Point",
           "coordinates": [
-            [
-              [
-                106.686,
-                -6.173
-              ],
-              [
-                106.914,
-                -6.173
-              ],
-              [
-                106.914,
-                -6.227
-              ],
-              [
-                106.686,
-                -6.227
-              ],
-              [
-                106.686,
-                -6.173
-              ]
-            ]
+            106.8,
+            -6.2
           ]
         },
-        "generalization_radius_km": 10,
-        "precision_m": 10000
+        "precision_m": 0
       }
     }
   ],
