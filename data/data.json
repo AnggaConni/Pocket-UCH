@@ -6,7 +6,8 @@
     "timezone": "Asia/Jakarta",
     "history_window_days": 180,
     "baseline_window_days": 90,
-    "ai_used": false
+    "ai_used": false,
+    "global_mode": true
   },
   "summary": {
     "site_count": 1,
