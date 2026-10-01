@@ -277,8 +277,12 @@ def main() -> int:
 
     all_events: list[dict[str, Any]] = []
     source_reports: list[dict[str, Any]] = []
+    web_signals: list[dict[str, Any]] = []
 
     sources = cfg.get("sources", {})
+
+    tinyfish_state_path = ROOT / cfg["output"].get("tinyfish_state_file", "data/tinyfish_state.json")
+    tinyfish_state = load_json(tinyfish_state_path, {})
 
     if sources.get("usgs_earthquakes", {}).get("enabled"):
         try:
@@ -308,8 +312,35 @@ def main() -> int:
         except Exception as exc:
             source_reports.append(source_status("NASA EONET", False, str(exc)))
 
+    if sources.get("tinyfish", {}).get("enabled"):
+        try:
+            web_signals, tinyfish_state, tinyfish_reports = collect_tinyfish(
+                cfg, sites, tinyfish_state
+            )
+            source_reports.extend(tinyfish_reports)
+        except Exception as exc:
+            source_reports.append(source_status("TinyFish", False, str(exc)))
+    save_json(tinyfish_state_path, tinyfish_state)
+
     linked_events = link_events_to_sites(sites, all_events, cfg)
+
+    # Deterministic escalation from web signals that explicitly match a monitored site.
+    web_by_site: dict[str, list[dict[str, Any]]] = {}
+    for signal in web_signals:
+        for site_id in signal.get("matched_site_ids", []):
+            web_by_site.setdefault(str(site_id), []).append(signal)
+
     site_status = build_site_status(sites, linked_events)
+    for row in site_status:
+        matches = web_by_site.get(str(row["site_id"]), [])
+        actionable = [x for x in matches if x.get("threat_categories")]
+        row["web_signal_count"] = len(matches)
+        row["web_actionable_signal_count"] = len(actionable)
+        row["web_recommendations"] = [
+            x.get("recommendation") for x in actionable[:3] if x.get("recommendation")
+        ]
+        if actionable and row["status"] == "stable":
+            row["status"] = "watch"
 
     data_path = ROOT / cfg["output"]["data_file"]
     history_path = ROOT / cfg["output"]["history_file"]
@@ -324,6 +355,7 @@ def main() -> int:
         "sites": len(sites),
         "raw_events": all_events,
         "linked_events": linked_events,
+        "web_signals": web_signals,
         "site_status": site_status,
     }
 
@@ -349,6 +381,10 @@ def main() -> int:
         "site_count": len(sites),
         "event_count": len(all_events),
         "linked_event_count": len(linked_events),
+        "web_signal_count": len(web_signals),
+        "web_actionable_signal_count": sum(
+            1 for x in web_signals if x.get("threat_categories")
+        ),
         "site_status_counts": {
             state: sum(1 for s in site_status if s["status"] == state)
             for state in ["stable", "watch", "elevated"]
