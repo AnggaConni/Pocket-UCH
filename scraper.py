@@ -26,6 +26,7 @@ from typing import Any
 import requests
 import yaml
 from tinyfish import collect as collect_tinyfish
+from uch_engine import assess_convention, load_convention, run_external_engines
 
 ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / "config.yml"
@@ -275,6 +276,8 @@ def build_site_status(
 def main() -> int:
     cfg = load_config()
     sites = load_json(ROOT / cfg["monitoring"]["sites_file"], [])
+    convention_path = ROOT / cfg["output"].get("convention_rules_file", "convention.yml")
+    convention_framework = load_convention(convention_path)
 
     all_events: list[dict[str, Any]] = []
     source_reports: list[dict[str, Any]] = []
@@ -323,6 +326,16 @@ def main() -> int:
             source_reports.append(source_status("TinyFish", False, str(exc)))
     save_json(tinyfish_state_path, tinyfish_state)
 
+    external_observations: list[dict[str, Any]] = []
+    external_reports: list[dict[str, Any]] = []
+    try:
+        external_observations, external_reports = run_external_engines(
+            sites, cfg, convention_framework
+        )
+        source_reports.extend(external_reports)
+    except Exception as exc:
+        source_reports.append(source_status("External marine/EO engines", False, str(exc)))
+
     linked_events = link_events_to_sites(sites, all_events, cfg)
 
     # Deterministic escalation from web signals that explicitly match a monitored site.
@@ -331,15 +344,31 @@ def main() -> int:
         for site_id in signal.get("matched_site_ids", []):
             web_by_site.setdefault(str(site_id), []).append(signal)
 
+    ext_by_site = {str(x.get("site_id")): x for x in external_observations}
+
     site_status = build_site_status(sites, linked_events)
     for row in site_status:
         matches = web_by_site.get(str(row["site_id"]), [])
+        site_events = [x for x in linked_events if str(x.get("site_id")) == str(row["site_id"])]
+        ext = ext_by_site.get(str(row["site_id"]), {})
         actionable = [x for x in matches if x.get("threat_categories")]
         row["web_signal_count"] = len(matches)
         row["web_actionable_signal_count"] = len(actionable)
         row["web_recommendations"] = [
             x.get("recommendation") for x in actionable[:3] if x.get("recommendation")
         ]
+        row["external_observations"] = ext
+        row["convention_assessment"] = assess_convention(
+            next((s for s in sites if str(s.get("id")) == str(row["site_id"])), {}),
+            site_events,
+            matches,
+            convention_framework,
+        )
+
+        if ext.get("global_fishing_watch", {}).get("fishing_hours", 0) > 0:
+            if row["status"] == "stable":
+                row["status"] = "watch"
+
         if actionable and row["status"] == "stable":
             row["status"] = "watch"
 
@@ -357,6 +386,11 @@ def main() -> int:
         "raw_events": all_events,
         "linked_events": linked_events,
         "web_signals": web_signals,
+        "external_observations": external_observations,
+        "convention_framework": {
+            "name": convention_framework.get("framework", {}).get("name"),
+            "source": convention_framework.get("framework", {}).get("source"),
+        },
         "site_status": site_status,
     }
 
@@ -385,6 +419,11 @@ def main() -> int:
         "web_signal_count": len(web_signals),
         "web_actionable_signal_count": sum(
             1 for x in web_signals if x.get("threat_categories")
+        ),
+        "external_observation_count": len(external_observations),
+        "convention_flagged_sites": sum(
+            1 for s in site_status
+            if s.get("convention_assessment", {}).get("threat_categories")
         ),
         "site_status_counts": {
             state: sum(1 for s in site_status if s["status"] == state)
