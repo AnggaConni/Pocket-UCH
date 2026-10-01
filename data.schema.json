@@ -88,7 +88,10 @@
       }
     },
     "sites": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/site"
+      }
     },
     "observations": {
       "type": "array"
@@ -116,6 +119,94 @@
     },
     "site_status": {
       "type": "array"
+    }
+  },
+  "definitions": {
+    "site": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "location"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "depth_m": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "location": {
+          "type": "object",
+          "required": [
+            "visibility",
+            "representation",
+            "geometry"
+          ],
+          "properties": {
+            "visibility": {
+              "enum": [
+                "public",
+                "protected"
+              ]
+            },
+            "representation": {
+              "enum": [
+                "point",
+                "area"
+              ]
+            },
+            "geometry": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        },
+        "monitoring": {
+          "type": "object"
+        },
+        "convention_profile": {
+          "type": "object"
+        }
+      }
     }
   }
 }
