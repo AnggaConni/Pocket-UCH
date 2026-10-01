@@ -91,4 +91,5 @@ output:
   status_file: data/status.json
   tinyfish_state_file: data/tinyfish_state.json
   convention_rules_file: convention.yml
+  baseline_days: 90
   max_history_days: 180
