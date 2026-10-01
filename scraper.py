@@ -25,6 +25,7 @@ from typing import Any
 
 import requests
 import yaml
+from inventory import collect_inventory
 from tinyfish import collect as collect_tinyfish
 from uch_engine import assess_convention, load_convention, run_external_engines
 
@@ -724,7 +725,18 @@ def build_structured_data(
 
 def main() -> int:
     cfg = load_config()
-    sites = load_json(ROOT / cfg["monitoring"]["sites_file"], [])
+    manual_sites = load_json(ROOT / cfg["monitoring"]["sites_file"], [])
+    inventory_sites, inventory_reports = collect_inventory(cfg)
+
+    # Public inventory is the default registry. Manual records override
+    # an inventory record with the same ID, rather than creating duplicates.
+    by_id: dict[str, dict[str, Any]] = {}
+    for site in inventory_sites:
+        by_id[str(site.get("id"))] = site
+    for site in manual_sites:
+        if isinstance(site, dict) and site.get("id"):
+            by_id[str(site.get("id"))] = site
+    sites = list(by_id.values())
 
     # Optional private exact coordinates. Never written to public data.json.
     private_blob = os.environ.get("UCH_PRIVATE_SITES_JSON")
@@ -748,7 +760,7 @@ def main() -> int:
     convention_framework = load_convention(convention_path)
 
     all_events: list[dict[str, Any]] = []
-    source_reports: list[dict[str, Any]] = []
+    source_reports: list[dict[str, Any]] = list(inventory_reports)
     web_signals: list[dict[str, Any]] = []
 
     sources = cfg.get("sources", {})
