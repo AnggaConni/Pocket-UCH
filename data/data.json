@@ -89,5 +89,28 @@
   },
   "recommendations": [],
   "provenance": [],
-  "source_status": []
+  "source_status": [],
+  "site_status": [
+    {
+      "site_id": "demo-001",
+      "site_name": "Demo UCH Site",
+      "status": "stable",
+      "event_count": 0,
+      "updated_at": null,
+      "web_signal_count": 0,
+      "web_actionable_signal_count": 0,
+      "web_recommendations": [],
+      "external_observations": {},
+      "convention_assessment": {
+        "framework": "UNESCO 2001 Convention",
+        "site_id": "demo-001",
+        "triggered_articles": [],
+        "triggered_rules": [],
+        "threat_categories": [],
+        "data_gaps": [],
+        "manual_review_required": true,
+        "notice": "This is an operational monitoring aid, not a legal compliance determination."
+      }
+    }
+  ]
 }
