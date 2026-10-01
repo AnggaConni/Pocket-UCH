@@ -2,6 +2,15 @@ name: Pocket-UCH Scraper
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "scraper.py"
+      - "inventory.py"
+      - "uch_engine.py"
+      - "tinyfish.py"
+      - "config.yml"
+      - "data/sites.json"
+      - ".github/workflows/scrape.yml"
   schedule:
     - cron: "17 */6 * * *"
 
