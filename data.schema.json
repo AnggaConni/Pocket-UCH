@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/AnggaConni/Pocket-UCH/main/data.schema.json",
+  "title": "Pocket-UCH Data",
+  "type": "object",
+  "required": [
+    "metadata",
+    "summary",
+    "sites",
+    "observations",
+    "baselines",
+    "signals",
+    "convention",
+    "recommendations",
+    "provenance",
+    "source_status"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "sites": {
+      "type": "array"
+    },
+    "observations": {
+      "type": "array"
+    },
+    "baselines": {
+      "type": "array"
+    },
+    "signals": {
+      "type": "array"
+    },
+    "convention": {
+      "type": "object"
+    },
+    "recommendations": {
+      "type": "array"
+    },
+    "provenance": {
+      "type": "array"
+    },
+    "source_status": {
+      "type": "array"
+    },
+    "legacy": {
+      "type": "object"
+    }
+  }
+}
