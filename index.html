@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#06131d">
+<meta name="theme-color" content="#f5f9fc">
 <meta name="description" content="Pocket-UCH — find underwater heritage, detect nearby change, and identify what to check next.">
 <link rel="manifest" href="./manifest.json">
 <title>Pocket-UCH — Underwater Cultural Heritage Radar</title>
@@ -32,126 +32,192 @@ tailwind.config = {
 
 <style>
 :root{
-  --bg:#06131d;
-  --panel:#0b1d2a;
-  --panel2:#102b3c;
-  --line:rgba(139,229,236,.14);
-  --text:#ecfeff;
-  --muted:#89aebc;
-  --cyan:#55d8e6;
-  --green:#63e6be;
-  --amber:#ffd166;
-  --red:#ff718b;
-  --blue:#7eb8ff;
+  --bg:#f5f9fc;
+  --panel:#ffffff;
+  --panel2:#eef6fa;
+  --line:#dbe7ee;
+  --text:#0f2636;
+  --muted:#607887;
+  --cyan:#0d8fa3;
+  --green:#12805f;
+  --amber:#a56a00;
+  --red:#c84c67;
+  --blue:#2c6fb7;
+  --navy:#12384f;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
-body{min-height:100vh;overflow-x:hidden}
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(57,167,191,.08),transparent 28rem),
+    radial-gradient(circle at 92% 12%,rgba(44,111,183,.06),transparent 30rem),
+    #f5f9fc
+}
 .font-display{font-family:'Space Grotesk',sans-serif}
 .glass{
-  background:linear-gradient(180deg,rgba(13,37,52,.94),rgba(7,23,34,.96));
-  border:1px solid var(--line);
-  box-shadow:0 20px 60px rgba(0,0,0,.18)
+  background:rgba(255,255,255,.94);
+  border:1px solid #dbe7ee;
+  box-shadow:0 12px 35px rgba(25,57,75,.07)
 }
-.soft{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
-.mini{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#6f9aaa;font-weight:700}
+.soft{
+  background:#f8fbfd;
+  border:1px solid #e3edf2
+}
+.mini{
+  font-size:10px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:#5d7d8c;
+  font-weight:700
+}
 .muted{color:var(--muted)}
 .tag{
   display:inline-flex;align-items:center;gap:.35rem;
   font-size:10px;font-weight:700;letter-spacing:.02em;
   padding:5px 8px;border-radius:999px;
-  background:rgba(255,255,255,.045);
-  border:1px solid rgba(255,255,255,.07);
-  color:#a8c7d1
+  background:#f2f7fa;
+  border:1px solid #d9e6ed;
+  color:#406173
 }
 .btn{
-  border:1px solid rgba(139,229,236,.14);
-  background:rgba(255,255,255,.035);
-  color:#dffcff;
-  border-radius:12px;
+  border:1px solid #cfdee6;
+  background:#fff;
+  color:#18384d;
+  border-radius:10px;
   padding:9px 12px;
   font-size:12px;
   font-weight:700;
+  box-shadow:0 2px 7px rgba(23,57,75,.04);
   transition:.2s ease
 }
-.btn:hover{background:rgba(85,216,230,.09);border-color:rgba(85,216,230,.24)}
+.btn:hover{
+  background:#eef9fb;
+  border-color:#8bcbd4;
+  color:#087d90
+}
 .btn:disabled{opacity:.5;cursor:wait}
 .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-.stable{background:var(--green)}
-.watch{background:var(--amber)}
-.elevated{background:var(--red)}
-.incident{background:#ff8d6e}
+.stable{background:#19a778}
+.watch{background:#d89511}
+.elevated{background:#d75b73}
+.incident{background:#e47755}
 .hero-grid{
-  background-image:
-    linear-gradient(rgba(139,229,236,.045) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(139,229,236,.045) 1px,transparent 1px);
-  background-size:34px 34px
+  background:
+    linear-gradient(rgba(54,133,153,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(54,133,153,.06) 1px,transparent 1px),
+    linear-gradient(180deg,#ffffff,#f6fbfd);
+  background-size:34px 34px,34px 34px,100% 100%
 }
-.topo{fill:none;stroke:rgba(139,229,236,.13);stroke-width:1}
-.glow{filter:drop-shadow(0 0 20px rgba(85,216,230,.18))}
+.topo{fill:none;stroke:rgba(48,126,148,.16);stroke-width:1}
+.glow{filter:drop-shadow(0 7px 18px rgba(39,129,151,.13))}
 .radar-sweep{transform-origin:100px 100px;animation:sweep 5s linear infinite}
 @keyframes sweep{to{transform:rotate(360deg)}}
 .site-point{
   width:15px;height:15px;border-radius:999px;
-  border:2px solid #e8feff;
-  box-shadow:0 0 0 0 rgba(85,216,230,.55);
+  border:2px solid #fff;
+  box-shadow:0 1px 0 1px rgba(13,143,163,.25),0 0 0 0 rgba(13,143,163,.22);
   animation:pulse 2.6s infinite
 }
-.site-point.stable{background:var(--green)}
-.site-point.watch{background:var(--amber)}
-.site-point.elevated{background:var(--red)}
+.site-point.stable{background:#19a778}
+.site-point.watch{background:#d89511}
+.site-point.elevated{background:#d75b73}
 .incident-point{
-  width:13px;height:13px;border-radius:999px;background:#ff8d6e;
-  border:2px solid #fff1ec;
-  box-shadow:0 0 0 0 rgba(255,141,110,.6);
+  width:13px;height:13px;border-radius:999px;background:#e47755;
+  border:2px solid #fff;
+  box-shadow:0 1px 0 1px rgba(228,119,85,.28),0 0 0 0 rgba(228,119,85,.25);
   animation:pulseIncident 1.8s infinite
 }
-@keyframes pulse{70%{box-shadow:0 0 0 11px rgba(85,216,230,0)}100%{box-shadow:0 0 0 0 rgba(85,216,230,0)}}
-@keyframes pulseIncident{70%{box-shadow:0 0 0 10px rgba(255,141,110,0)}100%{box-shadow:0 0 0 0 rgba(255,141,110,0)}}
-.leaflet-container{background:#071824;font-family:'DM Sans',sans-serif}
-.leaflet-control-zoom a{
-  background:#0b1d2a!important;color:#dffcff!important;
-  border:1px solid rgba(139,229,236,.15)!important
+@keyframes pulse{
+  70%{box-shadow:0 1px 0 1px rgba(13,143,163,.25),0 0 0 10px rgba(13,143,163,0)}
+  100%{box-shadow:0 1px 0 1px rgba(13,143,163,.25),0 0 0 0 rgba(13,143,163,0)}
 }
+@keyframes pulseIncident{
+  70%{box-shadow:0 1px 0 1px rgba(228,119,85,.28),0 0 0 9px rgba(228,119,85,0)}
+  100%{box-shadow:0 1px 0 1px rgba(228,119,85,.28),0 0 0 0 rgba(228,119,85,0)}
+}
+.leaflet-container{
+  background:#dcecf2;
+  font-family:'DM Sans',sans-serif
+}
+.leaflet-control-zoom a{
+  background:#fff!important;
+  color:#18384d!important;
+  border:1px solid #cfdee6!important
+}
+.leaflet-control-zoom a:hover{background:#eef9fb!important;color:#087d90!important}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{
-  background:#0b1d2a;color:#dffcff;border:1px solid rgba(139,229,236,.14)
+  background:#fff;
+  color:#17384c;
+  border:1px solid #dbe7ee;
+  box-shadow:0 14px 30px rgba(22,55,72,.14)
 }
 .leaflet-popup-content{margin:14px;min-width:220px}
 .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{
-  background:rgba(85,216,230,.18)!important
+  background:rgba(13,143,163,.16)!important
 }
 .marker-cluster div{
-  background:#0f5d76!important;color:white!important;font-weight:800
+  background:#0d8fa3!important;
+  color:white!important;
+  font-weight:800
 }
 .map-shell{height:570px}
 #map{height:100%;min-height:330px}
 .scroll-area{max-height:570px;overflow:auto}
 .scroll-area::-webkit-scrollbar{width:5px}
-.scroll-area::-webkit-scrollbar-thumb{background:rgba(139,229,236,.18);border-radius:99px}
-.timeline-line{position:absolute;left:7px;top:18px;bottom:18px;width:1px;background:rgba(139,229,236,.13)}
+.scroll-area::-webkit-scrollbar-thumb{background:#c6d8e1;border-radius:99px}
+.timeline-line{position:absolute;left:7px;top:18px;bottom:18px;width:1px;background:#d5e3ea}
 .path-step{position:relative;padding-left:30px}
 .path-step .node{
   position:absolute;left:0;top:5px;width:15px;height:15px;border-radius:999px;
-  background:#0c3649;border:2px solid var(--cyan);z-index:2
+  background:#e6f5f7;border:2px solid var(--cyan);z-index:2
 }
 .path-step:not(:last-child):after{
-  content:"";position:absolute;left:7px;top:20px;bottom:-10px;width:1px;background:rgba(139,229,236,.16)
+  content:"";position:absolute;left:7px;top:20px;bottom:-10px;width:1px;background:#d6e4eb
 }
 .search{
-  background:rgba(255,255,255,.035);
-  border:1px solid rgba(139,229,236,.12);
-  border-radius:12px;
-  color:#dffcff;
+  background:#fff;
+  border:1px solid #cfdee6;
+  border-radius:10px;
+  color:#17384c;
   outline:none
 }
-.search:focus{border-color:rgba(85,216,230,.38);box-shadow:0 0 0 3px rgba(85,216,230,.06)}
+.search::placeholder{color:#90a4af}
+.search:focus{
+  border-color:#6ebcc8;
+  box-shadow:0 0 0 3px rgba(13,143,163,.08)
+}
 .skeleton{
-  background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.09),rgba(255,255,255,.04));
+  background:linear-gradient(90deg,#f0f5f7,#ffffff,#f0f5f7);
   background-size:200% 100%;animation:shine 1.6s infinite
 }
 @keyframes shine{to{background-position:-200% 0}}
 .fade{animation:fade .35s ease}
 @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* Government-friendly overrides for Tailwind utility colors used in the markup */
+.text-cyan-300{color:#087d90!important}
+.text-emerald-300{color:#087c5c!important}
+.text-amber-300{color:#9a6500!important}
+.text-rose-300{color:#bd4961!important}
+.text-slate-200{color:#334b5c!important}
+.text-slate-400{color:#69818e!important}
+.text-slate-500{color:#5f7785!important}
+.bg-cyan-300\/10{background:rgba(13,143,163,.09)!important}
+.border-cyan-300\/15{border-color:rgba(13,143,163,.18)!important}
+.bg-white\/6{background:rgba(13,55,75,.035)!important}
+.bg-\[\#06131d\]\/94{background:rgba(255,255,255,.95)!important}
+
+/* Keep the sticky header readable in bright mode */
+body>header{
+  background:rgba(255,255,255,.94)!important;
+  border-color:#dce7ed!important;
+  color:#17384c
+}
+body>header .mini{color:#6a8795}
+body>header .soft{background:#f7fbfd;border-color:#dbe7ee}
+
 @media(max-width:1024px){.map-shell{height:460px}}
 @media(max-width:640px){.map-shell{height:390px}}
 </style>
