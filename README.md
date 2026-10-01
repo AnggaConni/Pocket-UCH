@@ -93,3 +93,37 @@ Optional/non-AI layers now include:
 - TinyFish Search/Fetch for deterministic web discovery only; no TinyFish Agent/Browser and no LLM is used by Pocket-UCH.
 
 All external sources are optional and fail gracefully so one unavailable source does not stop the scraper.
+
+## Data model
+
+The generated `data/data.json` is the main contract for the future Pocket App.
+
+Top-level structure:
+
+```
+metadata
+summary
+sites
+observations
+baselines
+signals
+convention
+recommendations
+provenance
+source_status
+legacy
+```
+
+### Design principles
+
+- **Observation** = something a source measured/reported.
+- **Signal** = a deterministic interpretation of one or more observations.
+- **Baseline** = descriptive historical reference; it becomes usable after enough snapshots accumulate.
+- **Convention** = UCH-specific context mapped to UNESCO 2001 Convention Articles and Annex Rules.
+- **Recommendation** = deterministic operational guidance, not an automated legal decision.
+- **Provenance** = where the data came from and when it was checked.
+- **legacy** = compatibility copy of the earlier scraper output while the PWA is being developed.
+
+The JSON contract is documented in `data.schema.json`.
+
+This structure is intentionally AI-independent. A future UI can be built entirely from `data/data.json` without calling an AI service.
