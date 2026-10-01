@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#071826">
-<meta name="description" content="Pocket-UCH — global underwater cultural heritage monitoring, environmental signals and Convention-aware foresight.">
-<title>Pocket-UCH | Underwater Cultural Heritage Radar</title>
+<meta name="theme-color" content="#06131d">
+<meta name="description" content="Pocket-UCH — find underwater heritage, detect nearby change, and identify what to check next.">
+<link rel="manifest" href="./manifest.json">
+<title>Pocket-UCH — Underwater Cultural Heritage Radar</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -23,18 +24,6 @@ tailwind.config = {
       fontFamily: {
         sans: ['DM Sans','sans-serif'],
         display: ['Space Grotesk','sans-serif']
-      },
-      colors: {
-        ocean: {
-          950:'#03101a',
-          900:'#071826',
-          800:'#0b2536',
-          700:'#123b50',
-          600:'#17627d',
-          500:'#1c93b8',
-          400:'#46c5dc',
-          300:'#8be5ec'
-        }
       }
     }
   }
@@ -45,463 +34,818 @@ tailwind.config = {
 :root{
   --bg:#06131d;
   --panel:#0b1d2a;
-  --panel2:#0f2635;
-  --line:rgba(139,229,236,.12);
+  --panel2:#102b3c;
+  --line:rgba(139,229,236,.14);
   --text:#ecfeff;
-  --muted:#86a9b6;
+  --muted:#89aebc;
   --cyan:#55d8e6;
-  --cyan2:#8be5ec;
   --green:#63e6be;
   --amber:#ffd166;
   --red:#ff718b;
+  --blue:#7eb8ff;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
 body{min-height:100vh;overflow-x:hidden}
 .font-display{font-family:'Space Grotesk',sans-serif}
-.glass{background:linear-gradient(180deg,rgba(14,38,53,.9),rgba(8,24,35,.92));border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.2)}
-.soft{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.065)}
-.mini{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6f98a7;font-weight:700}
+.glass{
+  background:linear-gradient(180deg,rgba(13,37,52,.94),rgba(7,23,34,.96));
+  border:1px solid var(--line);
+  box-shadow:0 20px 60px rgba(0,0,0,.18)
+}
+.soft{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.mini{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#6f9aaa;font-weight:700}
 .muted{color:var(--muted)}
-.pill{border:1px solid rgba(139,229,236,.16);background:rgba(139,229,236,.05)}
-.map-wrap{min-height:520px}
-#map{height:520px;background:#06131d}
-.leaflet-container{font-family:'DM Sans',sans-serif;background:#071826}
-.leaflet-control-zoom a{background:#0b1d2a!important;color:#dffcff!important;border:1px solid rgba(139,229,236,.14)!important}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0b1d2a;color:#dffcff;border:1px solid rgba(139,229,236,.14)}
-.leaflet-popup-content{margin:14px;min-width:220px}
-.site-point{width:18px;height:18px;border-radius:999px;background:#55d8e6;border:3px solid #dffcff;box-shadow:0 0 0 0 rgba(85,216,230,.65);animation:pulse 2.4s infinite}
-.site-point.watch{background:#ffd166;box-shadow:0 0 0 0 rgba(255,209,102,.55)}
-.site-point.elevated{background:#ff718b;box-shadow:0 0 0 0 rgba(255,113,139,.55)}
-@keyframes pulse{70%{box-shadow:0 0 0 12px rgba(85,216,230,0)}100%{box-shadow:0 0 0 0 rgba(85,216,230,0)}}
-.hero-grid{background-image:linear-gradient(rgba(139,229,236,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(139,229,236,.045) 1px,transparent 1px);background-size:36px 36px}
-.glow{filter:drop-shadow(0 0 18px rgba(85,216,230,.18))}
+.tag{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-size:10px;font-weight:700;letter-spacing:.02em;
+  padding:5px 8px;border-radius:999px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07);
+  color:#a8c7d1
+}
+.btn{
+  border:1px solid rgba(139,229,236,.14);
+  background:rgba(255,255,255,.035);
+  color:#dffcff;
+  border-radius:12px;
+  padding:9px 12px;
+  font-size:12px;
+  font-weight:700;
+  transition:.2s ease
+}
+.btn:hover{background:rgba(85,216,230,.09);border-color:rgba(85,216,230,.24)}
+.btn:disabled{opacity:.5;cursor:wait}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.stable{background:var(--green)}
+.watch{background:var(--amber)}
+.elevated{background:var(--red)}
+.incident{background:#ff8d6e}
+.hero-grid{
+  background-image:
+    linear-gradient(rgba(139,229,236,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(139,229,236,.045) 1px,transparent 1px);
+  background-size:34px 34px
+}
+.topo{fill:none;stroke:rgba(139,229,236,.13);stroke-width:1}
+.glow{filter:drop-shadow(0 0 20px rgba(85,216,230,.18))}
 .radar-sweep{transform-origin:100px 100px;animation:sweep 5s linear infinite}
 @keyframes sweep{to{transform:rotate(360deg)}}
-.ring{fill:none;stroke:rgba(139,229,236,.16);stroke-width:1}
-.scan-line{stroke:rgba(139,229,236,.22);stroke-width:1;stroke-dasharray:3 7}
-.topo{fill:none;stroke:rgba(139,229,236,.12);stroke-width:1}
-.metric-value{font-family:'Space Grotesk',sans-serif;font-weight:700}
-.scroll-x{overflow-x:auto;scrollbar-width:thin}
-.nav-link{color:#7da0ad}
-.nav-link.active{color:#dffcff;background:rgba(85,216,230,.09);border-color:rgba(85,216,230,.16)}
-.progress-track{height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
-.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#17627d,#55d8e6)}
-.status-dot{width:8px;height:8px;border-radius:50%}
-.status-stable{background:#63e6be}.status-watch{background:#ffd166}.status-elevated{background:#ff718b}
-.tag{font-size:10px;font-weight:700;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.05);color:#a8c7d1;border:1px solid rgba(255,255,255,.06)}
-.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.09),rgba(255,255,255,.04));background-size:200% 100%;animation:shimmer 1.8s infinite}
-@keyframes shimmer{to{background-position:-200% 0}}
-@media(max-width:900px){.map-wrap,#map{min-height:430px;height:430px}}
-@media(max-width:640px){.map-wrap,#map{min-height:360px;height:360px}.hero-grid{background-size:24px 24px}}
+.site-point{
+  width:15px;height:15px;border-radius:999px;
+  border:2px solid #e8feff;
+  box-shadow:0 0 0 0 rgba(85,216,230,.55);
+  animation:pulse 2.6s infinite
+}
+.site-point.stable{background:var(--green)}
+.site-point.watch{background:var(--amber)}
+.site-point.elevated{background:var(--red)}
+.incident-point{
+  width:13px;height:13px;border-radius:999px;background:#ff8d6e;
+  border:2px solid #fff1ec;
+  box-shadow:0 0 0 0 rgba(255,141,110,.6);
+  animation:pulseIncident 1.8s infinite
+}
+@keyframes pulse{70%{box-shadow:0 0 0 11px rgba(85,216,230,0)}100%{box-shadow:0 0 0 0 rgba(85,216,230,0)}}
+@keyframes pulseIncident{70%{box-shadow:0 0 0 10px rgba(255,141,110,0)}100%{box-shadow:0 0 0 0 rgba(255,141,110,0)}}
+.leaflet-container{background:#071824;font-family:'DM Sans',sans-serif}
+.leaflet-control-zoom a{
+  background:#0b1d2a!important;color:#dffcff!important;
+  border:1px solid rgba(139,229,236,.15)!important
+}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{
+  background:#0b1d2a;color:#dffcff;border:1px solid rgba(139,229,236,.14)
+}
+.leaflet-popup-content{margin:14px;min-width:220px}
+.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{
+  background:rgba(85,216,230,.18)!important
+}
+.marker-cluster div{
+  background:#0f5d76!important;color:white!important;font-weight:800
+}
+.map-shell{height:570px}
+#map{height:100%;min-height:330px}
+.scroll-area{max-height:570px;overflow:auto}
+.scroll-area::-webkit-scrollbar{width:5px}
+.scroll-area::-webkit-scrollbar-thumb{background:rgba(139,229,236,.18);border-radius:99px}
+.timeline-line{position:absolute;left:7px;top:18px;bottom:18px;width:1px;background:rgba(139,229,236,.13)}
+.path-step{position:relative;padding-left:30px}
+.path-step .node{
+  position:absolute;left:0;top:5px;width:15px;height:15px;border-radius:999px;
+  background:#0c3649;border:2px solid var(--cyan);z-index:2
+}
+.path-step:not(:last-child):after{
+  content:"";position:absolute;left:7px;top:20px;bottom:-10px;width:1px;background:rgba(139,229,236,.16)
+}
+.search{
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(139,229,236,.12);
+  border-radius:12px;
+  color:#dffcff;
+  outline:none
+}
+.search:focus{border-color:rgba(85,216,230,.38);box-shadow:0 0 0 3px rgba(85,216,230,.06)}
+.skeleton{
+  background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.09),rgba(255,255,255,.04));
+  background-size:200% 100%;animation:shine 1.6s infinite
+}
+@keyframes shine{to{background-position:-200% 0}}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:1024px){.map-shell{height:460px}}
+@media(max-width:640px){.map-shell{height:390px}}
 </style>
 </head>
-<body>
 
-<header class="sticky top-0 z-[1000] border-b border-white/5 bg-[#06131d]/92 backdrop-blur-xl">
-  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+<body>
+<header class="sticky top-0 z-[1000] border-b border-white/5 bg-[#06131d]/94 backdrop-blur-xl">
+  <div class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3 min-w-0">
-      <div class="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-300/15 flex items-center justify-center shrink-0">
-        <svg viewBox="0 0 40 40" class="w-7 h-7 text-cyan-300 fill-none stroke-current" aria-hidden="true">
-          <circle cx="20" cy="20" r="14" stroke-width="1.5"></circle>
-          <circle cx="20" cy="20" r="5" stroke-width="1.5"></circle>
-          <path d="M20 4v7M20 29v7M4 20h7M29 20h7M8.7 8.7l5 5M26.3 26.3l5 5M31.3 8.7l-5 5M13.7 26.3l-5 5" stroke-width="1"></path>
+      <div class="w-10 h-10 rounded-xl bg-cyan-300/10 border border-cyan-300/15 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 40 40" class="w-7 h-7 text-cyan-300 fill-none stroke-current">
+          <circle cx="20" cy="20" r="14" stroke-width="1.5"/>
+          <circle cx="20" cy="20" r="5" stroke-width="1.5"/>
+          <path d="M20 4v7M20 29v7M4 20h7M29 20h7M8.7 8.7l5 5M26.3 26.3l5 5M31.3 8.7l-5 5M13.7 26.3l-5 5" stroke-width="1"/>
         </svg>
       </div>
       <div class="min-w-0">
-        <div class="font-display font-bold tracking-tight text-base sm:text-lg truncate">Pocket-UCH</div>
-        <div class="mini truncate">Underwater Cultural Heritage Radar</div>
+        <div class="font-display font-bold text-base sm:text-lg tracking-tight">Pocket-UCH</div>
+        <div class="mini">Underwater Cultural Heritage Radar</div>
       </div>
     </div>
-    <div class="flex items-center gap-2 sm:gap-3">
-      <div id="global-badge" class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl pill">
-        <span class="status-dot status-stable" id="live-dot"></span>
-        <span class="text-xs font-semibold text-slate-200">Global monitoring</span>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl soft">
+        <span id="live-dot" class="status-dot stable"></span>
+        <span id="fresh-text" class="text-xs font-semibold text-slate-200">Loading dataset…</span>
       </div>
-      <button id="refresh-btn" class="px-3 py-2 rounded-xl soft hover:bg-white/7 transition text-xs font-semibold flex items-center gap-2" title="Reload data">
-        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-none stroke-current" stroke-width="1.8"><path d="M20 11a8.1 8.1 0 0 0-14.6-4.8L3 9m0 0V4m0 5h5M4 13a8.1 8.1 0 0 0 14.6 4.8L21 15m0 0v5m0-5h-5"/></svg>
+      <button id="refresh" class="btn flex items-center gap-2">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-none stroke-current" stroke-width="1.8">
+          <path d="M20 11a8.1 8.1 0 0 0-14.6-4.8L3 9m0 0V4m0 5h5M4 13a8.1 8.1 0 0 0 14.6 4.8L21 15m0 0v5m0-5h-5"/>
+        </svg>
         Refresh
       </button>
     </div>
   </div>
 </header>
 
-<main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
-
-<section class="glass rounded-3xl overflow-hidden hero-grid relative">
-  <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <svg viewBox="0 0 1200 420" class="absolute inset-0 w-full h-full opacity-80" preserveAspectRatio="none">
-      <path d="M0 315 C140 270 225 350 360 305 S615 268 760 320 S1040 355 1200 295" class="topo"></path>
-      <path d="M0 350 C150 302 250 384 390 335 S640 305 780 350 S1010 390 1200 325" class="topo"></path>
-      <path d="M0 385 C160 345 260 410 420 365 S670 345 820 382 S1040 420 1200 362" class="topo"></path>
-    </svg>
-  </div>
-
-  <div class="relative grid lg:grid-cols-[1fr_300px] gap-5 p-5 sm:p-7 lg:p-9">
-    <div class="flex flex-col justify-center">
-      <div class="mini mb-3">Protection · Research · Education · Responsible Access</div>
-      <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight max-w-4xl">
-        Protecting the <span class="text-cyan-300">underwater past</span> through today's signals.
-      </h1>
-      <p class="muted max-w-3xl mt-4 text-sm sm:text-base leading-7">
-        Pocket-UCH connects underwater heritage sites with nearby hazards, environmental change and human activity — then shows what to check next.
-      </p>
-      <div class="flex flex-wrap gap-2 mt-5">
-        <span class="tag">1 · FIND THE SITE</span>
-        <span class="tag">2 · DETECT CHANGE</span>
-        <span class="tag">3 · ASSESS EXPOSURE</span>
-        <span class="tag">4 · CHECK WHAT'S NEXT</span>
-      </div>
-    </div>
-
-    <div class="hidden sm:flex justify-center items-center">
-      <svg viewBox="0 0 200 200" class="w-52 h-52 glow" aria-label="Monitoring radar illustration">
-        <circle cx="100" cy="100" r="84" class="ring"></circle>
-        <circle cx="100" cy="100" r="63" class="ring"></circle>
-        <circle cx="100" cy="100" r="42" class="ring"></circle>
-        <line x1="16" y1="100" x2="184" y2="100" class="scan-line"></line>
-        <line x1="100" y1="16" x2="100" y2="184" class="scan-line"></line>
-        <g class="radar-sweep">
-          <path d="M100 100 L174 55 A87 87 0 0 1 180 78 Z" fill="rgba(85,216,230,.12)"></path>
-          <line x1="100" y1="100" x2="178" y2="66" stroke="#55d8e6" stroke-width="1.6"></line>
-        </g>
-        <circle cx="131" cy="64" r="3.5" fill="#63e6be"></circle>
-        <circle cx="68" cy="124" r="3" fill="#ffd166"></circle>
-        <circle cx="120" cy="139" r="3" fill="#55d8e6"></circle>
-        <circle cx="100" cy="100" r="4" fill="#dffcff"></circle>
+<main class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
+  <section class="glass hero-grid rounded-3xl overflow-hidden relative">
+    <div class="absolute inset-0 pointer-events-none">
+      <svg viewBox="0 0 1400 430" class="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        <path d="M0 315 C180 265 260 350 430 300 S740 270 920 322 S1180 352 1400 292" class="topo"/>
+        <path d="M0 360 C190 310 285 392 480 340 S770 310 950 357 S1220 400 1400 332" class="topo"/>
+        <path d="M0 400 C200 352 300 420 520 375 S800 350 980 390 S1230 425 1400 368" class="topo"/>
       </svg>
     </div>
-  </div>
-</section>
 
-<section class="grid sm:grid-cols-3 gap-3 mt-4">
-  <div class="soft rounded-2xl p-4">
-    <div class="mini">01 · Locate</div>
-    <div class="font-semibold text-sm mt-1">Know what heritage exists</div>
-    <div class="muted text-xs leading-5 mt-2">Public inventory records become the monitored site layer.</div>
-  </div>
-  <div class="soft rounded-2xl p-4">
-    <div class="mini">02 · Detect</div>
-    <div class="font-semibold text-sm mt-1">See what is changing nearby</div>
-    <div class="muted text-xs leading-5 mt-2">Hazards, environmental events and human activity are linked to sites.</div>
-  </div>
-  <div class="soft rounded-2xl p-4">
-    <div class="mini">03 · Anticipate</div>
-    <div class="font-semibold text-sm mt-1">Decide what to check next</div>
-    <div class="muted text-xs leading-5 mt-2">Deterministic rules turn signals into monitoring and review steps.</div>
-  </div>
-</section>
+    <div class="relative grid lg:grid-cols-[1fr_330px] gap-6 p-6 sm:p-8 lg:p-10">
+      <div class="flex flex-col justify-center">
+        <div class="mini mb-3">Find · Detect · Assess · Anticipate</div>
+        <h1 class="font-display font-bold text-3xl sm:text-4xl lg:text-6xl leading-[1.02] tracking-tight max-w-5xl">
+          Know <span class="text-cyan-300">where the heritage is,</span><br>
+          what is changing around it,<br>
+          and what to check next.
+        </h1>
+        <p class="muted max-w-3xl mt-5 text-sm sm:text-base leading-7">
+          Pocket-UCH connects public underwater heritage records with nearby hazards, environmental signals and human activity. It turns those observations into a deterministic monitoring pathway.
+        </p>
 
-<section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
-  <div class="glass rounded-2xl p-4"><div class="mini">Heritage sites</div><div id="m-sites" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">monitored</div></div>
-  <div class="glass rounded-2xl p-4"><div class="mini">Stable</div><div id="m-stable" class="metric-value text-2xl text-emerald-300 mt-1">—</div><div class="muted text-[11px] mt-1">no active trigger</div></div>
-  <div class="glass rounded-2xl p-4"><div class="mini">Watch</div><div id="m-watch" class="metric-value text-2xl text-amber-300 mt-1">—</div><div class="muted text-[11px] mt-1">sites with active signals</div></div>
-  <div class="glass rounded-2xl p-4"><div class="mini">Elevated</div><div id="m-elevated" class="metric-value text-2xl text-rose-300 mt-1">—</div><div class="muted text-[11px] mt-1">higher-priority triggers</div></div>
-  <div class="glass rounded-2xl p-4 col-span-2 lg:col-span-1"><div class="mini">External signals</div><div id="m-signals" class="metric-value text-2xl text-cyan-300 mt-1">—</div><div class="muted text-[11px] mt-1">deterministic</div></div>
-</section>
+        <div class="flex flex-wrap gap-2 mt-5">
+          <span class="tag">01 · HERITAGE INVENTORY</span>
+          <span class="tag">02 · CHANGE DETECTION</span>
+          <span class="tag">03 · EXPOSURE</span>
+          <span class="tag">04 · NEXT CHECK</span>
+        </div>
+      </div>
 
-<section class="grid xl:grid-cols-[1.6fr_.8fr] gap-4 mt-4">
-  <div class="glass rounded-3xl overflow-hidden">
-    <div class="p-4 sm:p-5 flex flex-wrap justify-between gap-3 border-b border-white/5">
+      <div class="hidden sm:flex items-center justify-center">
+        <svg viewBox="0 0 220 220" class="w-56 h-56 glow">
+          <circle cx="110" cy="110" r="92" fill="none" stroke="rgba(139,229,236,.13)"/>
+          <circle cx="110" cy="110" r="67" fill="none" stroke="rgba(139,229,236,.13)"/>
+          <circle cx="110" cy="110" r="42" fill="none" stroke="rgba(139,229,236,.13)"/>
+          <line x1="18" y1="110" x2="202" y2="110" stroke="rgba(139,229,236,.2)" stroke-dasharray="3 7"/>
+          <line x1="110" y1="18" x2="110" y2="202" stroke="rgba(139,229,236,.2)" stroke-dasharray="3 7"/>
+          <g class="radar-sweep">
+            <path d="M110 110 L194 62 A95 95 0 0 1 199 85 Z" fill="rgba(85,216,230,.11)"/>
+            <line x1="110" y1="110" x2="198" y2="75" stroke="#55d8e6" stroke-width="1.7"/>
+          </g>
+          <circle cx="148" cy="66" r="4" fill="#63e6be"/>
+          <circle cx="73" cy="133" r="3.5" fill="#ffd166"/>
+          <circle cx="133" cy="151" r="3.5" fill="#ff718b"/>
+          <circle cx="110" cy="110" r="5" fill="#e8feff"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid sm:grid-cols-4 gap-3 mt-4">
+    <div class="soft rounded-2xl p-4">
+      <div class="mini">01 · Find</div>
+      <div class="font-semibold mt-1 text-sm">Know what heritage exists</div>
+      <div class="muted text-xs leading-5 mt-2">Public inventory records become the monitoring layer.</div>
+    </div>
+    <div class="soft rounded-2xl p-4">
+      <div class="mini">02 · Detect</div>
+      <div class="font-semibold mt-1 text-sm">See what changes nearby</div>
+      <div class="muted text-xs leading-5 mt-2">Hazards, environmental events and activity are linked spatially.</div>
+    </div>
+    <div class="soft rounded-2xl p-4">
+      <div class="mini">03 · Assess</div>
+      <div class="font-semibold mt-1 text-sm">Check site exposure</div>
+      <div class="muted text-xs leading-5 mt-2">Distance and deterministic rules turn events into site context.</div>
+    </div>
+    <div class="soft rounded-2xl p-4">
+      <div class="mini">04 · Anticipate</div>
+      <div class="font-semibold mt-1 text-sm">Know what to check next</div>
+      <div class="muted text-xs leading-5 mt-2">A monitoring pathway, not a prediction engine.</div>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
+    <div class="glass rounded-2xl p-4"><div class="mini">Heritage sites</div><div id="k-sites" class="font-display font-bold text-2xl mt-1">…</div><div class="muted text-[11px] mt-1">currently indexed</div></div>
+    <div class="glass rounded-2xl p-4"><div class="mini">Active exposure</div><div id="k-exposed" class="font-display font-bold text-2xl text-amber-300 mt-1">…</div><div class="muted text-[11px] mt-1">sites with active triggers</div></div>
+    <div class="glass rounded-2xl p-4"><div class="mini">Current incidents</div><div id="k-incidents" class="font-display font-bold text-2xl text-cyan-300 mt-1">…</div><div class="muted text-[11px] mt-1">external hazard/events</div></div>
+    <div class="glass rounded-2xl p-4"><div class="mini">Next checks</div><div id="k-next" class="font-display font-bold text-2xl text-emerald-300 mt-1">…</div><div class="muted text-[11px] mt-1">monitoring pathways</div></div>
+    <div class="glass rounded-2xl p-4 col-span-2 lg:col-span-1"><div class="mini">Sources</div><div id="k-sources" class="font-display font-bold text-2xl mt-1">…</div><div class="muted text-[11px] mt-1">reported feeds</div></div>
+  </section>
+
+  <section class="grid xl:grid-cols-[1.55fr_.75fr] gap-4 mt-4">
+    <div class="glass rounded-3xl overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-white/5 flex flex-wrap justify-between items-end gap-3">
+        <div>
+          <div class="mini">01 · Find the heritage</div>
+          <h2 class="font-display font-semibold text-xl mt-1">Global Heritage & Incident Map</h2>
+          <div class="muted text-xs mt-1">Cyan = heritage · orange = external event · cluster = multiple records</div>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn" id="btn-fit">Fit all</button>
+          <button class="btn" id="btn-sites">Heritage</button>
+          <button class="btn" id="btn-incidents">Incidents</button>
+        </div>
+      </div>
+      <div class="map-shell p-2"><div id="map" class="rounded-2xl overflow-hidden"></div></div>
+    </div>
+
+    <aside class="glass rounded-3xl p-4 sm:p-5">
+      <div class="mini">02 · Detect change</div>
+      <h2 class="font-display font-semibold text-xl mt-1">What is happening now?</h2>
+
+      <div id="active-box" class="mt-4"></div>
+
+      <div class="mt-5">
+        <div class="flex items-center justify-between gap-3">
+          <div class="mini">Latest incidents</div>
+          <span id="incident-count" class="tag">0</span>
+        </div>
+        <div id="incident-list" class="mt-3 space-y-2 scroll-area"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="grid xl:grid-cols-[.9fr_1.1fr] gap-4 mt-4">
+    <div class="glass rounded-3xl p-4 sm:p-5">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div class="mini">Site explorer</div>
+          <h2 class="font-display font-semibold text-xl mt-1">Choose a heritage site</h2>
+        </div>
+        <span id="site-result-count" class="tag">0</span>
+      </div>
+
+      <div class="grid sm:grid-cols-[1fr_auto] gap-2 mt-4">
+        <input id="site-search" class="search px-3 py-2.5 text-sm" placeholder="Search site, country or region…">
+        <select id="site-filter" class="search px-3 py-2.5 text-sm">
+          <option value="all">All statuses</option>
+          <option value="watch">Watch</option>
+          <option value="elevated">Elevated</option>
+          <option value="stable">Stable</option>
+        </select>
+      </div>
+
+      <div id="site-list" class="mt-4 space-y-2 scroll-area"></div>
+    </div>
+
+    <div class="glass rounded-3xl p-4 sm:p-5">
+      <div class="mini">03 · Assess exposure</div>
+      <div id="site-title" class="font-display font-semibold text-2xl mt-1">Select a site</div>
+      <div id="site-meta" class="muted text-xs mt-1">—</div>
+
+      <div id="site-detail" class="mt-4"></div>
+    </div>
+  </section>
+
+  <section class="glass rounded-3xl p-4 sm:p-5 mt-4">
+    <div class="mini">04 · Anticipate</div>
+    <div class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <div class="mini">Geospatial monitor</div>
-        <h2 class="font-display text-lg sm:text-xl font-semibold mt-1">Where is the heritage?</h2>
+        <h2 class="font-display font-semibold text-xl mt-1">What should be checked next?</h2>
+        <div class="muted text-xs mt-1">Deterministic monitoring pathways derived from current observations.</div>
       </div>
-      <div class="flex flex-wrap items-center gap-2 text-[11px]">
-        <span class="flex items-center gap-1.5"><span class="status-dot status-stable"></span>Stable</span>
-        <span class="flex items-center gap-1.5"><span class="status-dot status-watch"></span>Watch</span>
-        <span class="flex items-center gap-1.5"><span class="status-dot status-elevated"></span>Elevated</span>
-        <span class="tag">Protected = area</span>
-      </div>
+      <span class="tag">NOT A PREDICTION</span>
     </div>
-    <div class="map-wrap p-2"><div id="map" class="rounded-2xl overflow-hidden"></div></div>
-  </div>
+    <div id="foresight-box" class="mt-5"></div>
+  </section>
 
-  <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="mini">Sites under watch</div>
-    <div id="site-health" class="mt-4 space-y-3 max-h-[560px] overflow-y-auto pr-1"></div>
-    <div class="mt-5 soft rounded-2xl p-4">
-      <div class="mini mb-2">Status legend</div>
-      <div class="text-xs leading-6 muted">
-        Stable means no deterministic active trigger was produced in the current snapshot. Watch means review is recommended. Elevated indicates a higher-priority trigger such as a nearby significant hazard.
-      </div>
+  <section class="grid xl:grid-cols-[1fr_1fr] gap-4 mt-4">
+    <div class="glass rounded-3xl p-4 sm:p-5">
+      <div class="mini">Inventory transparency</div>
+      <h2 class="font-display font-semibold text-lg mt-1">Where the heritage data comes from</h2>
+      <div id="inventory-box" class="mt-4"></div>
     </div>
-  </div>
-</section>
 
-<section class="grid xl:grid-cols-[1.15fr_.85fr] gap-4 mt-4">
-  <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="flex items-start justify-between gap-4">
+    <div class="glass rounded-3xl p-4 sm:p-5">
+      <div class="mini">Source health</div>
+      <h2 class="font-display font-semibold text-lg mt-1">Are the feeds alive?</h2>
+      <div id="source-box" class="mt-4 grid sm:grid-cols-2 gap-2"></div>
+    </div>
+  </section>
+
+  <section class="soft rounded-3xl p-4 sm:p-5 mt-4">
+    <div class="flex items-start gap-3">
+      <div class="w-9 h-9 rounded-xl bg-cyan-300/10 border border-cyan-300/10 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 24 24" class="w-5 h-5 fill-none stroke-cyan-300" stroke-width="1.6">
+          <circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/>
+        </svg>
+      </div>
       <div>
-        <div class="mini">Change detection</div>
-        <h2 class="font-display text-lg font-semibold mt-1">What changed around the sites?</h2>
+        <div class="font-semibold text-sm">Responsible disclosure</div>
+        <div class="muted text-xs leading-6 mt-1">
+          Public records can be shown as real public points. Sensitive sites are represented as generalized areas. Pocket-UCH does not invent coordinates. Public inventory coverage is partial, and a monitoring pathway is not a legal determination or a forecast of what will happen.
+        </div>
       </div>
-      <div class="text-right"><div class="mini">Current</div><div id="signal-total" class="metric-value text-xl text-cyan-300">—</div></div>
     </div>
-    <div id="signal-list" class="mt-4 space-y-2"></div>
-  </div>
+  </section>
 
-  <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="mini">Convention context</div>
-    <h2 class="font-display text-lg font-semibold mt-1">UNESCO 2001 lens</h2>
-    <div id="convention-summary" class="mt-4"></div>
-    <div class="mt-5 grid grid-cols-2 gap-3">
-      <div class="soft rounded-2xl p-4"><div class="mini">Articles</div><div id="c-articles" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">triggered contexts</div></div>
-      <div class="soft rounded-2xl p-4"><div class="mini">Annex rules</div><div id="c-rules" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">triggered contexts</div></div>
-    </div>
-  </div>
-</section>
-
-<section class="grid xl:grid-cols-[.9fr_1.1fr] gap-4 mt-4">
-  <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="mini">Next-step foresight</div>
-    <h2 class="font-display text-lg font-semibold mt-1">What should be checked next?</h2>
-    <div id="recommendations" class="mt-4 space-y-3"></div>
-  </div>
-
-  <div class="glass rounded-3xl p-4 sm:p-5">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <div class="mini">Source health</div>
-        <h2 class="font-display text-lg font-semibold mt-1">External data feeds</h2>
-      </div>
-      <div id="source-count" class="tag">—</div>
-    </div>
-    <div id="source-list" class="mt-4 grid md:grid-cols-2 gap-2"></div>
-  </div>
-</section>
-
-<section class="glass rounded-3xl p-4 sm:p-5 mt-4">
-  <div class="flex flex-wrap items-end justify-between gap-3">
-    <div>
-      <div class="mini">Responsible disclosure</div>
-      <h2 class="font-display text-lg font-semibold mt-1">Protection without fake coordinates</h2>
-    </div>
-    <div class="tag">PUBLIC POINT · PROTECTED AREA</div>
-  </div>
-  <div class="grid md:grid-cols-3 gap-3 mt-4">
-    <div class="soft rounded-2xl p-4"><div class="text-cyan-300 mb-2"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/></svg></div><div class="font-semibold text-sm">Public site</div><div class="muted text-xs leading-5 mt-1">The actual published point can be shown when disclosure is appropriate.</div></div>
-    <div class="soft rounded-2xl p-4"><div class="text-amber-300 mb-2"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current" stroke-width="1.7"><path d="M4 8l8-4 8 4-8 4-8-4Z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/></svg></div><div class="font-semibold text-sm">Protected site</div><div class="muted text-xs leading-5 mt-1">The map shows a truthful generalized area, never an invented point.</div></div>
-    <div class="soft rounded-2xl p-4"><div class="text-emerald-300 mb-2"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current" stroke-width="1.7"><path d="M12 3l8 4v5c0 4.6-3.4 7.7-8 9-4.6-1.3-8-4.4-8-9V7l8-4Z"/><path d="m8 12 2.5 2.5L16 9"/></svg></div><div class="font-semibold text-sm">Operational separation</div><div class="muted text-xs leading-5 mt-1">Exact protected coordinates can remain in the private operational layer.</div></div>
-  </div>
-</section>
-
-<footer class="py-8 text-center">
-  <div class="mini">Pocket-UCH</div>
-  <div class="muted text-[11px] mt-2">Operational monitoring aid · not a legal compliance determination · no AI/LLM required</div>
-</footer>
-
+  <footer class="py-5 text-[11px] muted flex flex-wrap justify-between gap-2">
+    <span>Pocket-UCH · deterministic UCH monitoring</span>
+    <span id="footer-sync">—</span>
+  </footer>
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
 <script>
-const DATA_URL = 'data/data.json';
-const state = { data:null, map:null, layers:[], markerGroup:null };
+const DATA_URLS = [
+  './data/dashboard.json',
+  './data/data.json',
+  'https://raw.githubusercontent.com/AnggaConni/Pocket-UCH/main/data/dashboard.json',
+  'https://raw.githubusercontent.com/AnggaConni/Pocket-UCH/main/data/data.json'
+];
+
+const state = {
+  data:null,
+  map:null,
+  sitesLayer:null,
+  incidentsLayer:null,
+  selectedSiteId:null,
+  siteLookup:new Map(),
+  statusLookup:new Map()
+};
 
 function esc(v){
-  return String(v ?? '').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  return String(v ?? '').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
 }
-function fmtDate(v){
+function dateText(v){
   if(!v) return '—';
-  const d = new Date(v);
+  const d=new Date(v);
   if(Number.isNaN(d.getTime())) return esc(v);
   return new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(d);
 }
-function statusClass(s){ return s==='elevated'?'status-elevated':s==='watch'?'status-watch':'status-stable'; }
-function badge(status){
-  const cls=statusClass(status);
-  return '<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full bg-white/5 border border-white/7"><span class="status-dot '+cls+'"></span>'+esc(status||'stable')+'</span>';
+function relText(v){
+  if(!v) return '';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime())) return '';
+  const mins=Math.max(0,Math.round((Date.now()-d.getTime())/60000));
+  if(mins<60) return mins+'m ago';
+  const h=Math.round(mins/60);
+  if(h<48) return h+'h ago';
+  return Math.round(h/24)+'d ago';
 }
-function siteAreaCenter(geometry){
-  if(!geometry || !geometry.coordinates) return null;
-  const pts=[];
-  const walk=(x)=>Array.isArray(x)&&typeof x[0] === 'number' ? pts.push(x):Array.isArray(x)&&x.forEach(walk);
-  walk(geometry.coordinates);
-  if(!pts.length) return null;
-  const lon=pts.reduce((a,p)=>a+p[0],0)/pts.length;
-  const lat=pts.reduce((a,p)=>a+p[1],0)/pts.length;
-  return [lat,lon];
+function statusClass(s){return s==='elevated'?'elevated':s==='watch'?'watch':'stable'}
+function statusBadge(s){
+  const cls=statusClass(s);
+  return '<span class="tag"><span class="status-dot '+cls+'"></span>'+esc(s||'stable')+'</span>';
+}
+function incidentColor(type){
+  const t=String(type||'').toLowerCase();
+  if(t.includes('earthquake'))return '#ff718b';
+  if(t.includes('storm'))return '#ffd166';
+  if(t.includes('flood')||t.includes('landslide'))return '#7eb8ff';
+  return '#ff8d6e';
+}
+function siteIcon(status){
+  return L.divIcon({className:'',html:'<div class="site-point '+statusClass(status)+'"></div>',iconSize:[15,15],iconAnchor:[7.5,7.5]});
+}
+function incidentIcon(type){
+  const color=incidentColor(type);
+  return L.divIcon({className:'',html:'<div class="incident-point" style="background:'+color+'"></div>',iconSize:[13,13],iconAnchor:[6.5,6.5]});
 }
 
 function initMap(){
-  state.map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([10,0],2);
+  state.map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([12,0],2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     maxZoom:19,
     attribution:'© OpenStreetMap contributors'
   }).addTo(state.map);
-  state.markerGroup=L.markerClusterGroup({
-    chunkedLoading:true,
-    maxClusterRadius:48,
-    showCoverageOnHover:false,
-    spiderfyOnMaxZoom:true
+  state.sitesLayer=L.markerClusterGroup({
+    chunkedLoading:true,maxClusterRadius:45,showCoverageOnHover:false,spiderfyOnMaxZoom:true
+  }).addTo(state.map);
+  state.incidentsLayer=L.markerClusterGroup({
+    chunkedLoading:true,maxClusterRadius:55,showCoverageOnHover:false
   }).addTo(state.map);
 }
 
-function siteMarkerIcon(status){
-  return L.divIcon({
-    className:'',
-    html:'<div class="site-point '+esc(status||'stable')+'"></div>',
-    iconSize:[18,18],
-    iconAnchor:[9,9]
-  });
+function clearLayers(){
+  state.sitesLayer?.clearLayers();
+  state.incidentsLayer?.clearLayers();
 }
 
-function addSiteToMap(site,status){
-  const loc=site.location;
-  if(!loc || !loc.geometry) return;
-  let layer;
-  if(loc.representation==='point' && loc.geometry.type==='Point'){
-    const [lon,lat]=loc.geometry.coordinates;
-    layer=L.marker([lat,lon],{icon:siteMarkerIcon(status)}).bindPopup(
-      '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div>'+
-      '<div class="text-xs text-slate-400 mt-3">Public location · real point</div>'+
-      (site.inventory?.source ? '<div class="text-[10px] text-slate-500 mt-1">Inventory: '+esc(site.inventory.source)+'</div>' : '')+
-      '</div>'
-    );
-  }else{
-    const style={color:'#55d8e6',weight:1.2,fillColor:'#55d8e6',fillOpacity:.06};
-    if(status==='watch'){style.color='#ffd166';style.fillColor='#ffd166'}
-    if(status==='elevated'){style.color='#ff718b';style.fillColor='#ff718b'}
-    layer=L.geoJSON(loc.geometry,{style}).bindPopup(
-      '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div><div class="text-xs text-slate-400 mt-3">Protected location · generalized area</div></div>'
-    );
-  }
-  if(layer){
-    if(loc.representation==='point' && state.markerGroup){
-      state.markerGroup.addLayer(layer);
+function sitePopup(site,status){
+  const loc=site.location||{};
+  const inv=site.inventory?.source || 'Curated record';
+  const vis=loc.visibility==='protected'?'generalized protected area':'public point';
+  return '<div>'+
+    '<div class="mini">HERITAGE SITE</div>'+
+    '<div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div>'+
+    '<div class="mt-2">'+statusBadge(status)+'</div>'+
+    '<div class="text-xs text-slate-400 mt-3">'+esc([site.country,site.region].filter(Boolean).join(' · ')||'Global')+'</div>'+
+    '<div class="text-[10px] text-slate-500 mt-1">'+esc(inv)+' · '+vis+'</div>'+
+    '</div>';
+}
+
+function renderMap(){
+  clearLayers();
+  const statusLookup=state.statusLookup;
+
+  for(const site of state.data.sites||[]){
+    const status=statusLookup.get(String(site.id))?.status || 'stable';
+    const loc=site.location;
+    if(!loc?.geometry)continue;
+
+    let layer=null;
+    if(loc.representation==='point' && loc.geometry.type==='Point'){
+      const [lon,lat]=loc.geometry.coordinates;
+      layer=L.marker([lat,lon],{icon:siteIcon(status)});
     }else{
-      layer.addTo(state.map);
-      state.layers.push(layer);
+      const style={color:'#55d8e6',weight:1.2,fillColor:'#55d8e6',fillOpacity:.07};
+      if(status==='watch'){style.color='#ffd166';style.fillColor='#ffd166'}
+      if(status==='elevated'){style.color='#ff718b';style.fillColor='#ff718b'}
+      layer=L.geoJSON(loc.geometry,{style});
+    }
+    if(layer){
+      layer.bindPopup(sitePopup(site,status));
+      layer.on('click',()=>selectSite(site.id,true));
+      state.sitesLayer.addLayer(layer);
     }
   }
-}
 
-function renderMap(data){
-  if(!state.map) initMap();
-  state.layers.forEach(l=>state.map.removeLayer(l)); state.layers=[];
-  if(state.markerGroup) state.markerGroup.clearLayers();
-  const statusById=Object.fromEntries((data.site_status||[]).map(x=>[String(x.site_id),x]));
-  (data.sites||[]).forEach(site=>addSiteToMap(site,statusById[String(site.id)]?.status||'stable'));
-  if((data.sites||[]).length===1){
-    const s=data.sites[0], loc=s.location, center=loc.representation==='point'&&loc.geometry.type==='Point'
-      ? [loc.geometry.coordinates[1],loc.geometry.coordinates[0]]
-      : siteAreaCenter(loc.geometry);
-    if(center) state.map.setView(center,loc.representation==='point'?10:7);
+  for(const incident of state.data.incidents||[]){
+    if(incident.lat==null||incident.lon==null)continue;
+    const layer=L.marker([incident.lat,incident.lon],{icon:incidentIcon(incident.type)});
+    const nearest=incident.nearest_site_name
+      ? '<div class="text-[10px] text-slate-500 mt-2">Nearest heritage: '+esc(incident.nearest_site_name)+' · '+esc(incident.nearest_site_distance_km)+' km</div>'
+      : '';
+    layer.bindPopup(
+      '<div><div class="mini">EXTERNAL INCIDENT</div>'+
+      '<div class="font-semibold text-sm mt-1">'+esc(incident.title||incident.type||'Incident')+'</div>'+
+      '<div class="text-xs text-slate-400 mt-2">'+esc(incident.source||'Unknown source')+' · '+esc(relText(incident.timestamp))+'</div>'+
+      nearest+
+      (incident.url?'<a class="text-xs text-cyan-300 block mt-3" target="_blank" rel="noopener" href="'+esc(incident.url)+'">Open source ↗</a>':'')+
+      '</div>'
+    );
+    state.incidentsLayer.addLayer(layer);
   }
 }
 
-function renderMetrics(data){
-  const sc=data.summary?.status_counts||{};
-  document.getElementById('m-sites').textContent=data.summary?.site_count ?? data.sites?.length ?? 0;
-  document.getElementById('m-stable').textContent=sc.stable ?? 0;
-  document.getElementById('m-watch').textContent=sc.watch ?? 0;
-  document.getElementById('m-elevated').textContent=sc.elevated ?? 0;
-  document.getElementById('m-signals').textContent=data.summary?.signal_count ?? data.signals?.length ?? 0;
-  document.getElementById('signal-total').textContent=data.summary?.signal_count ?? data.signals?.length ?? 0;
+function setMapMode(showSites,showIncidents){
+  if(showSites)state.map.addLayer(state.sitesLayer);else state.map.removeLayer(state.sitesLayer);
+  if(showIncidents)state.map.addLayer(state.incidentsLayer);else state.map.removeLayer(state.incidentsLayer);
 }
 
-function renderSiteHealth(data){
-  const el=document.getElementById('site-health');
-  const statusById=Object.fromEntries((data.site_status||[]).map(x=>[String(x.site_id),x]));
-  el.innerHTML=(data.sites||[]).map(site=>{
-    const st=statusById[String(site.id)]||{};
-    const sig=site.location?.visibility==='protected'?'Protected area':'Public point';
-    const c=st.status==='elevated'?'text-rose-300':st.status==='watch'?'text-amber-300':'text-emerald-300';
-    return '<div class="soft rounded-2xl p-3.5">'+
-      '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><div class="font-semibold text-sm truncate">'+esc(site.name)+'</div><div class="muted text-[11px] mt-1">'+esc(site.country||'Global')+' · '+sig+'</div></div>'+badge(st.status||'stable')+'</div>'+
-      '<div class="grid grid-cols-3 gap-2 mt-3 text-center">'+
-        '<div><div class="mini">Events</div><div class="metric-value mt-1 '+c+'">'+(st.event_count??0)+'</div></div>'+
-        '<div><div class="mini">Web</div><div class="metric-value mt-1 '+c+'">'+(st.web_signal_count??0)+'</div></div>'+
-        '<div><div class="mini">Rules</div><div class="metric-value mt-1 '+c+'">'+((st.convention_assessment?.triggered_rules||[]).length)+'</div></div>'+
-      '</div>'+
-    '</div>';
-  }).join('') || '<div class="soft rounded-2xl p-4 muted text-sm">No monitored sites yet.</div>';
+function fitAll(){
+  const groups=[];
+  if(state.sitesLayer?.getLayers().length)groups.push(state.sitesLayer.getBounds());
+  if(state.incidentsLayer?.getLayers().length)groups.push(state.incidentsLayer.getBounds());
+  if(!groups.length){state.map.setView([12,0],2);return}
+  let bounds=groups[0];
+  for(const b of groups.slice(1))bounds=bounds.extend(b);
+  if(bounds.isValid())state.map.fitBounds(bounds.pad(.08));
 }
 
-function renderSignals(data){
-  const el=document.getElementById('signal-list');
-  const signals=(data.signals||[]).slice().sort((a,b)=>String(b.detected_at).localeCompare(String(a.detected_at))).slice(0,10);
-  const colors={high:'#ff718b',moderate:'#ffd166',informational:'#55d8e6'};
-  el.innerHTML=signals.map(s=>{
-    const color=colors[s.severity]||'#55d8e6';
-    return '<div class="soft rounded-2xl p-3 flex items-start gap-3">'+
-      '<div class="w-2 h-2 rounded-full mt-1.5 shrink-0" style="background:'+color+';box-shadow:0 0 14px '+color+'"></div>'+
-      '<div class="min-w-0 flex-1"><div class="flex items-center justify-between gap-2"><div class="font-semibold text-sm truncate">'+esc((s.category||'signal').replaceAll('_',' '))+'</div><span class="tag">'+esc(s.severity||'info')+'</span></div>'+
-      '<div class="muted text-[11px] mt-1">'+esc(s.site_id||'global')+' · '+fmtDate(s.detected_at)+'</div></div>'+
-    '</div>';
-  }).join('') || '<div class="soft rounded-2xl p-4 muted text-sm">No active signals in this snapshot.</div>';
+function selectSite(id, zoom){
+  state.selectedSiteId=String(id);
+  const site=state.siteLookup.get(String(id));
+  if(!site)return;
+  renderSiteList();
+  renderSiteDetail(site);
+  renderForesight(site);
+  if(zoom){
+    const loc=site.location;
+    let center=null;
+    if(loc?.representation==='point'&&loc.geometry?.type==='Point'){
+      center=[loc.geometry.coordinates[1],loc.geometry.coordinates[0]];
+    }
+    if(center)state.map.flyTo(center,10,{duration:.8});
+  }
 }
 
-function renderConvention(data){
-  const assessments=data.convention?.site_assessments||[];
-  const arts=[...new Set(assessments.flatMap(x=>x.triggered_articles||[]))];
-  const rules=[...new Set(assessments.flatMap(x=>x.triggered_rules||[]))];
-  document.getElementById('c-articles').textContent=arts.length;
-  document.getElementById('c-rules').textContent=rules.length;
-  document.getElementById('convention-summary').innerHTML=
-    '<div class="soft rounded-2xl p-4">'+
-      '<div class="text-sm font-semibold">Operational Convention context</div>'+
-      '<div class="muted text-xs leading-5 mt-2">Signals are mapped to potentially relevant Convention Articles and Annex Rules. This is monitoring context, not a legal compliance determination.</div>'+
-      '<div class="flex flex-wrap gap-1.5 mt-3">'+
-        arts.slice(0,12).map(x=>'<span class="tag">Art. '+esc(x)+'</span>').join('')+
-        rules.slice(0,12).map(x=>'<span class="tag">Rule '+esc(x)+'</span>').join('')+
-      '</div>'+
-    '</div>';
+function renderMetrics(){
+  const s=state.data.summary||{};
+  document.getElementById('k-sites').textContent=s.site_count??state.data.sites?.length??0;
+  document.getElementById('k-exposed').textContent=s.exposed_site_count??0;
+  document.getElementById('k-incidents').textContent=s.incident_count??state.data.incidents?.length??0;
+  document.getElementById('k-next').textContent=s.next_check_count??0;
+  const sources=(state.data.source_status||state.data.provenance||[]).length;
+  document.getElementById('k-sources').textContent=sources;
 }
 
-function renderRecommendations(data){
-  const el=document.getElementById('recommendations');
-  const recs=(data.recommendations||[]).slice(0,6);
-  el.innerHTML=recs.map(r=>{
-    const cls=r.priority==='high'?'border-rose-300/20 bg-rose-300/5':r.priority==='medium'?'border-amber-300/20 bg-amber-300/5':'border-cyan-300/15 bg-cyan-300/5';
-    return '<div class="rounded-2xl border '+cls+' p-3.5">'+
-      '<div class="flex items-center justify-between gap-2"><div class="font-semibold text-sm">'+esc(r.site_id||'Global')+'</div><span class="tag">'+esc(r.priority||'low')+'</span></div>'+
-      '<div class="mt-2 space-y-1">'+(r.actions||[]).slice(0,2).map(a=>'<div class="text-xs leading-5 text-slate-200"><span class="text-cyan-300">→</span> '+esc(a.guidance)+'</div>').join('')+'</div>'+
+function renderActive(){
+  const box=document.getElementById('active-box');
+  const exposed=(state.data.site_status||[]).filter(x=>x.status!=='stable');
+  if(!exposed.length){
+    box.innerHTML=
+      '<div class="soft rounded-2xl p-4">'+
+      '<div class="flex items-center gap-2 text-emerald-300 font-semibold text-sm"><span class="status-dot stable"></span>No active site-specific exposure</div>'+
+      '<div class="muted text-xs leading-5 mt-2">The radar sees external incidents globally, but the current deterministic rules did not link them to a monitored heritage site.</div>'+
       '</div>';
-  }).join('') || '<div class="soft rounded-2xl p-4 muted text-sm">No recommendations generated yet.</div>';
-}
-
-function renderSources(data){
-  const list=data.provenance||data.source_status||[];
-  document.getElementById('source-count').textContent=list.length+' sources';
-  document.getElementById('source-list').innerHTML=list.map(s=>{
-    const ok=s.status==='ok';
-    const skipped=s.status==='skipped';
-    const color=ok?'status-stable':skipped?'status-watch':'status-elevated';
-    return '<div class="soft rounded-2xl p-3">'+
-      '<div class="flex items-center justify-between gap-3"><div class="text-xs font-semibold truncate">'+esc(s.source)+'</div><div class="flex items-center gap-1.5 shrink-0"><span class="status-dot '+color+'"></span><span class="muted text-[10px]">'+esc(s.status||'unknown')+'</span></div></div>'+
-      '<div class="flex items-center justify-between gap-3 mt-2"><span class="muted text-[10px]">'+esc(s.coverage||'unspecified')+'</span><span class="muted text-[10px]">'+(s.optional?'optional':'required')+'</span></div>'+
-      '</div>';
+    return;
+  }
+  box.innerHTML=exposed.slice(0,4).map(row=>{
+    const ev=row.events?.[0];
+    return '<button class="w-full text-left soft rounded-2xl p-3 mb-2 hover:bg-white/6 transition" onclick="selectSite(\''+esc(row.site_id)+'\',true)">'+
+      '<div class="flex items-start justify-between gap-2"><div class="font-semibold text-sm truncate">'+esc(row.site_name)+'</div>'+statusBadge(row.status)+'</div>'+
+      '<div class="muted text-[11px] mt-1">'+esc(ev?.title||'Active monitoring trigger')+'</div>'+
+      '<div class="text-[10px] text-slate-500 mt-2">'+esc(ev?.distance_km??'—')+' km from site · '+esc(relText(ev?.timestamp))+'</div>'+
+      '</button>';
   }).join('');
 }
 
-async function loadData(){
-  const btn=document.getElementById('refresh-btn');
-  document.getElementById('m-sites').textContent='…';
-  document.getElementById('m-stable').textContent='…';
-  document.getElementById('m-watch').textContent='…';
-  document.getElementById('m-elevated').textContent='…';
-  document.getElementById('m-signals').textContent='…';
+function renderIncidents(){
+  const list=document.getElementById('incident-list');
+  const incidents=(state.data.incidents||[]).slice(0,20);
+  document.getElementById('incident-count').textContent=incidents.length;
+  if(!incidents.length){
+    list.innerHTML='<div class="soft rounded-2xl p-4 muted text-sm">No incidents returned by the current external feeds.</div>';
+    return;
+  }
+  list.innerHTML=incidents.map(x=>{
+    const color=incidentColor(x.type);
+    const near=x.nearest_site_name
+      ? '<div class="text-[10px] text-slate-500 mt-1">↳ '+esc(x.nearest_site_name)+' · '+esc(x.nearest_site_distance_km)+' km</div>'
+      : '';
+    return '<button class="w-full text-left soft rounded-2xl p-3 hover:bg-white/6 transition" onclick="focusIncident(\''+esc(x.id)+'\')">'+
+      '<div class="flex gap-3">'+
+      '<span class="status-dot mt-1.5" style="background:'+color+'"></span>'+
+      '<div class="min-w-0 flex-1">'+
+      '<div class="font-semibold text-sm leading-5">'+esc(x.title||x.type||'Incident')+'</div>'+
+      '<div class="muted text-[10px] mt-1">'+esc(x.source||'Unknown')+' · '+esc(relText(x.timestamp))+'</div>'+
+      near+
+      '</div></div></button>';
+  }).join('');
+}
+
+function focusIncident(id){
+  const incident=(state.data.incidents||[]).find(x=>String(x.id)===String(id));
+  if(!incident||incident.lat==null)return;
+  state.map.flyTo([incident.lat,incident.lon],7,{duration:.8});
+  if(incident.nearest_site_id)selectSite(incident.nearest_site_id,false);
+}
+
+function renderSiteList(){
+  const query=document.getElementById('site-search').value.trim().toLowerCase();
+  const filter=document.getElementById('site-filter').value;
+  const rows=[];
+  for(const site of state.data.sites||[]){
+    const st=state.statusLookup.get(String(site.id))||{status:'stable'};
+    const blob=[site.name,site.country,site.region,site.type].filter(Boolean).join(' ').toLowerCase();
+    if(query && !blob.includes(query))continue;
+    if(filter!=='all' && st.status!==filter)continue;
+    rows.push({site,st});
+  }
+  document.getElementById('site-result-count').textContent=rows.length;
+  const list=document.getElementById('site-list');
+  if(!rows.length){
+    list.innerHTML='<div class="soft rounded-2xl p-4 muted text-sm">No matching heritage records.</div>';
+    return;
+  }
+  list.innerHTML=rows.slice(0,30).map(({site,st})=>{
+    const selected=String(site.id)===String(state.selectedSiteId);
+    return '<button class="w-full text-left rounded-2xl p-3 border transition '+(selected?'border-cyan-300/25 bg-cyan-300/6':'border-white/6 bg-white/[.02] hover:bg-white/[.04]')+'" onclick="selectSite(\''+esc(site.id)+'\',true)">'+
+      '<div class="flex items-start justify-between gap-2">'+
+      '<div class="min-w-0"><div class="font-semibold text-sm truncate">'+esc(site.name)+'</div><div class="muted text-[10px] mt-1">'+esc([site.country,site.region].filter(Boolean).join(' · ')||'Global')+'</div></div>'+
+      statusBadge(st.status)+
+      '</div></button>';
+  }).join('');
+}
+
+function renderSiteDetail(site){
+  const st=state.statusLookup.get(String(site.id))||{};
+  const detail=document.getElementById('site-detail');
+  document.getElementById('site-title').textContent=site.name||'Unnamed site';
+  document.getElementById('site-meta').textContent=[site.country,site.region,site.type].filter(Boolean).join(' · ')||'—';
+
+  const events=st.events||[];
+  const threats=st.convention_assessment?.threat_categories||[];
+  const articles=st.convention_assessment?.triggered_articles||[];
+  const rules=st.convention_assessment?.triggered_rules||[];
+
+  detail.innerHTML=
+    '<div class="grid sm:grid-cols-3 gap-2">'+
+      '<div class="soft rounded-2xl p-3"><div class="mini">Status</div><div class="mt-2">'+statusBadge(st.status||'stable')+'</div></div>'+
+      '<div class="soft rounded-2xl p-3"><div class="mini">Nearby events</div><div class="font-display font-bold text-xl mt-1">'+esc(st.event_count??0)+'</div></div>'+
+      '<div class="soft rounded-2xl p-3"><div class="mini">Web signals</div><div class="font-display font-bold text-xl mt-1">'+esc(st.web_signal_count??0)+'</div></div>'+
+    '</div>'+
+    '<div class="soft rounded-2xl p-4 mt-3">'+
+      '<div class="mini">Current exposure</div>'+
+      (events.length
+        ? events.slice(0,4).map(ev=>'<div class="mt-3 flex gap-3"><span class="status-dot incident mt-1.5"></span><div><div class="font-semibold text-sm">'+esc(ev.title||ev.type)+'</div><div class="muted text-[10px] mt-1">'+esc(ev.source)+' · '+esc(ev.distance_km??'—')+' km · '+esc(relText(ev.timestamp))+'</div></div></div>').join('')
+        : '<div class="text-sm text-emerald-300 mt-2">No linked external incident in the current snapshot.</div>')+
+    '</div>'+
+    '<div class="soft rounded-2xl p-4 mt-3">'+
+      '<div class="mini">Convention context</div>'+
+      '<div class="muted text-xs leading-5 mt-2">Operational context only. It helps organize review, not determine legal compliance.</div>'+
+      '<div class="flex flex-wrap gap-1.5 mt-3">'+
+        threats.slice(0,8).map(x=>'<span class="tag">'+esc(x.replaceAll('_',' '))+'</span>').join('')+
+        articles.slice(0,8).map(x=>'<span class="tag">Art. '+esc(x)+'</span>').join('')+
+        rules.slice(0,8).map(x=>'<span class="tag">Rule '+esc(x)+'</span>').join('')+
+      '</div>'+
+    '</div>'+
+    '<div class="soft rounded-2xl p-4 mt-3">'+
+      '<div class="mini">Inventory provenance</div>'+
+      '<div class="text-sm font-semibold mt-2">'+esc(site.inventory?.source||'Curated record')+'</div>'+
+      '<div class="muted text-[10px] mt-1">Record '+esc(site.inventory?.source_record_id||'—')+'</div>'+
+      (site.inventory?.source_url?'<a class="text-xs text-cyan-300 inline-block mt-3" href="'+esc(site.inventory.source_url)+'" target="_blank" rel="noopener">Open inventory service ↗</a>':'')+
+    '</div>';
+}
+
+function renderForesight(site){
+  const st=state.statusLookup.get(String(site.id))||{};
+  const f=st.foresight;
+  const box=document.getElementById('foresight-box');
+
+  if(!f){
+    box.innerHTML=
+      '<div class="soft rounded-2xl p-4">'+
+      '<div class="font-semibold text-sm">Routine monitoring pathway</div>'+
+      '<div class="muted text-xs leading-5 mt-2">No active trigger is attached to this site. Continue routine observation and let new external events create a pathway when they are spatially relevant.</div>'+
+      '</div>';
+    return;
+  }
+
+  box.innerHTML=
+    '<div class="grid lg:grid-cols-[1fr_320px] gap-4">'+
+      '<div class="soft rounded-2xl p-4">'+
+        '<div class="mini">Trigger</div>'+
+        '<div class="font-display font-semibold text-lg mt-2">'+esc(f.trigger)+'</div>'+
+        '<div class="mt-5 space-y-3">'+
+          (f.path||[]).map((step,i)=>'<div class="path-step"><span class="node"></span><div class="text-sm font-semibold">'+esc(step)+'</div></div>').join('')+
+        '</div>'+
+      '</div>'+
+      '<div class="soft rounded-2xl p-4">'+
+        '<div class="mini">Recommended next check</div>'+
+        '<div class="text-sm font-semibold leading-6 mt-2">'+esc(f.next_check)+'</div>'+
+        '<div class="muted text-[10px] leading-5 mt-4">Basis: '+esc(f.basis?.event_type||'web / external signal')+(f.basis?.distance_km!=null?' · '+esc(f.basis.distance_km)+' km':'')+'</div>'+
+        '<div class="muted text-[10px] leading-5 mt-2">'+esc(f.notice)+'</div>'+
+      '</div>'+
+    '</div>';
+}
+
+function renderInventory(){
+  const inv=state.data.inventory||{};
+  const by=inv.by_source||{};
+  const entries=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('inventory-box').innerHTML=
+    '<div class="text-sm font-semibold">'+esc(inv.site_count??state.data.sites?.length??0)+' public/curated records loaded</div>'+
+    '<div class="muted text-xs leading-5 mt-1">Coverage is partial: Pocket-UCH does not claim to represent every UCH site worldwide.</div>'+
+    '<div class="mt-4 space-y-2">'+
+    entries.map(([source,count])=>'<div class="flex items-center justify-between gap-3 soft rounded-xl px-3 py-2"><span class="text-xs">'+esc(source)+'</span><span class="tag">'+esc(count)+'</span></div>').join('')+
+    '</div>';
+}
+
+function renderSources(){
+  const list=state.data.provenance||state.data.source_status||[];
+  document.getElementById('source-box').innerHTML=list.map(s=>{
+    const status=s.status||'unknown';
+    const ok=status==='ok';
+    return '<div class="soft rounded-xl p-3">'+
+      '<div class="flex items-center justify-between gap-2">'+
+      '<div class="text-xs font-semibold truncate">'+esc(s.source)+'</div>'+
+      '<span class="status-dot '+(ok?'stable':status==='skipped'?'watch':'elevated')+'"></span>'+
+      '</div>'+
+      '<div class="muted text-[10px] mt-2">'+esc(s.coverage||'unspecified')+' · '+esc(status)+'</div>'+
+      '</div>';
+  }).join('')||'<div class="muted text-sm">No source status available.</div>';
+}
+
+function setFreshness(){
+  const dt=state.data?.generated_at || state.data?.metadata?.generated_at;
+  const label=dt?'Data synced '+dateText(dt):'Dataset loaded';
+  document.getElementById('fresh-text').textContent=label;
+  document.getElementById('footer-sync').textContent=label;
+  document.getElementById('live-dot').className='status-dot '+(dt?'stable':'watch');
+}
+
+function normalisePayload(payload){
+  if(payload?.summary?.incident_count!==undefined && Array.isArray(payload.sites))return payload;
+  const incidents=(payload.legacy?.raw_events||[]).map(e=>({...e}));
+  return {
+    ...payload,
+    generated_at:payload.metadata?.generated_at,
+    summary:{
+      ...(payload.summary||{}),
+      incident_count:incidents.length,
+      exposed_site_count:(payload.site_status||[]).filter(x=>x.status!=='stable').length,
+      next_check_count:(payload.recommendations||[]).length
+    },
+    inventory:{site_count:payload.sites?.length||0,by_source:{}},
+    incidents
+  };
+}
+
+async function fetchPayload(){
+  let lastError=null;
+  for(const url of DATA_URLS){
+    try{
+      const sep=url.includes('?')?'&':'?';
+      const response=await fetch(url+sep+'v='+Date.now(),{cache:'no-store'});
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      const payload=await response.json();
+      if(!payload.sites)throw new Error('Dataset has no sites array');
+      return normalisePayload(payload);
+    }catch(err){
+      lastError=err;
+    }
+  }
+  throw lastError||new Error('Dataset unavailable');
+}
+
+function showLoading(){
+  document.getElementById('active-box').innerHTML='<div class="soft rounded-2xl p-4 skeleton h-24"></div>';
+  document.getElementById('incident-list').innerHTML='<div class="soft rounded-2xl p-4 skeleton h-20"></div>';
+  document.getElementById('site-list').innerHTML='<div class="soft rounded-2xl p-4 skeleton h-20"></div>';
+}
+
+function showError(err){
+  document.getElementById('fresh-text').textContent='Dataset unavailable';
+  document.getElementById('live-dot').className='status-dot elevated';
+  document.getElementById('active-box').innerHTML=
+    '<div class="soft rounded-2xl p-4 border border-rose-300/20">'+
+      '<div class="text-rose-300 font-semibold text-sm">Pocket-UCH is waiting for the dataset</div>'+
+      '<div class="muted text-xs leading-5 mt-2">The interface loaded, but neither the lightweight dashboard dataset nor the full fallback dataset could be read.</div>'+
+      '<div class="text-[10px] text-slate-500 mt-2">'+esc(err?.message||err)+'</div>'+
+      '<button class="btn mt-3" onclick="load()">Retry</button>'+
+    '</div>';
+}
+
+async function load(){
+  const btn=document.getElementById('refresh');
   btn.disabled=true;
+  showLoading();
   try{
-    const response=await fetch(DATA_URL+'?v='+Date.now(),{cache:'no-store'});
-    if(!response.ok) throw new Error('HTTP '+response.status);
-    const data=await response.json();
-    state.data=data;
-    renderMetrics(data); renderMap(data); renderSiteHealth(data); renderSignals(data); renderConvention(data); renderRecommendations(data); renderSources(data);
-    document.getElementById('live-dot').className='status-dot status-stable';
+    const payload=await fetchPayload();
+    state.data=payload;
+    state.siteLookup.clear();
+    state.statusLookup.clear();
+    for(const site of payload.sites||[])state.siteLookup.set(String(site.id),site);
+    for(const row of payload.site_status||[])state.statusLookup.set(String(row.site_id),row);
+
+    renderMetrics();
+    renderMap();
+    renderActive();
+    renderIncidents();
+    renderSiteList();
+    renderInventory();
+    renderSources();
+    setFreshness();
+
+    const first=payload.sites?.find(Boolean);
+    if(!state.selectedSiteId && first)selectSite(first.id,false);
+    else if(state.selectedSiteId)selectSite(state.selectedSiteId,false);
+
+    setMapMode(true,true);
   }catch(err){
     console.error(err);
-    document.getElementById('source-list').innerHTML='<div class="soft rounded-2xl p-4 text-sm text-rose-200">Live dataset could not be loaded. The scraper may be running or GitHub Pages may still be deploying. Refresh after deployment completes.</div>';
-    document.getElementById('live-dot').className='status-dot status-elevated';
+    showError(err);
   }finally{
     btn.disabled=false;
   }
 }
 
-document.getElementById('refresh-btn').addEventListener('click',loadData);
+document.getElementById('refresh').addEventListener('click',load);
+document.getElementById('btn-fit').addEventListener('click',fitAll);
+document.getElementById('btn-sites').addEventListener('click',()=>setMapMode(true,false));
+document.getElementById('btn-incidents').addEventListener('click',()=>setMapMode(false,true));
+document.getElementById('site-search').addEventListener('input',renderSiteList);
+document.getElementById('site-filter').addEventListener('change',renderSiteList);
+
 initMap();
-loadData();
+load();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
 </script>
 </body>
 </html>
