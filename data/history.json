@@ -1,0 +1,1554 @@
+[
+  {
+    "metadata": {
+      "schema_version": "0.3.0",
+      "pipeline_version": "0.2.0",
+      "generated_at": "2026-10-01T07:50:52.262321+00:00",
+      "timezone": "Asia/Jakarta",
+      "history_window_days": 180,
+      "baseline_window_days": 90,
+      "ai_used": false,
+      "global_mode": true
+    },
+    "summary": {
+      "site_count": 1,
+      "observation_count": 1,
+      "signal_count": 0,
+      "recommendation_count": 0,
+      "convention_flagged_sites": 0,
+      "status_counts": {
+        "stable": 1,
+        "watch": 0,
+        "elevated": 0
+      }
+    },
+    "sites": [
+      {
+        "id": "demo-001",
+        "name": "Demo UCH Site",
+        "aliases": [
+          "Example Shipwreck"
+        ],
+        "country": "Indonesia",
+        "region": "Example",
+        "lat": -6.2,
+        "lon": 106.8,
+        "depth_m": null,
+        "type": "shipwreck",
+        "status": "monitor",
+        "notes": "Replace with a verified UCH site. Do not publish sensitive exact coordinates where disclosure could increase risk.",
+        "monitoring": {
+          "satellite": true,
+          "fishing": true,
+          "marine_weather": true,
+          "natural_hazards": true,
+          "web_monitoring": true
+        },
+        "convention_profile": {
+          "maritime_zone": "unknown",
+          "state_party": "Indonesia",
+          "state_vessel": false,
+          "human_remains": false,
+          "venerated_site": false,
+          "significance": "unknown",
+          "vulnerability": "unknown",
+          "in_situ": true,
+          "monitoring_enabled": true,
+          "authorization_status": "unknown",
+          "documentation_status": "unknown",
+          "competent_authority": null,
+          "inventory_id": null,
+          "reporting_channel": null,
+          "sensitive_data_policy": "restricted",
+          "public_information": "unknown",
+          "cooperation_partners": []
+        }
+      }
+    ],
+    "site_status": [
+      {
+        "site_id": "demo-001",
+        "site_name": "Demo UCH Site",
+        "status": "stable",
+        "event_count": 0,
+        "updated_at": "2026-10-01T07:50:52.262151+00:00",
+        "events": [],
+        "web_signal_count": 0,
+        "web_actionable_signal_count": 0,
+        "web_recommendations": [],
+        "external_observations": {
+          "site_id": "demo-001",
+          "site_name": "Demo UCH Site",
+          "copernicus": {
+            "enabled": true,
+            "ok": true,
+            "count": 5,
+            "items": [
+              {
+                "id": "S2B_MSIL2A_20260930T025529_N0513_R032_T48MXU_20260930T063714",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-30T02:55:29.024000Z",
+                "cloud_cover": 32.01
+              },
+              {
+                "id": "S2C_MSIL2A_20260925T025531_N0513_R032_T48MXU_20260925T063608",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-25T02:55:31.025000Z",
+                "cloud_cover": 33.76
+              },
+              {
+                "id": "S1D_IW_GRDH_1SDV_20260922T111440_20260922T111505_004689_008C3D_F193_COG",
+                "collection": "sentinel-1-grd",
+                "datetime": "2026-09-22T11:14:40.175711Z",
+                "cloud_cover": null
+              },
+              {
+                "id": "S2B_MSIL2A_20260920T025539_N0512_R032_T48MXU_20260920T064105",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-20T02:55:39.024000Z",
+                "cloud_cover": 31.68
+              },
+              {
+                "id": "S1D_IW_GRDH_1SDV_20260918T223315_20260918T223342_004638_008A7B_7772_COG",
+                "collection": "sentinel-1-grd",
+                "datetime": "2026-09-18T22:33:15.338398Z",
+                "cloud_cover": null
+              }
+            ]
+          },
+          "global_fishing_watch": {
+            "enabled": true,
+            "ok": false,
+            "message": "GFW_API_TOKEN not set"
+          },
+          "marine_regions": {
+            "enabled": true,
+            "ok": true,
+            "source": "Marine Regions",
+            "eez_matches": [],
+            "candidate_count": 3
+          },
+          "emodnet_human_activities": {
+            "enabled": true,
+            "ok": true,
+            "source": "EMODnet Human Activities",
+            "candidate_layers": [
+              "emodnet:wwshipwrecks",
+              "emodnet:wasteatports",
+              "emodnet:heritageshipwrecks"
+            ],
+            "feature_count": 0,
+            "features": []
+          }
+        },
+        "convention_assessment": {
+          "framework": "UNESCO 2001 Convention",
+          "site_id": "demo-001",
+          "triggered_articles": [],
+          "triggered_rules": [],
+          "threat_categories": [],
+          "data_gaps": [
+            "authorization_status",
+            "competent_authority",
+            "documentation_status",
+            "inventory_id",
+            "maritime_zone",
+            "public_information",
+            "reporting_channel",
+            "significance",
+            "vulnerability"
+          ],
+          "manual_review_required": true,
+          "notice": "This is an operational monitoring aid, not a legal compliance determination."
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "obs:external:demo-001:2026-10-01T07:50:52.262290+00:00",
+        "site_id": "demo-001",
+        "observed_at": "2026-10-01T07:50:52.262295+00:00",
+        "kind": "external_context",
+        "source": "multi-source",
+        "measurements": {
+          "fishing_hours": null,
+          "satellite_scene_count": 5,
+          "human_activity_feature_count": 0
+        },
+        "context": {
+          "copernicus": {
+            "enabled": true,
+            "ok": true,
+            "count": 5,
+            "items": [
+              {
+                "id": "S2B_MSIL2A_20260930T025529_N0513_R032_T48MXU_20260930T063714",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-30T02:55:29.024000Z",
+                "cloud_cover": 32.01
+              },
+              {
+                "id": "S2C_MSIL2A_20260925T025531_N0513_R032_T48MXU_20260925T063608",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-25T02:55:31.025000Z",
+                "cloud_cover": 33.76
+              },
+              {
+                "id": "S1D_IW_GRDH_1SDV_20260922T111440_20260922T111505_004689_008C3D_F193_COG",
+                "collection": "sentinel-1-grd",
+                "datetime": "2026-09-22T11:14:40.175711Z",
+                "cloud_cover": null
+              },
+              {
+                "id": "S2B_MSIL2A_20260920T025539_N0512_R032_T48MXU_20260920T064105",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-20T02:55:39.024000Z",
+                "cloud_cover": 31.68
+              },
+              {
+                "id": "S1D_IW_GRDH_1SDV_20260918T223315_20260918T223342_004638_008A7B_7772_COG",
+                "collection": "sentinel-1-grd",
+                "datetime": "2026-09-18T22:33:15.338398Z",
+                "cloud_cover": null
+              }
+            ]
+          },
+          "marine_regions": {
+            "enabled": true,
+            "ok": true,
+            "source": "Marine Regions",
+            "eez_matches": [],
+            "candidate_count": 3
+          },
+          "emodnet_human_activities": {
+            "enabled": true,
+            "ok": true,
+            "source": "EMODnet Human Activities",
+            "candidate_layers": [
+              "emodnet:wwshipwrecks",
+              "emodnet:wasteatports",
+              "emodnet:heritageshipwrecks"
+            ],
+            "feature_count": 0,
+            "features": []
+          }
+        }
+      }
+    ],
+    "baselines": [
+      {
+        "site_id": "demo-001",
+        "baseline": {
+          "status": "establishing",
+          "window_days": 90,
+          "snapshot_count": 0,
+          "minimum_snapshots_for_comparison": 7,
+          "indicators": {
+            "linked_event_count": {
+              "observations": 0,
+              "current": 0,
+              "historical_total": 0
+            },
+            "web_signal_count": {
+              "observations": 0,
+              "current": 0,
+              "historical_total": 0
+            },
+            "fishing_hours": {
+              "observations": 0,
+              "current": null,
+              "mean": null,
+              "min": null,
+              "max": null
+            }
+          },
+          "note": "Baseline is descriptive until enough observations are accumulated; no predictive model is used."
+        }
+      }
+    ],
+    "signals": [],
+    "convention": {
+      "framework": {
+        "name": "UNESCO 2001 Convention on the Protection of the Underwater Cultural Heritage",
+        "purpose": "Operational monitoring support. This is not a legal compliance determination.",
+        "source": "https://www.unesco.org/en/legal-affairs/convention-protection-underwater-cultural-heritage"
+      },
+      "site_assessments": [
+        {
+          "framework": "UNESCO 2001 Convention",
+          "site_id": "demo-001",
+          "triggered_articles": [],
+          "triggered_rules": [],
+          "threat_categories": [],
+          "data_gaps": [
+            "authorization_status",
+            "competent_authority",
+            "documentation_status",
+            "inventory_id",
+            "maritime_zone",
+            "public_information",
+            "reporting_channel",
+            "significance",
+            "vulnerability"
+          ],
+          "manual_review_required": true,
+          "notice": "This is an operational monitoring aid, not a legal compliance determination."
+        }
+      ]
+    },
+    "recommendations": [],
+    "provenance": [
+      {
+        "source": "USGS",
+        "status": "ok",
+        "checked_at": "2026-10-01T07:50:37.455401+00:00",
+        "message": "11 earthquakes",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "BMKG earthquake",
+        "status": "ok",
+        "checked_at": "2026-10-01T07:50:37.597371+00:00",
+        "message": "1 event(s)",
+        "coverage": "Indonesia",
+        "optional": true
+      },
+      {
+        "source": "NASA EONET",
+        "status": "ok",
+        "checked_at": "2026-10-01T07:50:37.835187+00:00",
+        "message": "57 event(s)",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "TinyFish",
+        "status": "skipped",
+        "checked_at": "2026-10-01T07:50:52.262338+00:00",
+        "message": "TINYFISH_API_KEY not set",
+        "coverage": "global",
+        "optional": true
+      },
+      {
+        "source": "Copernicus STAC",
+        "status": "ok",
+        "checked_at": "2026-10-01T07:50:52.262342+00:00",
+        "message": "",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "Global Fishing Watch",
+        "status": "skipped",
+        "checked_at": "2026-10-01T07:50:52.262345+00:00",
+        "message": "",
+        "coverage": "global",
+        "optional": true
+      },
+      {
+        "source": "Marine Regions",
+        "status": "ok",
+        "checked_at": "2026-10-01T07:50:52.262347+00:00",
+        "message": "",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "EMODnet Human Activities",
+        "status": "ok",
+        "checked_at": "2026-10-01T07:50:52.262349+00:00",
+        "message": "",
+        "coverage": "Europe",
+        "optional": true
+      },
+      {
+        "source": "tinyfish",
+        "status": "configured",
+        "endpoint": null,
+        "coverage": "global",
+        "optional": true
+      },
+      {
+        "source": "usgs_earthquakes",
+        "status": "configured",
+        "endpoint": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "bmkg_earthquakes",
+        "status": "configured",
+        "endpoint": "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "coverage": "Indonesia",
+        "optional": true
+      },
+      {
+        "source": "nasa_eonet",
+        "status": "configured",
+        "endpoint": "https://eonet.gsfc.nasa.gov/api/v3/events",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "copernicus_stac",
+        "status": "configured",
+        "endpoint": "https://stac.dataspace.copernicus.eu/v1/search",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "global_fishing_watch",
+        "status": "configured",
+        "endpoint": "https://gateway.api.globalfishingwatch.org/v3/4wings/report",
+        "coverage": "global",
+        "optional": true
+      },
+      {
+        "source": "marine_regions",
+        "status": "configured",
+        "endpoint": "https://geo.vliz.be/geoserver/MarineRegions/wfs",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "emodnet_human_activities",
+        "status": "configured",
+        "endpoint": "https://ows.emodnet-humanactivities.eu/wfs",
+        "coverage": "Europe",
+        "optional": true
+      }
+    ],
+    "source_status": [
+      {
+        "source": "USGS",
+        "ok": true,
+        "message": "11 earthquakes",
+        "checked_at": "2026-10-01T07:50:37.455401+00:00",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "BMKG earthquake",
+        "ok": true,
+        "message": "1 event(s)",
+        "checked_at": "2026-10-01T07:50:37.597371+00:00",
+        "coverage": "Indonesia",
+        "optional": true
+      },
+      {
+        "source": "NASA EONET",
+        "ok": true,
+        "message": "57 event(s)",
+        "checked_at": "2026-10-01T07:50:37.835187+00:00",
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "TinyFish",
+        "ok": false,
+        "message": "TINYFISH_API_KEY not set",
+        "coverage": "global",
+        "optional": true
+      },
+      {
+        "source": "Copernicus STAC",
+        "ok": true,
+        "sites": 1,
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "Global Fishing Watch",
+        "ok": false,
+        "sites": 1,
+        "coverage": "global",
+        "optional": true
+      },
+      {
+        "source": "Marine Regions",
+        "ok": true,
+        "sites": 1,
+        "coverage": "global",
+        "optional": false
+      },
+      {
+        "source": "EMODnet Human Activities",
+        "ok": true,
+        "sites": 1,
+        "coverage": "Europe",
+        "optional": true
+      }
+    ],
+    "legacy": {
+      "generated_at": "2026-10-01T07:50:52.262321+00:00",
+      "sites": 1,
+      "raw_events": [
+        {
+          "id": "usgs:us6000tyq7",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 5.0 - 38 km WSW of Palimbang, Philippines",
+          "timestamp": "2026-10-01T05:34:10.634000+00:00",
+          "lat": 6.1116,
+          "lon": 123.8599,
+          "depth_km": 10.0,
+          "magnitude": 5.0,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyq7",
+          "place": "38 km WSW of Palimbang, Philippines"
+        },
+        {
+          "id": "usgs:us6000typ5",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 4.5 - 272 km WSW of Tual, Indonesia",
+          "timestamp": "2026-10-01T02:09:19.068000+00:00",
+          "lat": -6.154,
+          "lon": 130.346,
+          "depth_km": 94.793,
+          "magnitude": 4.5,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000typ5",
+          "place": "272 km WSW of Tual, Indonesia"
+        },
+        {
+          "id": "usgs:us6000typ0",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 4.6 - 45 km ENE of Luwuk, Indonesia",
+          "timestamp": "2026-10-01T01:31:23.443000+00:00",
+          "lat": -0.863,
+          "lon": 123.1839,
+          "depth_km": 116.392,
+          "magnitude": 4.6,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000typ0",
+          "place": "45 km ENE of Luwuk, Indonesia"
+        },
+        {
+          "id": "usgs:us6000tyny",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 5.2 - 7 km ESE of Baghlān, Afghanistan",
+          "timestamp": "2026-10-01T01:29:20.694000+00:00",
+          "lat": 36.0991,
+          "lon": 68.7818,
+          "depth_km": 49.602,
+          "magnitude": 5.2,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyny",
+          "place": "7 km ESE of Baghlān, Afghanistan"
+        },
+        {
+          "id": "usgs:us6000tynp",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 4.9 - northern Mid-Atlantic Ridge",
+          "timestamp": "2026-10-01T00:28:22.644000+00:00",
+          "lat": 19.2756,
+          "lon": -43.0353,
+          "depth_km": 10.0,
+          "magnitude": 4.9,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tynp",
+          "place": "northern Mid-Atlantic Ridge"
+        },
+        {
+          "id": "usgs:us6000tymj",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 5.6 - 94 km SW of Tamarindo, Costa Rica",
+          "timestamp": "2026-09-30T21:55:26.169000+00:00",
+          "lat": 9.7526,
+          "lon": -86.5063,
+          "depth_km": 8.0,
+          "magnitude": 5.6,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tymj",
+          "place": "94 km SW of Tamarindo, Costa Rica"
+        },
+        {
+          "id": "usgs:us6000tym9",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 4.6 - 131 km SE of Itoman, Japan",
+          "timestamp": "2026-09-30T21:11:57.694000+00:00",
+          "lat": 25.2167,
+          "lon": 128.5077,
+          "depth_km": 10.0,
+          "magnitude": 4.6,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tym9",
+          "place": "131 km SE of Itoman, Japan"
+        },
+        {
+          "id": "usgs:us6000tykw",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 4.9 - 136 km SE of Petropavlovsk-Kamchatsky, Russia",
+          "timestamp": "2026-09-30T18:36:22.667000+00:00",
+          "lat": 52.3676,
+          "lon": 160.2895,
+          "depth_km": 31.929,
+          "magnitude": 4.9,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tykw",
+          "place": "136 km SE of Petropavlovsk-Kamchatsky, Russia"
+        },
+        {
+          "id": "usgs:us6000tyku",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 5.0 - 142 km SE of Petropavlovsk-Kamchatsky, Russia",
+          "timestamp": "2026-09-30T18:21:19.257000+00:00",
+          "lat": 52.3167,
+          "lon": 160.3332,
+          "depth_km": 35.0,
+          "magnitude": 5.0,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyku",
+          "place": "142 km SE of Petropavlovsk-Kamchatsky, Russia"
+        },
+        {
+          "id": "usgs:us6000tyjb",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 5.0 - 27 km N of Kupang, Indonesia",
+          "timestamp": "2026-09-30T10:58:50.586000+00:00",
+          "lat": -9.9243,
+          "lon": 123.6462,
+          "depth_km": 19.368,
+          "magnitude": 5.0,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyjb",
+          "place": "27 km N of Kupang, Indonesia"
+        },
+        {
+          "id": "usgs:us6000tyit",
+          "source": "USGS",
+          "type": "earthquake",
+          "title": "M 5.1 - 121 km S of Kokopo, Papua New Guinea",
+          "timestamp": "2026-09-30T08:15:17.486000+00:00",
+          "lat": -5.435,
+          "lon": 152.1328,
+          "depth_km": 28.026,
+          "magnitude": 5.1,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyit",
+          "place": "121 km S of Kokopo, Papua New Guinea"
+        },
+        {
+          "id": "bmkg:01 Okt 2026:13:24:52 WIB",
+          "source": "BMKG",
+          "type": "earthquake",
+          "title": "BMKG M3.2 earthquake — Pusat gempa berada di darat 15 km Barat Laut Sentani",
+          "timestamp": "2026-10-01T07:50:37.597356+00:00",
+          "lat": -2.46,
+          "lon": 140.38,
+          "depth_km": "25 km",
+          "magnitude": 3.2,
+          "place": "Pusat gempa berada di darat 15 km Barat Laut Sentani",
+          "tsunami": "Gempa ini dirasakan untuk diteruskan pada masyarakat"
+        },
+        {
+          "id": "eonet:EONET_24909:2026-09-28T15:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Tropical Storm Hanna",
+          "timestamp": "2026-09-28T15:00:00+00:00",
+          "lat": 36.6,
+          "lon": -50.4,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.nhc.noaa.gov/archive/2026/HANNA.shtml"
+        },
+        {
+          "id": "eonet:EONET_24875:2026-10-01T00:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Hurricane Rachel",
+          "timestamp": "2026-10-01T00:00:00+00:00",
+          "lat": 19.0,
+          "lon": -108.3,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.metoc.navy.mil/jtwc/products/ep1826.tcw"
+        },
+        {
+          "id": "eonet:EONET_24904:2026-09-26T15:18:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Rafter 4B, Schleicher, Texas",
+          "timestamp": "2026-09-26T15:18:00+00:00",
+          "lat": 30.76633,
+          "lon": -100.49806,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268989"
+        },
+        {
+          "id": "eonet:EONET_24905:2026-09-25T18:57:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire SECOND STREET, Benton, Washington",
+          "timestamp": "2026-09-25T18:57:00+00:00",
+          "lat": 46.253671,
+          "lon": -119.470139,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-WAWFS-260847"
+        },
+        {
+          "id": "eonet:EONET_24811:2026-09-26T21:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Tropical Storm Gonzalo",
+          "timestamp": "2026-09-26T21:00:00+00:00",
+          "lat": 19.3,
+          "lon": -23.3,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.nhc.noaa.gov/archive/2026/GONZALO.shtml"
+        },
+        {
+          "id": "eonet:EONET_24908:2026-09-24T12:55:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire Bonanza Ridge RX, Broadwater, Montana",
+          "timestamp": "2026-09-24T12:55:00+00:00",
+          "lat": 46.2447,
+          "lon": -111.7702,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTHLF-000752"
+        },
+        {
+          "id": "eonet:EONET_24786:2026-10-01T00:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Hurricane Nolo",
+          "timestamp": "2026-10-01T00:00:00+00:00",
+          "lat": 21.6,
+          "lon": -164.7,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
+        },
+        {
+          "id": "eonet:EONET_24787:2026-09-30T12:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Super Typhoon Surigae",
+          "timestamp": "2026-09-30T12:00:00+00:00",
+          "lat": 31.8,
+          "lon": 138.8,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.metoc.navy.mil/jtwc/products/wp2526.tcw"
+        },
+        {
+          "id": "eonet:EONET_24809:2026-09-23T10:12:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Merit Creek, Greene, Mississippi",
+          "timestamp": "2026-09-23T10:12:00+00:00",
+          "lat": 31.052583,
+          "lon": -88.83785,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MSMNF-000578"
+        },
+        {
+          "id": "eonet:EONET_24907:2026-09-22T13:20:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire Kelly Gulch RX, Lewis and Clark, Montana",
+          "timestamp": "2026-09-22T13:20:00+00:00",
+          "lat": 46.735,
+          "lon": -111.726667,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTHLF-000746"
+        },
+        {
+          "id": "eonet:EONET_24721:2026-09-30T00:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Hurricane Polo",
+          "timestamp": "2026-09-30T00:00:00+00:00",
+          "lat": 30.0,
+          "lon": -108.5,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://science.nasa.gov/earth/earth-observatory/explosive-intensification-for-hurricane-polo/"
+        },
+        {
+          "id": "eonet:EONET_24710:2026-09-20T17:32:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Round Prarie, Morehouse, Louisiana",
+          "timestamp": "2026-09-20T17:32:00+00:00",
+          "lat": 32.858241,
+          "lon": -91.989455,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-LALAS-000390"
+        },
+        {
+          "id": "eonet:EONET_24722:2026-09-27T21:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Tropical Storm Fay",
+          "timestamp": "2026-09-27T21:00:00+00:00",
+          "lat": 28.9,
+          "lon": -44.0,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.nhc.noaa.gov/archive/2026/FAY.shtml"
+        },
+        {
+          "id": "eonet:EONET_24720:2026-09-27T18:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Hurricane Odalys",
+          "timestamp": "2026-09-27T18:00:00+00:00",
+          "lat": 22.7,
+          "lon": -123.2,
+          "categories": [
+            "Severe Storms"
+          ],
+          "url": "https://www.metoc.navy.mil/jtwc/products/ep1626.tcw"
+        },
+        {
+          "id": "eonet:EONET_24810:2026-09-19T13:26:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire CRAWFORD CORRAL RX, Tulare, California",
+          "timestamp": "2026-09-19T13:26:00+00:00",
+          "lat": 36.601661,
+          "lon": -118.9721,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CATUU-000092"
+        },
+        {
+          "id": "eonet:EONET_24906:2026-09-18T15:00:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire Bear River MBR Unit 2c RX, Box Elder, Utah",
+          "timestamp": "2026-09-18T15:00:00+00:00",
+          "lat": 41.4797,
+          "lon": -112.314683,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-UTBBR-200788"
+        },
+        {
+          "id": "eonet:EONET_24719:2026-09-17T17:44:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D2 Dye RX, Coconino, Arizona",
+          "timestamp": "2026-09-17T17:44:00+00:00",
+          "lat": 34.43545,
+          "lon": -110.9112,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000955"
+        },
+        {
+          "id": "eonet:EONET_24718:2026-09-17T17:35:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D2 Vincent RX, Coconino, Arizona",
+          "timestamp": "2026-09-17T17:35:00+00:00",
+          "lat": 34.446292,
+          "lon": -110.965566,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000953"
+        },
+        {
+          "id": "eonet:EONET_24483:2026-09-16T20:17:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Breezy, Starr, Texas",
+          "timestamp": "2026-09-16T20:17:00+00:00",
+          "lat": 26.45826,
+          "lon": -98.712896,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268653"
+        },
+        {
+          "id": "eonet:EONET_24488:2026-09-16T13:01:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire FLORISTON, Nevada, California",
+          "timestamp": "2026-09-16T13:01:00+00:00",
+          "lat": 39.394425,
+          "lon": -120.025216,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CANEU-029037"
+        },
+        {
+          "id": "eonet:EONET_24499:2026-09-16T09:08:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire RX CALV BU 104-108, Vernon, Louisiana",
+          "timestamp": "2026-09-16T09:08:00+00:00",
+          "lat": 30.957333,
+          "lon": -93.164867,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-LAKIF-000378"
+        },
+        {
+          "id": "eonet:EONET_24482:2026-09-16T00:29:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Clark, Edwards, Texas",
+          "timestamp": "2026-09-16T00:29:00+00:00",
+          "lat": 29.9328492,
+          "lon": -100.3453084,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268613"
+        },
+        {
+          "id": "eonet:EONET_24476:2026-09-15T17:09:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Calvary Creek, Washita, Oklahoma",
+          "timestamp": "2026-09-15T17:09:00+00:00",
+          "lat": 35.1580556,
+          "lon": -98.9880556,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-261109"
+        },
+        {
+          "id": "eonet:EONET_24481:2026-09-15T16:59:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Dry River, Sutton, Texas",
+          "timestamp": "2026-09-15T16:59:00+00:00",
+          "lat": 30.54096369,
+          "lon": -100.7446997,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268594"
+        },
+        {
+          "id": "eonet:EONET_24478:2026-09-15T16:38:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire BLUE LAKE, Indian River, Florida",
+          "timestamp": "2026-09-15T16:38:00+00:00",
+          "lat": 27.7427778,
+          "lon": -80.7169444,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-FLFLS-1600755"
+        },
+        {
+          "id": "eonet:EONET_24485:2026-09-15T14:12:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Lobo, Eastland, Texas",
+          "timestamp": "2026-09-15T14:12:00+00:00",
+          "lat": 32.42654762,
+          "lon": -98.93066189,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268583"
+        },
+        {
+          "id": "eonet:EONET_24484:2026-09-15T11:29:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire DOME, Mariposa, California",
+          "timestamp": "2026-09-15T11:29:00+00:00",
+          "lat": 37.5662,
+          "lon": -119.616167,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CAYNP-000100"
+        },
+        {
+          "id": "eonet:EONET_24502:2026-09-15T02:47:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Bunker Fire, Calhoun, Arkansas",
+          "timestamp": "2026-09-15T02:47:00+00:00",
+          "lat": 33.5743333,
+          "lon": -92.5861667,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ARARS-000000"
+        },
+        {
+          "id": "eonet:EONET_24473:2026-09-14T18:19:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Hydra, Bosque, Texas",
+          "timestamp": "2026-09-14T18:19:00+00:00",
+          "lat": 31.848649,
+          "lon": -97.653304,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268545"
+        },
+        {
+          "id": "eonet:EONET_24474:2026-09-14T17:55:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Atoka Lake, Atoka, Oklahoma",
+          "timestamp": "2026-09-14T17:55:00+00:00",
+          "lat": 34.4136111,
+          "lon": -96.1063889,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-261105"
+        },
+        {
+          "id": "eonet:EONET_24475:2026-09-14T16:52:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Tram Trail, Pushmataha, Oklahoma",
+          "timestamp": "2026-09-14T16:52:00+00:00",
+          "lat": 34.2822222,
+          "lon": -95.3741667,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-261089"
+        },
+        {
+          "id": "eonet:EONET_24490:2026-09-14T14:22:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Bunker Fire, Calhoun, Arkansas",
+          "timestamp": "2026-09-14T14:22:00+00:00",
+          "lat": 33.5744871,
+          "lon": -92.5862323,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ARARS-100236"
+        },
+        {
+          "id": "eonet:EONET_24477:2026-09-14T13:07:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Black Kettle, Roger Mills, Oklahoma",
+          "timestamp": "2026-09-14T13:07:00+00:00",
+          "lat": 35.7588889,
+          "lon": -99.6561111,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-261103"
+        },
+        {
+          "id": "eonet:EONET_24487:2026-09-14T11:43:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Davis Coulee, Big Horn, Montana",
+          "timestamp": "2026-09-14T11:43:00+00:00",
+          "lat": 45.5398,
+          "lon": -107.6275,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTCRA-261393"
+        },
+        {
+          "id": "eonet:EONET_24715:2026-09-14T11:06:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D7 Rhoton Seep RX, Apache, Arizona",
+          "timestamp": "2026-09-14T11:06:00+00:00",
+          "lat": 34.156645,
+          "lon": -109.807526,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000947"
+        },
+        {
+          "id": "eonet:EONET_24711:2026-09-14T11:05:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D7 Morgan Unit 5 RX, Navajo, Arizona",
+          "timestamp": "2026-09-14T11:05:00+00:00",
+          "lat": 34.225084,
+          "lon": -110.122144,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000946"
+        },
+        {
+          "id": "eonet:EONET_24713:2026-09-14T11:03:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D7 Butler West RX, Apache, Arizona",
+          "timestamp": "2026-09-14T11:03:00+00:00",
+          "lat": 34.191317,
+          "lon": -109.720126,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000945"
+        },
+        {
+          "id": "eonet:EONET_24714:2026-09-14T11:01:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D7 Brushy Mtn South RX, Apache, Arizona",
+          "timestamp": "2026-09-14T11:01:00+00:00",
+          "lat": 34.127578,
+          "lon": -109.811902,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000944"
+        },
+        {
+          "id": "eonet:EONET_24716:2026-09-14T10:57:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D7 Arab RX, Apache, Arizona",
+          "timestamp": "2026-09-14T10:57:00+00:00",
+          "lat": 34.210496,
+          "lon": -109.725244,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000943"
+        },
+        {
+          "id": "eonet:EONET_24712:2026-09-14T10:52:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D7 Apprentice RX, Apache, Arizona",
+          "timestamp": "2026-09-14T10:52:00+00:00",
+          "lat": 34.183939,
+          "lon": -109.821408,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000942"
+        },
+        {
+          "id": "eonet:EONET_24717:2026-09-13T17:13:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Prescribed Fire D6 Wallow West Unit 6 RX, Apache, Arizona",
+          "timestamp": "2026-09-13T17:13:00+00:00",
+          "lat": 33.7988,
+          "lon": -109.4382,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-AZASF-000940"
+        },
+        {
+          "id": "eonet:EONET_24486:2026-09-13T15:33:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire GRACEMONT, Caddo, Oklahoma",
+          "timestamp": "2026-09-13T15:33:00+00:00",
+          "lat": 35.322764,
+          "lon": -98.236762,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKANA-002871"
+        },
+        {
+          "id": "eonet:EONET_24498:2026-09-11T19:36:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Star Lake, Jefferson, Texas",
+          "timestamp": "2026-09-11T19:36:00+00:00",
+          "lat": 29.664158,
+          "lon": -94.158617,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXMCR-000378"
+        },
+        {
+          "id": "eonet:EONET_24489:2026-09-10T17:23:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire LUCAS, Lake, California",
+          "timestamp": "2026-09-10T17:23:00+00:00",
+          "lat": 39.231856,
+          "lon": -123.002756,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CALNU-016127"
+        },
+        {
+          "id": "eonet:EONET_24510:2026-09-10T12:18:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire LUCAS, Lake, California",
+          "timestamp": "2026-09-10T12:18:00+00:00",
+          "lat": 39.233117,
+          "lon": -123.003217,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CAMEU-010693"
+        },
+        {
+          "id": "eonet:EONET_24503:2026-09-09T21:33:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire RAY COAKER, Washington, Alabama",
+          "timestamp": "2026-09-09T21:33:00+00:00",
+          "lat": 31.3738889,
+          "lon": -88.3208333,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ALALS-260909-4"
+        },
+        {
+          "id": "eonet:EONET_24189:2026-09-08T16:57:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire MEERS, Comanche, Oklahoma",
+          "timestamp": "2026-09-08T16:57:00+00:00",
+          "lat": 34.840579,
+          "lon": -98.67792,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKANA-002798"
+        },
+        {
+          "id": "eonet:EONET_24185:2026-09-08T16:39:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Kurk, San Saba, Texas",
+          "timestamp": "2026-09-08T16:39:00+00:00",
+          "lat": 31.060181,
+          "lon": -98.653084,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-TXTXS-268233"
+        },
+        {
+          "id": "eonet:EONET_24192:2026-09-08T12:44:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire PINTO, Stephens, Oklahoma",
+          "timestamp": "2026-09-08T12:44:00+00:00",
+          "lat": 34.413611,
+          "lon": -97.5925,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKCHA-002788"
+        },
+        {
+          "id": "eonet:EONET_24187:2026-09-07T19:58:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Moonshine, Albany, Wyoming",
+          "timestamp": "2026-09-07T19:58:00+00:00",
+          "lat": 41.95365,
+          "lon": -105.321617,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-WYHDD-000478"
+        },
+        {
+          "id": "eonet:EONET_24100:2026-09-04T15:16:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire S7, Broward, Florida",
+          "timestamp": "2026-09-04T15:16:00+00:00",
+          "lat": 26.3258333,
+          "lon": -80.4997222,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-FLFLS-1800147"
+        },
+        {
+          "id": "eonet:EONET_24096:2026-09-04T13:53:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Needles, Oglala Lakota, South Dakota",
+          "timestamp": "2026-09-04T13:53:00+00:00",
+          "lat": 43.30421421,
+          "lon": -102.311123,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-SDPRA-000151"
+        },
+        {
+          "id": "eonet:EONET_24095:2026-09-04T12:59:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Incident Complex Rattlesnake Complex, Prairie, Montana",
+          "timestamp": "2026-09-04T12:59:00+00:00",
+          "lat": 46.586036,
+          "lon": -104.927967,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTEAS-000786"
+        },
+        {
+          "id": "eonet:EONET_23868:2026-09-03T13:03:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Emergency Stabilization BAER McConnell, Humboldt, Nevada",
+          "timestamp": "2026-09-03T13:03:00+00:00",
+          "lat": 41.517567,
+          "lon": -117.74215,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-NVWID-020663"
+        },
+        {
+          "id": "eonet:EONET_23869:2026-09-03T01:45:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Ayers Pond, Prairie, Montana",
+          "timestamp": "2026-09-03T01:45:00+00:00",
+          "lat": 46.65069,
+          "lon": -104.83045,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTMCD-000777"
+        },
+        {
+          "id": "eonet:EONET_23870:2026-09-02T22:16:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Snow, Custer, Montana",
+          "timestamp": "2026-09-02T22:16:00+00:00",
+          "lat": 46.48575,
+          "lon": -105.185017,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTLG14-000775"
+        },
+        {
+          "id": "eonet:EONET_24098:2026-09-02T18:39:00Z",
+          "source": "NASA EONET",
+          "type": "eonet_event",
+          "title": "Wildfire Fowl, Harding, New Mexico",
+          "timestamp": "2026-09-02T18:39:00+00:00",
+          "lat": 35.5693,
+          "lon": -103.7858,
+          "categories": [
+            "Wildfires"
+          ],
+          "url": "https://irwin.doi.gov/observer/incidents/2026-NMN4S-000562"
+        }
+      ],
+      "linked_events": [],
+      "web_signals": [],
+      "external_observations": [
+        {
+          "site_id": "demo-001",
+          "site_name": "Demo UCH Site",
+          "copernicus": {
+            "enabled": true,
+            "ok": true,
+            "count": 5,
+            "items": [
+              {
+                "id": "S2B_MSIL2A_20260930T025529_N0513_R032_T48MXU_20260930T063714",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-30T02:55:29.024000Z",
+                "cloud_cover": 32.01
+              },
+              {
+                "id": "S2C_MSIL2A_20260925T025531_N0513_R032_T48MXU_20260925T063608",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-25T02:55:31.025000Z",
+                "cloud_cover": 33.76
+              },
+              {
+                "id": "S1D_IW_GRDH_1SDV_20260922T111440_20260922T111505_004689_008C3D_F193_COG",
+                "collection": "sentinel-1-grd",
+                "datetime": "2026-09-22T11:14:40.175711Z",
+                "cloud_cover": null
+              },
+              {
+                "id": "S2B_MSIL2A_20260920T025539_N0512_R032_T48MXU_20260920T064105",
+                "collection": "sentinel-2-l2a",
+                "datetime": "2026-09-20T02:55:39.024000Z",
+                "cloud_cover": 31.68
+              },
+              {
+                "id": "S1D_IW_GRDH_1SDV_20260918T223315_20260918T223342_004638_008A7B_7772_COG",
+                "collection": "sentinel-1-grd",
+                "datetime": "2026-09-18T22:33:15.338398Z",
+                "cloud_cover": null
+              }
+            ]
+          },
+          "global_fishing_watch": {
+            "enabled": true,
+            "ok": false,
+            "message": "GFW_API_TOKEN not set"
+          },
+          "marine_regions": {
+            "enabled": true,
+            "ok": true,
+            "source": "Marine Regions",
+            "eez_matches": [],
+            "candidate_count": 3
+          },
+          "emodnet_human_activities": {
+            "enabled": true,
+            "ok": true,
+            "source": "EMODnet Human Activities",
+            "candidate_layers": [
+              "emodnet:wwshipwrecks",
+              "emodnet:wasteatports",
+              "emodnet:heritageshipwrecks"
+            ],
+            "feature_count": 0,
+            "features": []
+          }
+        }
+      ],
+      "site_status": [
+        {
+          "site_id": "demo-001",
+          "site_name": "Demo UCH Site",
+          "status": "stable",
+          "event_count": 0,
+          "updated_at": "2026-10-01T07:50:52.262151+00:00",
+          "events": [],
+          "web_signal_count": 0,
+          "web_actionable_signal_count": 0,
+          "web_recommendations": [],
+          "external_observations": {
+            "site_id": "demo-001",
+            "site_name": "Demo UCH Site",
+            "copernicus": {
+              "enabled": true,
+              "ok": true,
+              "count": 5,
+              "items": [
+                {
+                  "id": "S2B_MSIL2A_20260930T025529_N0513_R032_T48MXU_20260930T063714",
+                  "collection": "sentinel-2-l2a",
+                  "datetime": "2026-09-30T02:55:29.024000Z",
+                  "cloud_cover": 32.01
+                },
+                {
+                  "id": "S2C_MSIL2A_20260925T025531_N0513_R032_T48MXU_20260925T063608",
+                  "collection": "sentinel-2-l2a",
+                  "datetime": "2026-09-25T02:55:31.025000Z",
+                  "cloud_cover": 33.76
+                },
+                {
+                  "id": "S1D_IW_GRDH_1SDV_20260922T111440_20260922T111505_004689_008C3D_F193_COG",
+                  "collection": "sentinel-1-grd",
+                  "datetime": "2026-09-22T11:14:40.175711Z",
+                  "cloud_cover": null
+                },
+                {
+                  "id": "S2B_MSIL2A_20260920T025539_N0512_R032_T48MXU_20260920T064105",
+                  "collection": "sentinel-2-l2a",
+                  "datetime": "2026-09-20T02:55:39.024000Z",
+                  "cloud_cover": 31.68
+                },
+                {
+                  "id": "S1D_IW_GRDH_1SDV_20260918T223315_20260918T223342_004638_008A7B_7772_COG",
+                  "collection": "sentinel-1-grd",
+                  "datetime": "2026-09-18T22:33:15.338398Z",
+                  "cloud_cover": null
+                }
+              ]
+            },
+            "global_fishing_watch": {
+              "enabled": true,
+              "ok": false,
+              "message": "GFW_API_TOKEN not set"
+            },
+            "marine_regions": {
+              "enabled": true,
+              "ok": true,
+              "source": "Marine Regions",
+              "eez_matches": [],
+              "candidate_count": 3
+            },
+            "emodnet_human_activities": {
+              "enabled": true,
+              "ok": true,
+              "source": "EMODnet Human Activities",
+              "candidate_layers": [
+                "emodnet:wwshipwrecks",
+                "emodnet:wasteatports",
+                "emodnet:heritageshipwrecks"
+              ],
+              "feature_count": 0,
+              "features": []
+            }
+          },
+          "convention_assessment": {
+            "framework": "UNESCO 2001 Convention",
+            "site_id": "demo-001",
+            "triggered_articles": [],
+            "triggered_rules": [],
+            "threat_categories": [],
+            "data_gaps": [
+              "authorization_status",
+              "competent_authority",
+              "documentation_status",
+              "inventory_id",
+              "maritime_zone",
+              "public_information",
+              "reporting_channel",
+              "significance",
+              "vulnerability"
+            ],
+            "manual_review_required": true,
+            "notice": "This is an operational monitoring aid, not a legal compliance determination."
+          }
+        }
+      ]
+    }
+  }
+]

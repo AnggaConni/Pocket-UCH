@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-10-01T07:50:52.265636+00:00",
+  "source_status": [
+    {
+      "source": "USGS",
+      "ok": true,
+      "message": "11 earthquakes",
+      "checked_at": "2026-10-01T07:50:37.455401+00:00",
+      "coverage": "global",
+      "optional": false
+    },
+    {
+      "source": "BMKG earthquake",
+      "ok": true,
+      "message": "1 event(s)",
+      "checked_at": "2026-10-01T07:50:37.597371+00:00",
+      "coverage": "Indonesia",
+      "optional": true
+    },
+    {
+      "source": "NASA EONET",
+      "ok": true,
+      "message": "57 event(s)",
+      "checked_at": "2026-10-01T07:50:37.835187+00:00",
+      "coverage": "global",
+      "optional": false
+    },
+    {
+      "source": "TinyFish",
+      "ok": false,
+      "message": "TINYFISH_API_KEY not set",
+      "coverage": "global",
+      "optional": true
+    },
+    {
+      "source": "Copernicus STAC",
+      "ok": true,
+      "sites": 1,
+      "coverage": "global",
+      "optional": false
+    },
+    {
+      "source": "Global Fishing Watch",
+      "ok": false,
+      "sites": 1,
+      "coverage": "global",
+      "optional": true
+    },
+    {
+      "source": "Marine Regions",
+      "ok": true,
+      "sites": 1,
+      "coverage": "global",
+      "optional": false
+    },
+    {
+      "source": "EMODnet Human Activities",
+      "ok": true,
+      "sites": 1,
+      "coverage": "Europe",
+      "optional": true
+    }
+  ],
+  "site_count": 1,
+  "event_count": 69,
+  "linked_event_count": 0,
+  "web_signal_count": 0,
+  "web_actionable_signal_count": 0,
+  "external_observation_count": 1,
+  "convention_flagged_sites": 0,
+  "site_status_counts": {
+    "stable": 1,
+    "watch": 0,
+    "elevated": 0
+  }
+}
