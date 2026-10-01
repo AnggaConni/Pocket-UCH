@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-01T07:50:52.265636+00:00",
+  "generated_at": "2026-10-01T07:55:34.994106+00:00",
   "source_status": [
     {
       "source": "USGS",
       "ok": true,
       "message": "11 earthquakes",
-      "checked_at": "2026-10-01T07:50:37.455401+00:00",
+      "checked_at": "2026-10-01T07:55:28.128525+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -13,7 +13,7 @@
       "source": "BMKG earthquake",
       "ok": true,
       "message": "1 event(s)",
-      "checked_at": "2026-10-01T07:50:37.597371+00:00",
+      "checked_at": "2026-10-01T07:55:28.227870+00:00",
       "coverage": "Indonesia",
       "optional": true
     },
@@ -21,7 +21,7 @@
       "source": "NASA EONET",
       "ok": true,
       "message": "57 event(s)",
-      "checked_at": "2026-10-01T07:50:37.835187+00:00",
+      "checked_at": "2026-10-01T07:55:30.178903+00:00",
       "coverage": "global",
       "optional": false
     },

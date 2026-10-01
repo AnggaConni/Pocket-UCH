@@ -2,7 +2,7 @@
   "metadata": {
     "schema_version": "0.3.0",
     "pipeline_version": "0.2.0",
-    "generated_at": "2026-10-01T07:50:52.262321+00:00",
+    "generated_at": "2026-10-01T07:55:34.989324+00:00",
     "timezone": "Asia/Jakarta",
     "history_window_days": 180,
     "baseline_window_days": 90,
@@ -80,7 +80,7 @@
       "site_name": "Demo UCH Site",
       "status": "stable",
       "event_count": 0,
-      "updated_at": "2026-10-01T07:50:52.262151+00:00",
+      "updated_at": "2026-10-01T07:55:34.988736+00:00",
       "events": [],
       "web_signal_count": 0,
       "web_actionable_signal_count": 0,
@@ -174,9 +174,9 @@
   ],
   "observations": [
     {
-      "id": "obs:external:demo-001:2026-10-01T07:50:52.262290+00:00",
+      "id": "obs:external:demo-001:2026-10-01T07:55:34.989279+00:00",
       "site_id": "demo-001",
-      "observed_at": "2026-10-01T07:50:52.262295+00:00",
+      "observed_at": "2026-10-01T07:55:34.989285+00:00",
       "kind": "external_context",
       "source": "multi-source",
       "measurements": {
@@ -250,16 +250,16 @@
       "baseline": {
         "status": "establishing",
         "window_days": 90,
-        "snapshot_count": 0,
+        "snapshot_count": 1,
         "minimum_snapshots_for_comparison": 7,
         "indicators": {
           "linked_event_count": {
-            "observations": 0,
+            "observations": 1,
             "current": 0,
             "historical_total": 0
           },
           "web_signal_count": {
-            "observations": 0,
+            "observations": 1,
             "current": 0,
             "historical_total": 0
           },
@@ -310,7 +310,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "checked_at": "2026-10-01T07:50:37.455401+00:00",
+      "checked_at": "2026-10-01T07:55:28.128525+00:00",
       "message": "11 earthquakes",
       "coverage": "global",
       "optional": false
@@ -318,7 +318,7 @@
     {
       "source": "BMKG earthquake",
       "status": "ok",
-      "checked_at": "2026-10-01T07:50:37.597371+00:00",
+      "checked_at": "2026-10-01T07:55:28.227870+00:00",
       "message": "1 event(s)",
       "coverage": "Indonesia",
       "optional": true
@@ -326,7 +326,7 @@
     {
       "source": "NASA EONET",
       "status": "ok",
-      "checked_at": "2026-10-01T07:50:37.835187+00:00",
+      "checked_at": "2026-10-01T07:55:30.178903+00:00",
       "message": "57 event(s)",
       "coverage": "global",
       "optional": false
@@ -334,7 +334,7 @@
     {
       "source": "TinyFish",
       "status": "skipped",
-      "checked_at": "2026-10-01T07:50:52.262338+00:00",
+      "checked_at": "2026-10-01T07:55:34.989412+00:00",
       "message": "TINYFISH_API_KEY not set",
       "coverage": "global",
       "optional": true
@@ -342,7 +342,7 @@
     {
       "source": "Copernicus STAC",
       "status": "ok",
-      "checked_at": "2026-10-01T07:50:52.262342+00:00",
+      "checked_at": "2026-10-01T07:55:34.989418+00:00",
       "message": "",
       "coverage": "global",
       "optional": false
@@ -350,7 +350,7 @@
     {
       "source": "Global Fishing Watch",
       "status": "skipped",
-      "checked_at": "2026-10-01T07:50:52.262345+00:00",
+      "checked_at": "2026-10-01T07:55:34.989421+00:00",
       "message": "",
       "coverage": "global",
       "optional": true
@@ -358,7 +358,7 @@
     {
       "source": "Marine Regions",
       "status": "ok",
-      "checked_at": "2026-10-01T07:50:52.262347+00:00",
+      "checked_at": "2026-10-01T07:55:34.989423+00:00",
       "message": "",
       "coverage": "global",
       "optional": false
@@ -366,7 +366,7 @@
     {
       "source": "EMODnet Human Activities",
       "status": "ok",
-      "checked_at": "2026-10-01T07:50:52.262349+00:00",
+      "checked_at": "2026-10-01T07:55:34.989426+00:00",
       "message": "",
       "coverage": "Europe",
       "optional": true
@@ -433,7 +433,7 @@
       "source": "USGS",
       "ok": true,
       "message": "11 earthquakes",
-      "checked_at": "2026-10-01T07:50:37.455401+00:00",
+      "checked_at": "2026-10-01T07:55:28.128525+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -441,7 +441,7 @@
       "source": "BMKG earthquake",
       "ok": true,
       "message": "1 event(s)",
-      "checked_at": "2026-10-01T07:50:37.597371+00:00",
+      "checked_at": "2026-10-01T07:55:28.227870+00:00",
       "coverage": "Indonesia",
       "optional": true
     },
@@ -449,7 +449,7 @@
       "source": "NASA EONET",
       "ok": true,
       "message": "57 event(s)",
-      "checked_at": "2026-10-01T07:50:37.835187+00:00",
+      "checked_at": "2026-10-01T07:55:30.178903+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -490,7 +490,7 @@
     }
   ],
   "legacy": {
-    "generated_at": "2026-10-01T07:50:52.262321+00:00",
+    "generated_at": "2026-10-01T07:55:34.989324+00:00",
     "sites": 1,
     "raw_events": [
       {
@@ -501,8 +501,8 @@
         "timestamp": "2026-10-01T05:34:10.634000+00:00",
         "lat": 6.1116,
         "lon": 123.8599,
-        "depth_km": 10,
-        "magnitude": 5,
+        "depth_km": 10.0,
+        "magnitude": 5.0,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyq7",
         "place": "38 km WSW of Palimbang, Philippines"
       },
@@ -553,7 +553,7 @@
         "timestamp": "2026-10-01T00:28:22.644000+00:00",
         "lat": 19.2756,
         "lon": -43.0353,
-        "depth_km": 10,
+        "depth_km": 10.0,
         "magnitude": 4.9,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tynp",
         "place": "northern Mid-Atlantic Ridge"
@@ -566,7 +566,7 @@
         "timestamp": "2026-09-30T21:55:26.169000+00:00",
         "lat": 9.7526,
         "lon": -86.5063,
-        "depth_km": 8,
+        "depth_km": 8.0,
         "magnitude": 5.6,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tymj",
         "place": "94 km SW of Tamarindo, Costa Rica"
@@ -579,7 +579,7 @@
         "timestamp": "2026-09-30T21:11:57.694000+00:00",
         "lat": 25.2167,
         "lon": 128.5077,
-        "depth_km": 10,
+        "depth_km": 10.0,
         "magnitude": 4.6,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tym9",
         "place": "131 km SE of Itoman, Japan"
@@ -605,8 +605,8 @@
         "timestamp": "2026-09-30T18:21:19.257000+00:00",
         "lat": 52.3167,
         "lon": 160.3332,
-        "depth_km": 35,
-        "magnitude": 5,
+        "depth_km": 35.0,
+        "magnitude": 5.0,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyku",
         "place": "142 km SE of Petropavlovsk-Kamchatsky, Russia"
       },
@@ -619,7 +619,7 @@
         "lat": -9.9243,
         "lon": 123.6462,
         "depth_km": 19.368,
-        "magnitude": 5,
+        "magnitude": 5.0,
         "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyjb",
         "place": "27 km N of Kupang, Indonesia"
       },
@@ -641,7 +641,7 @@
         "source": "BMKG",
         "type": "earthquake",
         "title": "BMKG M3.2 earthquake — Pusat gempa berada di darat 15 km Barat Laut Sentani",
-        "timestamp": "2026-10-01T07:50:37.597356+00:00",
+        "timestamp": "2026-10-01T07:55:28.227858+00:00",
         "lat": -2.46,
         "lon": 140.38,
         "depth_km": "25 km",
@@ -668,7 +668,7 @@
         "type": "eonet_event",
         "title": "Hurricane Rachel",
         "timestamp": "2026-10-01T00:00:00+00:00",
-        "lat": 19,
+        "lat": 19.0,
         "lon": -108.3,
         "categories": [
           "Severe Storms"
@@ -785,7 +785,7 @@
         "type": "eonet_event",
         "title": "Hurricane Polo",
         "timestamp": "2026-09-30T00:00:00+00:00",
-        "lat": 30,
+        "lat": 30.0,
         "lon": -108.5,
         "categories": [
           "Severe Storms"
@@ -812,7 +812,7 @@
         "title": "Tropical Storm Fay",
         "timestamp": "2026-09-27T21:00:00+00:00",
         "lat": 28.9,
-        "lon": -44,
+        "lon": -44.0,
         "categories": [
           "Severe Storms"
         ],
@@ -1466,7 +1466,7 @@
         "site_name": "Demo UCH Site",
         "status": "stable",
         "event_count": 0,
-        "updated_at": "2026-10-01T07:50:52.262151+00:00",
+        "updated_at": "2026-10-01T07:55:34.988736+00:00",
         "events": [],
         "web_signal_count": 0,
         "web_actionable_signal_count": 0,
