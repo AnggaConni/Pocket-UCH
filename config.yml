@@ -128,6 +128,7 @@ monitoring:
 
 output:
   data_file: data/data.json
+  dashboard_file: data/dashboard.json
   history_file: data/history.json
   status_file: data/status.json
   tinyfish_state_file: data/tinyfish_state.json
