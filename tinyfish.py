@@ -201,10 +201,11 @@ def collect(
         lower_blob = f"{title}\n{snippet}\n{text[:30000]}".lower()
         matched_sites = []
         for site in sites:
-            terms = [
-                str(site.get("name", "")).strip().lower(),
-                str(site.get("country", "")).strip().lower(),
-                str(site.get("region", "")).strip().lower(),
+            aliases = site.get("aliases", [])
+            if not isinstance(aliases, list):
+                aliases = []
+            terms = [str(site.get("name", "")).strip().lower()] + [
+                str(alias).strip().lower() for alias in aliases
             ]
             terms = [x for x in terms if len(x) >= 4]
             if any(term in lower_blob for term in terms):
