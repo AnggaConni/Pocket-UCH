@@ -11,8 +11,10 @@ Important:
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from typing import Any
 
 import requests
@@ -126,11 +128,16 @@ def collect(
     if not block.get("enabled"):
         return [], state, []
 
-    api_key = __import__("os").environ.get("TINYFISH_API_KEY")
+    api_key = os.environ.get("TINYFISH_API_KEY")
     if not api_key:
         return [], state, [{"source": "TinyFish", "ok": False, "message": "TINYFISH_API_KEY not set"}]
 
-    today = datetime.now(timezone.utc).date().isoformat()
+    tz_name = str(cfg.get("project", {}).get("timezone", "UTC"))
+    try:
+        local_tz = ZoneInfo(tz_name)
+    except Exception:
+        local_tz = timezone.utc
+    today = datetime.now(local_tz).date().isoformat()
     if block.get("run_once_per_day", True) and state.get("last_run_date") == today:
         return state.get("signals", []), state, [{"source": "TinyFish", "ok": True, "message": "already ran today"}]
 
