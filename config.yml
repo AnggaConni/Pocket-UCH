@@ -12,7 +12,7 @@ sources:
     url: https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json
   bmkg_marine:
     enabled: true
-    url: https://peta-maritim.bmkg.go.id/api
+    base_url: https://maritim.bmkg.go.id/marine2026-data/
   nasa_eonet:
     enabled: true
     url: https://eonet.gsfc.nasa.gov/api/v3/events
@@ -20,8 +20,8 @@ sources:
       status: open
       limit: 100
   copernicus_stac:
-    enabled: false
-    url: https://catalogue.dataspace.copernicus.eu/stac/
+    enabled: true
+    url: https://stac.dataspace.copernicus.eu/v1/
   gebco_wms:
     enabled: true
     url: https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv
