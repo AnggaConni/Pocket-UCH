@@ -273,6 +273,379 @@ def build_site_status(
     return out
 
 
+
+def build_baseline(site_id: str, history: list[dict[str, Any]], linked_events: list[dict[str, Any]], web_signals: list[dict[str, Any]], external: dict[str, Any], days: int) -> dict[str, Any]:
+    site_snapshots = []
+    cutoff = utc_now() - timedelta(days=days)
+
+    for snap in history:
+        try:
+            ts = datetime.fromisoformat(str(snap.get("generated_at", "")).replace("Z", "+00:00"))
+        except Exception:
+            continue
+        if ts >= cutoff:
+            site_snapshots.append(snap)
+
+    event_count = 0
+    web_count = 0
+    fishing_values: list[float] = []
+
+    for snap in site_snapshots:
+        event_count += sum(1 for e in snap.get("linked_events", []) if str(e.get("site_id")) == str(site_id))
+        for ws in snap.get("web_signals", []):
+            if str(site_id) in [str(x) for x in ws.get("matched_site_ids", [])]:
+                web_count += 1
+        for ext in snap.get("external_observations", []):
+            if str(ext.get("site_id")) == str(site_id):
+                try:
+                    value = float(ext.get("global_fishing_watch", {}).get("fishing_hours", 0) or 0)
+                    if value > 0:
+                        fishing_values.append(value)
+                except (TypeError, ValueError):
+                    pass
+
+    current_fishing = external.get("global_fishing_watch", {}).get("fishing_hours")
+    if current_fishing is not None:
+        try:
+            fishing_values.append(float(current_fishing))
+        except (TypeError, ValueError):
+            pass
+
+    indicators = {
+        "linked_event_count": {
+            "observations": len(site_snapshots),
+            "current": len([e for e in linked_events if str(e.get("site_id")) == str(site_id)]),
+            "historical_total": event_count,
+        },
+        "web_signal_count": {
+            "observations": len(site_snapshots),
+            "current": len([w for w in web_signals if str(site_id) in [str(x) for x in w.get("matched_site_ids", [])]]),
+            "historical_total": web_count,
+        },
+        "fishing_hours": {
+            "observations": len(fishing_values),
+            "current": current_fishing,
+            "mean": round(sum(fishing_values) / len(fishing_values), 2) if fishing_values else None,
+            "min": round(min(fishing_values), 2) if fishing_values else None,
+            "max": round(max(fishing_values), 2) if fishing_values else None,
+        },
+    }
+
+    return {
+        "status": "established" if len(site_snapshots) >= 7 else "establishing",
+        "window_days": days,
+        "snapshot_count": len(site_snapshots),
+        "minimum_snapshots_for_comparison": 7,
+        "indicators": indicators,
+        "note": "Baseline is descriptive until enough observations are accumulated; no predictive model is used.",
+    }
+
+
+def build_observations(sites: list[dict[str, Any]], linked_events: list[dict[str, Any]], web_signals: list[dict[str, Any]], external_observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    observations: list[dict[str, Any]] = []
+
+    for event in linked_events:
+        observations.append(
+            {
+                "id": f"obs:event:{event.get('id')}",
+                "site_id": event.get("site_id"),
+                "observed_at": event.get("timestamp") or iso_now(),
+                "kind": "hazard_event",
+                "source": event.get("source"),
+                "location": {
+                    "lat": event.get("lat"),
+                    "lon": event.get("lon"),
+                    "distance_km": event.get("distance_km"),
+                },
+                "measurements": {
+                    "magnitude": event.get("magnitude"),
+                    "depth_km": event.get("depth_km"),
+                },
+                "context": {
+                    "type": event.get("type"),
+                    "title": event.get("title"),
+                    "place": event.get("place"),
+                    "categories": event.get("categories", []),
+                    "tsunami": event.get("tsunami"),
+                },
+                "source_url": event.get("url"),
+            }
+        )
+
+    for signal in web_signals:
+        for site_id in signal.get("matched_site_ids", []):
+            observations.append(
+                {
+                    "id": f"obs:web:{signal.get('id')}:{site_id}",
+                    "site_id": site_id,
+                    "observed_at": signal.get("retrieved_at") or iso_now(),
+                    "kind": "web_intelligence",
+                    "source": signal.get("source"),
+                    "measurements": {},
+                    "context": {
+                        "title": signal.get("title"),
+                        "snippet": signal.get("snippet"),
+                        "threat_categories": signal.get("threat_categories", []),
+                        "query": signal.get("query"),
+                    },
+                    "source_url": signal.get("url"),
+                }
+            )
+
+    for ext in external_observations:
+        site_id = ext.get("site_id")
+        cop = ext.get("copernicus", {})
+        gfw = ext.get("global_fishing_watch", {})
+        mr = ext.get("marine_regions", {})
+        emodnet = ext.get("emodnet_human_activities", {})
+
+        observations.append(
+            {
+                "id": f"obs:external:{site_id}:{iso_now()}",
+                "site_id": site_id,
+                "observed_at": iso_now(),
+                "kind": "external_context",
+                "source": "multi-source",
+                "measurements": {
+                    "fishing_hours": gfw.get("fishing_hours"),
+                    "satellite_scene_count": cop.get("count"),
+                    "human_activity_feature_count": emodnet.get("feature_count"),
+                },
+                "context": {
+                    "copernicus": cop,
+                    "marine_regions": mr,
+                    "emodnet_human_activities": emodnet,
+                },
+                "source_urls": {
+                    "copernicus": cfg_source_url_placeholder(),
+                },
+            }
+        )
+
+    return observations
+
+
+def cfg_source_url_placeholder() -> None:
+    return None
+
+
+def build_signals(site_status: list[dict[str, Any]], linked_events: list[dict[str, Any]], web_signals: list[dict[str, Any]], external_observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    signals: list[dict[str, Any]] = []
+
+    for event in linked_events:
+        if event.get("type") == "earthquake":
+            magnitude = float(event.get("magnitude", 0) or 0)
+            severity = "high" if magnitude >= 6 else "moderate"
+            signals.append(
+                {
+                    "id": f"sig:eq:{event.get('id')}",
+                    "site_id": event.get("site_id"),
+                    "detected_at": event.get("timestamp") or iso_now(),
+                    "category": "major_hazard",
+                    "severity": severity,
+                    "status": "active",
+                    "trigger": {"type": "earthquake", "magnitude": magnitude, "distance_km": event.get("distance_km")},
+                    "related_sources": [event.get("source")],
+                }
+            )
+
+    for web in web_signals:
+        categories = web.get("threat_categories", [])
+        if not categories:
+            continue
+        for site_id in web.get("matched_site_ids", []):
+            for category in categories:
+                signals.append(
+                    {
+                        "id": f"sig:web:{web.get('id')}:{site_id}:{category}",
+                        "site_id": site_id,
+                        "detected_at": web.get("retrieved_at") or iso_now(),
+                        "category": category,
+                        "severity": "moderate",
+                        "status": "review",
+                        "trigger": {
+                            "type": "web_signal",
+                            "title": web.get("title"),
+                            "url": web.get("url"),
+                        },
+                        "related_sources": [web.get("source")],
+                    }
+                )
+
+    by_site = {str(x.get("site_id")): x for x in external_observations}
+    for row in site_status:
+        ext = by_site.get(str(row.get("site_id")), {})
+        fishing_hours = ext.get("global_fishing_watch", {}).get("fishing_hours")
+        try:
+            if fishing_hours is not None and float(fishing_hours) > 0:
+                signals.append(
+                    {
+                        "id": f"sig:fishing:{row.get('site_id')}:{iso_now()[:10]}",
+                        "site_id": row.get("site_id"),
+                        "detected_at": iso_now(),
+                        "category": "fishing_activity",
+                        "severity": "informational",
+                        "status": "observed",
+                        "trigger": {"type": "gfw_4wings", "fishing_hours": float(fishing_hours)},
+                        "related_sources": ["Global Fishing Watch"],
+                    }
+                )
+        except (TypeError, ValueError):
+            pass
+
+    return signals
+
+
+def build_recommendations(site_status: list[dict[str, Any]], signals: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_site: dict[str, list[dict[str, Any]]] = {}
+    for signal in signals:
+        by_site.setdefault(str(signal.get("site_id")), []).append(signal)
+
+    recs: list[dict[str, Any]] = []
+    action_by_category = {
+        "major_hazard": ("safety_review", "Review safety conditions before field activity and reassess the site after the hazard window."),
+        "storm_wave": ("field_safety", "Defer non-essential diving or field work until marine conditions normalize."),
+        "coastal_erosion": ("environmental_review", "Review recent coastal/satellite observations and consider a condition survey."),
+        "sediment": ("site_condition_review", "Compare current seabed/sediment context with the established site baseline."),
+        "fishing": ("human_activity_review", "Review fishing activity and potential interaction with the archaeological site."),
+        "fishing_activity": ("human_activity_review", "Treat fishing activity as contextual pressure; compare against the site's historical baseline before escalating."),
+        "dredging": ("project_review", "Review dredging activity and its proximity to the site's protection buffer."),
+        "construction": ("project_review", "Review nearby infrastructure or construction activity and potential effects on the site."),
+        "pollution": ("environmental_review", "Review available marine/environmental observations and inspect the site when appropriate."),
+        "looting": ("heritage_security", "Escalate to the competent heritage authority and verify the reported activity through authorised channels."),
+    }
+
+    for row in site_status:
+        site_id = str(row.get("site_id"))
+        site_signals = by_site.get(site_id, [])
+        if not site_signals and row.get("status") == "stable":
+            continue
+
+        categories = []
+        for s in site_signals:
+            if s.get("category") not in categories:
+                categories.append(s.get("category"))
+
+        selected = categories[:3]
+        actions = [action_by_category[c] for c in selected if c in action_by_category]
+        priority = "high" if row.get("status") == "elevated" else ("medium" if actions else "low")
+
+        recs.append(
+            {
+                "id": f"rec:{site_id}:{iso_now()[:10]}",
+                "site_id": row.get("site_id"),
+                "created_at": iso_now(),
+                "priority": priority,
+                "status": "open",
+                "trigger_signals": [s.get("id") for s in site_signals[:10]],
+                "actions": [
+                    {"type": t, "guidance": g} for t, g in actions
+                ],
+                "note": "Operational monitoring guidance only; human/competent-authority review remains required.",
+            }
+        )
+
+    return recs
+
+
+def build_provenance(source_reports: list[dict[str, Any]], cfg: dict[str, Any]) -> list[dict[str, Any]]:
+    items = []
+    for report in source_reports:
+        items.append(
+            {
+                "source": report.get("source"),
+                "status": "ok" if report.get("ok") else "error",
+                "checked_at": report.get("checked_at") or iso_now(),
+                "message": report.get("message", ""),
+            }
+        )
+
+    for name, block in cfg.get("sources", {}).items():
+        if block.get("enabled"):
+            items.append(
+                {
+                    "source": name,
+                    "status": "configured",
+                    "endpoint": block.get("url") or block.get("base_url") or block.get("wfs_url"),
+                }
+            )
+
+    return items
+
+
+def build_structured_data(
+    cfg: dict[str, Any],
+    sites: list[dict[str, Any]],
+    linked_events: list[dict[str, Any]],
+    web_signals: list[dict[str, Any]],
+    external_observations: list[dict[str, Any]],
+    site_status: list[dict[str, Any]],
+    convention_framework: dict[str, Any],
+    history: list[dict[str, Any]],
+    source_reports: list[dict[str, Any]],
+) -> dict[str, Any]:
+    observations = build_observations(sites, linked_events, web_signals, external_observations)
+    signals = build_signals(site_status, linked_events, web_signals, external_observations)
+    recommendations = build_recommendations(site_status, signals)
+
+    assessments = [
+        row.get("convention_assessment", {})
+        for row in site_status
+    ]
+
+    baseline_days = int(cfg["output"].get("baseline_days", 90))
+    baselines = []
+    for site in sites:
+        ext = next((x for x in external_observations if str(x.get("site_id")) == str(site.get("id"))), {})
+        baselines.append(
+            {
+                "site_id": site.get("id"),
+                "baseline": build_baseline(
+                    str(site.get("id")),
+                    history,
+                    linked_events,
+                    web_signals,
+                    ext,
+                    baseline_days,
+                ),
+            }
+        )
+
+    return {
+        "metadata": {
+            "schema_version": cfg["project"].get("schema_version", "0.3.0"),
+            "pipeline_version": cfg["project"].get("version", "0.2.0"),
+            "generated_at": iso_now(),
+            "timezone": cfg["project"].get("timezone", "UTC"),
+            "history_window_days": int(cfg["output"].get("max_history_days", 180)),
+            "baseline_window_days": baseline_days,
+            "ai_used": False,
+        },
+        "summary": {
+            "site_count": len(sites),
+            "observation_count": len(observations),
+            "signal_count": len(signals),
+            "recommendation_count": len(recommendations),
+            "convention_flagged_sites": sum(1 for x in assessments if x.get("threat_categories")),
+            "status_counts": {
+                state: sum(1 for s in site_status if s.get("status") == state)
+                for state in ("stable", "watch", "elevated")
+            },
+        },
+        "sites": sites,
+        "observations": observations,
+        "baselines": baselines,
+        "signals": signals,
+        "convention": {
+            "framework": convention_framework.get("framework", {}),
+            "site_assessments": assessments,
+        },
+        "recommendations": recommendations,
+        "provenance": build_provenance(source_reports, cfg),
+        "source_status": source_reports,
+    }
+
+
 def main() -> int:
     cfg = load_config()
     sites = load_json(ROOT / cfg["monitoring"]["sites_file"], [])
@@ -396,17 +769,24 @@ def main() -> int:
     if not isinstance(previous, list):
         previous = []
 
-    snapshot = {
-        "generated_at": iso_now(),
+    snapshot = build_structured_data(
+        cfg,
+        sites,
+        linked_events,
+        web_signals,
+        external_observations,
+        site_status,
+        convention_framework,
+        previous,
+        source_reports,
+    )
+    snapshot["legacy"] = {
+        "generated_at": snapshot["metadata"]["generated_at"],
         "sites": len(sites),
         "raw_events": all_events,
         "linked_events": linked_events,
         "web_signals": web_signals,
         "external_observations": external_observations,
-        "convention_framework": {
-            "name": convention_framework.get("framework", {}).get("name"),
-            "source": convention_framework.get("framework", {}).get("source"),
-        },
         "site_status": site_status,
     }
 
