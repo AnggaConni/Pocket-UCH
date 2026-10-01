@@ -98,6 +98,158 @@ def query_copernicus(site: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any
         return {"enabled": True, "ok": False, "message": str(exc)}
 
 
+
+def _bbox(lat: float, lon: float, radius_km: float) -> str:
+    dlat = radius_km / 111.32
+    dlon = radius_km / max(1.0, 111.32 * math.cos(math.radians(lat)))
+    return f"{lon-dlon},{lat-dlat},{lon+dlon},{lat+dlat}"
+
+
+def _point_in_ring(lon: float, lat: float, ring: list[list[float]]) -> bool:
+    inside = False
+    if len(ring) < 3:
+        return False
+    j = len(ring) - 1
+    for i in range(len(ring)):
+        xi, yi = ring[i][0], ring[i][1]
+        xj, yj = ring[j][0], ring[j][1]
+        crosses = ((yi > lat) != (yj > lat)) and (
+            lon < (xj - xi) * (lat - yi) / ((yj - yi) or 1e-15) + xi
+        )
+        if crosses:
+            inside = not inside
+        j = i
+    return inside
+
+
+def _point_in_geometry(lon: float, lat: float, geometry: dict[str, Any] | None) -> bool:
+    if not geometry:
+        return False
+    kind = geometry.get("type")
+    coords = geometry.get("coordinates")
+    if kind == "Polygon":
+        rings = coords or []
+        return bool(rings and _point_in_ring(lon, lat, rings[0]) and not any(_point_in_ring(lon, lat, h) for h in rings[1:]))
+    if kind == "MultiPolygon":
+        for polygon in coords or []:
+            if polygon and _point_in_ring(lon, lat, polygon[0]) and not any(_point_in_ring(lon, lat, h) for h in polygon[1:]):
+                return True
+    return False
+
+
+def query_marine_regions(site: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
+    block = cfg.get("sources", {}).get("marine_regions", {})
+    if not block.get("enabled"):
+        return {"enabled": False}
+    lat, lon = site.get("lat"), site.get("lon")
+    if lat is None or lon is None:
+        return {"enabled": True, "ok": False, "message": "site coordinates missing"}
+
+    try:
+        payload = _get_json(
+            block["wfs_url"],
+            params={
+                "service": "WFS",
+                "version": "1.0.0",
+                "request": "GetFeature",
+                "typeName": "eez_boundaries",
+                "bbox": _bbox(float(lat), float(lon), 80),
+                "outputFormat": "application/json",
+                "maxFeatures": 10,
+            },
+        )
+        matches = []
+        for feature in payload.get("features", []):
+            if _point_in_geometry(float(lon), float(lat), feature.get("geometry")):
+                props = feature.get("properties") or {}
+                matches.append(props)
+        return {
+            "enabled": True,
+            "ok": True,
+            "source": "Marine Regions",
+            "eez_matches": matches[:5],
+            "candidate_count": len(payload.get("features", [])),
+        }
+    except Exception as exc:
+        return {"enabled": True, "ok": False, "message": str(exc)}
+
+
+def query_emodnet(site: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
+    block = cfg.get("sources", {}).get("emodnet_human_activities", {})
+    if not block.get("enabled"):
+        return {"enabled": False}
+    lat, lon = site.get("lat"), site.get("lon")
+    if lat is None or lon is None:
+        return {"enabled": True, "ok": False, "message": "site coordinates missing"}
+
+    try:
+        cap_url = block["wfs_url"]
+        xml = requests.get(
+            cap_url,
+            params={"SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetCapabilities"},
+            headers={"User-Agent": UA},
+            timeout=TIMEOUT,
+        ).text
+
+        import re
+        names = re.findall(r"<(?:[A-Za-z0-9_]+:)?Name>([^<]+)</(?:[A-Za-z0-9_]+:)?Name>", xml)
+        titles = re.findall(r"<(?:[A-Za-z0-9_]+:)?Title>([^<]+)</(?:[A-Za-z0-9_]+:)?Title>", xml)
+        haystack = [x.lower() for x in names + titles]
+
+        keyword_groups = [
+            ("wreck", ["wreck", "wrecks", "cultural", "heritage"]),
+            ("dredging", ["dredg"]),
+            ("shipping", ["ship", "traffic", "vessel", "port"]),
+            ("fishing", ["fish", "trawl"]),
+            ("infrastructure", ["cable", "pipeline", "wind", "energy", "construction"]),
+            ("waste", ["waste", "dump"]),
+        ]
+
+        selected = []
+        for name in names:
+            low = name.lower()
+            score = 0
+            for _, words in keyword_groups:
+                if any(w in low for w in words):
+                    score += 1
+            if score:
+                selected.append((score, name))
+        selected = [x[1] for x in sorted(selected, reverse=True)[:int(block.get("max_layers_per_site", 3))]]
+
+        features = []
+        for layer in selected:
+            try:
+                payload = _get_json(
+                    cap_url,
+                    params={
+                        "service": "WFS",
+                        "version": "1.1.0",
+                        "request": "GetFeature",
+                        "typeName": layer,
+                        "bbox": _bbox(float(lat), float(lon), 25),
+                        "outputFormat": "application/json",
+                        "maxFeatures": 25,
+                    },
+                    timeout=30,
+                )
+                for feature in payload.get("features", [])[:25]:
+                    props = feature.get("properties") or {}
+                    features.append({"layer": layer, "properties": props})
+            except Exception:
+                continue
+
+        return {
+            "enabled": True,
+            "ok": True,
+            "source": "EMODnet Human Activities",
+            "candidate_layers": selected,
+            "feature_count": len(features),
+            "features": features[:100],
+        }
+    except Exception as exc:
+        return {"enabled": True, "ok": False, "message": str(exc)}
+
+
 def query_gfw(site: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
     block = cfg.get("sources", {}).get("global_fishing_watch", {})
     if not block.get("enabled"):
@@ -247,12 +399,16 @@ def run_external_engines(sites: list[dict[str, Any]], cfg: dict[str, Any], frame
     for site in sites:
         cop = query_copernicus(site, cfg)
         gfw = query_gfw(site, cfg)
+        marine_regions = query_marine_regions(site, cfg)
+        emodnet = query_emodnet(site, cfg)
         site_external.append(
             {
                 "site_id": site.get("id"),
                 "site_name": site.get("name"),
                 "copernicus": cop,
                 "global_fishing_watch": gfw,
+                "marine_regions": marine_regions,
+                "emodnet_human_activities": emodnet,
             }
         )
 
