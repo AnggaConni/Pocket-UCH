@@ -145,17 +145,24 @@ def collect(
     max_results = int(block.get("max_results_per_query", 5))
     max_fetches = int(block.get("max_fetches_per_run", 12))
 
-    queries = list(block.get("queries", []))
+    generic_queries = list(block.get("queries", []))
+    site_queries = []
 
-    # Prioritise a small number of site-specific searches when site names exist.
-    for site in sites:
-        if len(queries) >= max_searches:
-            break
-        name = str(site.get("name", "")).strip()
-        if name:
-            country = str(site.get("country", "")).strip()
-            queries.append(f'"{name}" underwater cultural heritage monitoring {country}'.strip())
+    # Reserve up to two slots for monitored-site searches so the web layer
+    # stays global while still tracking named sites.
+    if sites and max_searches >= 2:
+        for site in sites:
+            if len(site_queries) >= 2:
+                break
+            name = str(site.get("name", "")).strip()
+            if name:
+                country = str(site.get("country", "")).strip()
+                site_queries.append(
+                    f'"{name}" underwater cultural heritage monitoring {country}'.strip()
+                )
 
+    generic_budget = max(0, max_searches - len(site_queries))
+    queries = generic_queries[:generic_budget] + site_queries
     queries = queries[:max_searches]
 
     discovered: list[dict[str, Any]] = []
