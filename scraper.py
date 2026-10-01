@@ -291,11 +291,15 @@ def build_baseline(site_id: str, history: list[dict[str, Any]], linked_events: l
     fishing_values: list[float] = []
 
     for snap in site_snapshots:
-        event_count += sum(1 for e in snap.get("linked_events", []) if str(e.get("site_id")) == str(site_id))
-        for ws in snap.get("web_signals", []):
+        legacy = snap.get("legacy", {})
+        linked = snap.get("linked_events", legacy.get("linked_events", []))
+        web = snap.get("web_signals", legacy.get("web_signals", []))
+        external_snapshots = snap.get("external_observations", legacy.get("external_observations", []))
+        event_count += sum(1 for e in linked if str(e.get("site_id")) == str(site_id))
+        for ws in web:
             if str(site_id) in [str(x) for x in ws.get("matched_site_ids", [])]:
                 web_count += 1
-        for ext in snap.get("external_observations", []):
+        for ext in external_snapshots:
             if str(ext.get("site_id")) == str(site_id):
                 try:
                     value = float(ext.get("global_fishing_watch", {}).get("fishing_hours", 0) or 0)
