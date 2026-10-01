@@ -7,6 +7,8 @@ project:
 sources:
   tinyfish:
     enabled: true
+    coverage: global
+    optional: true
     search_endpoint: https://api.search.tinyfish.ai
     fetch_endpoint: https://api.fetch.tinyfish.ai
     max_searches_per_run: 6
@@ -23,26 +25,38 @@ sources:
 
   usgs_earthquakes:
     enabled: true
+    coverage: global
+    optional: false
     url: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson
   bmkg_earthquakes:
     enabled: true
+    coverage: Indonesia
+    optional: true
     url: https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json
   bmkg_marine:
     enabled: true
+    coverage: Indonesia
+    optional: true
     base_url: https://maritim.bmkg.go.id/marine2026-data/
     metadata_url: https://maritim.bmkg.go.id/marine2026-data/meta/area_province.json
     locations_url: https://maritim.bmkg.go.id/marine2026-data/meta/wilmetos.min.geojson
   nasa_eonet:
     enabled: true
+    coverage: global
+    optional: false
     url: https://eonet.gsfc.nasa.gov/api/v3/events
     params:
       status: open
       limit: 100
   gebco_wms:
     enabled: true
+    coverage: global
+    optional: false
     url: https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv
   copernicus_stac:
     enabled: true
+    coverage: global
+    optional: false
     url: https://stac.dataspace.copernicus.eu/v1/search
     collections:
       - sentinel-2-l2a
@@ -51,14 +65,20 @@ sources:
     max_items_per_site: 5
   global_fishing_watch:
     enabled: true
+    coverage: global
+    optional: true
     url: https://gateway.api.globalfishingwatch.org/v3/4wings/report
     days_back: 7
     spatial_resolution: LOW
   marine_regions:
     enabled: true
+    coverage: global
+    optional: false
     wfs_url: https://geo.vliz.be/geoserver/MarineRegions/wfs
   emodnet_human_activities:
     enabled: true
+    coverage: Europe
+    optional: true
     wfs_url: https://ows.emodnet-humanactivities.eu/wfs
     max_layers_per_site: 3
 
@@ -67,6 +87,7 @@ monitoring:
   satellite_radius_km: 5
   fishing_radius_km: 10
   maritime_zone_required: false
+  global_mode: true
   earthquake:
     min_magnitude: 4.5
   eonet:
