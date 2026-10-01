@@ -43,9 +43,31 @@ sources:
   gebco_wms:
     enabled: true
     url: https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv
+  copernicus_stac:
+    enabled: true
+    url: https://stac.dataspace.copernicus.eu/v1/search
+    collections:
+      - SENTINEL-2
+      - SENTINEL-1
+    days_back: 30
+    max_items_per_site: 5
+  global_fishing_watch:
+    enabled: true
+    url: https://gateway.api.globalfishingwatch.org/v3/4wings/report
+    days_back: 7
+    spatial_resolution: LOW
+  marine_regions:
+    enabled: true
+    wfs_url: https://geo.vliz.be/geoserver/MarineRegions/wfs
+  emodnet_human_activities:
+    enabled: true
+    wfs_url: https://ows.emodnet-humanactivities.eu/wfs
 
 monitoring:
   default_radius_km: 100
+  satellite_radius_km: 5
+  fishing_radius_km: 10
+  maritime_zone_required: false
   earthquake:
     min_magnitude: 4.5
   eonet:
@@ -69,4 +91,5 @@ output:
   history_file: data/history.json
   status_file: data/status.json
   tinyfish_state_file: data/tinyfish_state.json
+  convention_rules_file: convention.yml
   max_history_days: 180
