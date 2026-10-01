@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "schema_version": "0.3.0",
+    "pipeline_version": "0.2.0",
+    "generated_at": null,
+    "timezone": "Asia/Jakarta",
+    "history_window_days": 180,
+    "baseline_window_days": 90,
+    "ai_used": false
+  },
+  "summary": {
+    "site_count": 1,
+    "observation_count": 0,
+    "signal_count": 0,
+    "recommendation_count": 0,
+    "convention_flagged_sites": 0,
+    "status_counts": {
+      "stable": 1,
+      "watch": 0,
+      "elevated": 0
+    }
+  },
+  "sites": [
+    {
+      "id": "demo-001",
+      "name": "Demo UCH Site",
+      "aliases": [
+        "Example Shipwreck"
+      ],
+      "country": "Indonesia",
+      "region": "Example",
+      "coordinates": {
+        "lat": -6.2,
+        "lon": 106.8,
+        "accuracy_m": null
+      },
+      "depth_m": null,
+      "type": "shipwreck",
+      "status": "monitor",
+      "monitoring": {
+        "satellite": true,
+        "fishing": true,
+        "marine_weather": true,
+        "natural_hazards": true,
+        "web_monitoring": true
+      },
+      "convention_profile": {
+        "maritime_zone": "unknown",
+        "state_party": "Indonesia",
+        "state_vessel": false,
+        "human_remains": false,
+        "venerated_site": false,
+        "significance": "unknown",
+        "vulnerability": "unknown",
+        "in_situ": true,
+        "monitoring_enabled": true,
+        "authorization_status": "unknown",
+        "documentation_status": "unknown",
+        "competent_authority": null,
+        "inventory_id": null,
+        "reporting_channel": null,
+        "sensitive_data_policy": "restricted",
+        "public_information": "unknown",
+        "cooperation_partners": []
+      }
+    }
+  ],
+  "observations": [],
+  "baselines": [
+    {
+      "site_id": "demo-001",
+      "baseline": {
+        "status": "establishing",
+        "window_days": 90,
+        "snapshot_count": 0,
+        "minimum_snapshots_for_comparison": 7,
+        "indicators": {},
+        "note": "Baseline is descriptive until enough observations are accumulated; no predictive model is used."
+      }
+    }
+  ],
+  "signals": [],
+  "convention": {
+    "framework": {
+      "name": "UNESCO 2001 Convention on the Protection of the Underwater Cultural Heritage",
+      "source": "https://www.unesco.org/en/legal-affairs/convention-protection-underwater-cultural-heritage"
+    },
+    "site_assessments": []
+  },
+  "recommendations": [],
+  "provenance": [],
+  "source_status": []
+}
