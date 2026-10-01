@@ -41,8 +41,30 @@ jobs:
 
       - name: Commit generated data
         run: |
+          set -e
           git config user.name "pocket-uch-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/
-          git diff --cached --quiet || git commit -m "chore: update UCH monitoring data"
-          git push
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --mixed origin/main
+            git add data/
+
+            if git diff --cached --quiet; then
+              echo "No generated data changes."
+              exit 0
+            fi
+
+            git commit -m "chore: update UCH monitoring data"
+
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "Push race detected; retrying (${attempt}/3)..."
+            git reset --mixed HEAD~1
+            sleep 3
+          done
+
+          echo "Unable to push generated data after 3 attempts."
+          exit 1
