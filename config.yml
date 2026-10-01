@@ -68,4 +68,5 @@ output:
   data_file: data/data.json
   history_file: data/history.json
   status_file: data/status.json
+  tinyfish_state_file: data/tinyfish_state.json
   max_history_days: 180
