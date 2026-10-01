@@ -36,7 +36,8 @@ hazard / EO / maritime / web signals
    ↓
 scraper.py
    ↓
-data/data.json
+data/data.json        ← full monitoring record
+data/dashboard.json  ← lightweight UI payload
    ↓
 PWA / desktop-mobile UI
 ```
@@ -110,7 +111,7 @@ All external sources are optional and fail gracefully so one unavailable source 
 
 ## Data model
 
-The generated `data/data.json` is the main contract for the future Pocket App.
+The generated data/data.json is the full machine-readable monitoring record. The generated data/dashboard.json is a compact frontend-oriented projection used by the Pocket-UCH dashboard so the interface does not need to download internal history/external-response blocks.
 
 Top-level structure:
 
@@ -180,3 +181,20 @@ This is a **global monitoring interface with partial public-inventory coverage**
 Inventory records retain their source URL and source record ID. Public source points are displayed as real public points. Sensitive/private records can still be injected through `UCH_PRIVATE_SITES_JSON` and generalized before publication.
 
 Inventory points are kept lightweight: hazard/event linking is enabled by default, while expensive deep per-site external queries such as Copernicus and Global Fishing Watch are reserved for curated sites. This prevents an expanding public inventory from turning into hundreds of paid/API-heavy calls per run.
+
+
+## Product function
+
+Pocket-UCH is intentionally organized around one operational question:
+
+**Where is the underwater heritage, what is changing around it, and what should we check next?**
+
+The dashboard therefore follows four steps:
+1. **Find** — map public UCH inventory records.
+2. **Detect** — show nearby hazards, environmental events and human-activity signals.
+3. **Assess** — link observable events to sites using deterministic spatial/context rules.
+4. **Anticipate** — produce a deterministic monitoring pathway describing the next evidence to review or condition to verify.
+
+The fourth step is a **monitoring pathway, not a prediction model**.
+
+The dashboard uses data/dashboard.json as its preferred frontend feed, with data/data.json retained as the complete monitoring record.
