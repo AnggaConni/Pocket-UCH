@@ -397,6 +397,26 @@ def run_external_engines(sites: list[dict[str, Any]], cfg: dict[str, Any], frame
     reports = []
 
     for site in sites:
+        monitoring = site.get("monitoring") or {}
+        if monitoring.get("external_context") is False:
+            skipped = {
+                "enabled": False,
+                "ok": True,
+                "skipped": True,
+                "message": "public inventory site uses hazard/event linking only",
+            }
+            site_external.append(
+                {
+                    "site_id": site.get("id"),
+                    "site_name": site.get("name"),
+                    "copernicus": skipped,
+                    "global_fishing_watch": skipped,
+                    "marine_regions": skipped,
+                    "emodnet_human_activities": skipped,
+                }
+            )
+            continue
+
         cop = query_copernicus(site, cfg)
         gfw = query_gfw(site, cfg)
         marine_regions = query_marine_regions(site, cfg)
