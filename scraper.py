@@ -550,6 +550,283 @@ def build_recommendations(site_status: list[dict[str, Any]], signals: list[dict[
     return recs
 
 
+
+def build_foresight(site_status: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """
+    Deterministic monitoring pathway, not a prediction model.
+    It answers: given the current trigger, what should be checked next?
+    """
+    pathways = {
+        "earthquake": {
+            "path": [
+                "Hazard recorded near site",
+                "Check for seabed / structural disturbance",
+                "Review latest radar or optical imagery",
+                "Field verification when conditions permit",
+            ],
+            "next_check": "Review latest Sentinel-1/2 availability and site-condition information.",
+        },
+        "severe_storm": {
+            "path": [
+                "Storm recorded near site",
+                "Check wave / sediment exposure",
+                "Review latest radar or optical imagery",
+                "Inspect site access and condition",
+            ],
+            "next_check": "Review imagery and marine conditions after the storm window.",
+        },
+        "flood": {
+            "path": [
+                "Flood event recorded",
+                "Check sediment / runoff exposure",
+                "Review coastal or estuarine imagery",
+                "Verify site condition when safe",
+            ],
+            "next_check": "Check for sediment-plume or water-quality evidence around the site.",
+        },
+        "landslide": {
+            "path": [
+                "Landslide event recorded",
+                "Check downstream sediment exposure",
+                "Review imagery for plume / seabed change",
+                "Verify site condition when safe",
+            ],
+            "next_check": "Review recent imagery for sediment transport toward the site.",
+        },
+        "fishing": {
+            "path": [
+                "Fishing activity observed",
+                "Check interaction with site buffer",
+                "Compare activity with baseline",
+                "Review field / enforcement records if needed",
+            ],
+            "next_check": "Compare current fishing activity with the site's historical baseline.",
+        },
+        "dredging": {
+            "path": [
+                "Dredging signal detected",
+                "Check project proximity",
+                "Review authorization / project records",
+                "Inspect sediment exposure if relevant",
+            ],
+            "next_check": "Verify the activity footprint against the site's protection context.",
+        },
+        "construction": {
+            "path": [
+                "Construction signal detected",
+                "Check project proximity",
+                "Review project / heritage controls",
+                "Inspect site context if exposure is plausible",
+            ],
+            "next_check": "Check whether the reported project overlaps the site's monitoring buffer.",
+        },
+        "pollution": {
+            "path": [
+                "Pollution signal detected",
+                "Check environmental exposure",
+                "Review recent marine / coastal observations",
+                "Inspect site condition when appropriate",
+            ],
+            "next_check": "Review recent environmental observations around the site.",
+        },
+        "looting": {
+            "path": [
+                "Heritage-security signal detected",
+                "Verify source and location",
+                "Notify competent authority through authorised channels",
+                "Protect sensitive site information",
+            ],
+            "next_check": "Validate the report through an authorised heritage channel.",
+        },
+    }
+
+    out = []
+    for row in site_status:
+        events = row.get("events") or []
+        web_count = int(row.get("web_actionable_signal_count", 0) or 0)
+        if not events and web_count == 0:
+            continue
+
+        event = events[0] if events else {}
+        event_type = str(event.get("type", "")).lower()
+        categories = []
+        for cat in event.get("categories", []) or []:
+            categories.append(str(cat).lower())
+        if event_type == "earthquake":
+            key = "earthquake"
+        elif any("severe storm" in x for x in categories):
+            key = "severe_storm"
+        elif any("flood" in x for x in categories):
+            key = "flood"
+        elif any("landslide" in x for x in categories):
+            key = "landslide"
+        else:
+            key = None
+
+        if not key:
+            key = "fishing" if web_count and "fishing" in str(row.get("web_recommendations", [])).lower() else "pollution" if web_count else "earthquake" if event_type else None
+
+        pathway = pathways.get(key, {
+            "path": [
+                "Signal detected near site",
+                "Check relevance and exposure",
+                "Review latest available evidence",
+                "Field verification if warranted",
+            ],
+            "next_check": "Review the latest evidence relevant to the reported signal.",
+        })
+
+        out.append({
+            "site_id": row.get("site_id"),
+            "mode": "deterministic monitoring pathway",
+            "trigger": event.get("title") or ("Web signal detected" if web_count else "External event detected"),
+            "path": pathway["path"],
+            "next_check": pathway["next_check"],
+            "basis": {
+                "event_type": event_type or None,
+                "distance_km": event.get("distance_km"),
+                "web_actionable_signal_count": web_count,
+            },
+            "notice": "This is a monitoring pathway, not a prediction of future events.",
+        })
+    return out
+
+
+def build_global_incidents(all_events: list[dict[str, Any]], sites: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    incidents = []
+    for event in sorted(all_events, key=lambda x: str(x.get("timestamp", "")), reverse=True):
+        nearest = None
+        nearest_distance = None
+        try:
+            event_lat = float(event.get("lat"))
+            event_lon = float(event.get("lon"))
+            for site in sites:
+                if site.get("lat") is None or site.get("lon") is None:
+                    continue
+                distance = haversine_km(
+                    event_lat,
+                    event_lon,
+                    float(site["lat"]),
+                    float(site["lon"]),
+                )
+                if nearest_distance is None or distance < nearest_distance:
+                    nearest_distance = distance
+                    nearest = site
+        except (TypeError, ValueError):
+            pass
+
+        incidents.append({
+            "id": event.get("id"),
+            "source": event.get("source"),
+            "type": event.get("type"),
+            "title": event.get("title"),
+            "timestamp": event.get("timestamp"),
+            "lat": event.get("lat"),
+            "lon": event.get("lon"),
+            "magnitude": event.get("magnitude"),
+            "place": event.get("place"),
+            "categories": event.get("categories", []),
+            "url": event.get("url"),
+            "nearest_site_id": nearest.get("id") if nearest else None,
+            "nearest_site_name": nearest.get("name") if nearest else None,
+            "nearest_site_distance_km": round(nearest_distance, 2) if nearest_distance is not None else None,
+        })
+    return incidents
+
+
+def build_dashboard_payload(
+    snapshot: dict[str, Any],
+    all_events: list[dict[str, Any]],
+    sites: list[dict[str, Any]],
+    site_status: list[dict[str, Any]],
+    source_reports: list[dict[str, Any]],
+) -> dict[str, Any]:
+    public_sites = []
+    inventory_counts: dict[str, int] = {}
+
+    for site in snapshot.get("sites", []):
+        item = {
+            "id": site.get("id"),
+            "name": site.get("name"),
+            "country": site.get("country"),
+            "region": site.get("region"),
+            "type": site.get("type"),
+            "status": site.get("status"),
+            "location": site.get("location"),
+            "inventory": site.get("inventory"),
+            "notes": site.get("notes"),
+        }
+        public_sites.append(item)
+        source_name = str((site.get("inventory") or {}).get("source") or "Curated")
+        inventory_counts[source_name] = inventory_counts.get(source_name, 0) + 1
+
+    compact_status = []
+    foresight_rows = build_foresight(site_status)
+    foresight_by_site = {str(x["site_id"]): x for x in foresight_rows}
+
+    for row in site_status:
+        compact_events = []
+        for event in (row.get("events") or [])[:5]:
+            compact_events.append({
+                "id": event.get("id"),
+                "source": event.get("source"),
+                "type": event.get("type"),
+                "title": event.get("title"),
+                "timestamp": event.get("timestamp"),
+                "distance_km": event.get("distance_km"),
+                "magnitude": event.get("magnitude"),
+                "place": event.get("place"),
+                "categories": event.get("categories", []),
+                "url": event.get("url"),
+            })
+        compact_status.append({
+            "site_id": row.get("site_id"),
+            "site_name": row.get("site_name"),
+            "status": row.get("status"),
+            "event_count": row.get("event_count", 0),
+            "updated_at": row.get("updated_at"),
+            "events": compact_events,
+            "web_signal_count": row.get("web_signal_count", 0),
+            "web_actionable_signal_count": row.get("web_actionable_signal_count", 0),
+            "web_recommendations": row.get("web_recommendations", []),
+            "convention_assessment": {
+                "triggered_articles": (row.get("convention_assessment") or {}).get("triggered_articles", []),
+                "triggered_rules": (row.get("convention_assessment") or {}).get("triggered_rules", []),
+                "threat_categories": (row.get("convention_assessment") or {}).get("threat_categories", []),
+                "data_gaps": (row.get("convention_assessment") or {}).get("data_gaps", []),
+            },
+            "foresight": foresight_by_site.get(str(row.get("site_id"))),
+        })
+
+    incidents = build_global_incidents(all_events, sites)
+    exposed_site_count = sum(1 for row in compact_status if row.get("status") != "stable")
+    next_check_count = sum(1 for row in foresight_rows)
+
+    return {
+        "metadata": snapshot.get("metadata", {}),
+        "summary": {
+            **snapshot.get("summary", {}),
+            "incident_count": len(incidents),
+            "exposed_site_count": exposed_site_count,
+            "next_check_count": next_check_count,
+        },
+        "inventory": {
+            "coverage": "partial public inventory coverage",
+            "site_count": len(public_sites),
+            "by_source": inventory_counts,
+        },
+        "sites": public_sites,
+        "site_status": compact_status,
+        "incidents": incidents[:150],
+        "signals": snapshot.get("signals", []),
+        "recommendations": snapshot.get("recommendations", []),
+        "convention": snapshot.get("convention", {}),
+        "provenance": snapshot.get("provenance", []),
+        "source_status": source_reports,
+        "generated_at": snapshot.get("metadata", {}).get("generated_at"),
+        "notice": "Pocket-UCH is a monitoring and screening aid. Public inventory coverage is partial and operational pathways are not predictions or legal determinations.",
+    }
+
 def build_provenance(source_reports: list[dict[str, Any]], cfg: dict[str, Any]) -> list[dict[str, Any]]:
     items = []
     for report in source_reports:
@@ -914,6 +1191,15 @@ def main() -> int:
             trimmed.append(item)
 
     save_json(data_path, snapshot)
+    dashboard_path = ROOT / cfg["output"].get("dashboard_file", "data/dashboard.json")
+    dashboard_payload = build_dashboard_payload(
+        snapshot,
+        all_events,
+        sites,
+        site_status,
+        source_reports,
+    )
+    save_json(dashboard_path, dashboard_payload)
     save_json(history_path, trimmed)
 
     status = {
