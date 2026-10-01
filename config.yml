@@ -34,7 +34,7 @@ sources:
     optional: true
     url: https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json
   bmkg_marine:
-    enabled: true
+    enabled: false
     coverage: Indonesia
     optional: true
     base_url: https://maritim.bmkg.go.id/marine2026-data/
@@ -49,7 +49,7 @@ sources:
       status: open
       limit: 100
   gebco_wms:
-    enabled: true
+    enabled: false
     coverage: global
     optional: false
     url: https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv
