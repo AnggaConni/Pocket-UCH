@@ -396,27 +396,15 @@ def run_external_engines(sites: list[dict[str, Any]], cfg: dict[str, Any], frame
     site_external = []
     reports = []
 
-    for site in sites:
-        monitoring = site.get("monitoring") or {}
-        if monitoring.get("external_context") is False:
-            skipped = {
-                "enabled": False,
-                "ok": True,
-                "skipped": True,
-                "message": "public inventory site uses hazard/event linking only",
-            }
-            site_external.append(
-                {
-                    "site_id": site.get("id"),
-                    "site_name": site.get("name"),
-                    "copernicus": skipped,
-                    "global_fishing_watch": skipped,
-                    "marine_regions": skipped,
-                    "emodnet_human_activities": skipped,
-                }
-            )
-            continue
+    # Public inventory sites are intentionally lightweight. They still receive
+    # hazard/event linking in scraper.py, but expensive per-site EO/fishing
+    # queries are reserved for curated monitoring sites.
+    active_sites = [
+        site for site in sites
+        if (site.get("monitoring") or {}).get("external_context") is not False
+    ]
 
+    for site in active_sites:
         cop = query_copernicus(site, cfg)
         gfw = query_gfw(site, cfg)
         marine_regions = query_marine_regions(site, cfg)
@@ -433,8 +421,8 @@ def run_external_engines(sites: list[dict[str, Any]], cfg: dict[str, Any], frame
         )
 
     src = cfg.get("sources", {})
-    reports.append({"source": "Copernicus STAC", "ok": all(x["copernicus"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("copernicus_stac", {}).get("coverage", "global"), "optional": src.get("copernicus_stac", {}).get("optional", False)})
-    reports.append({"source": "Global Fishing Watch", "ok": all(x["global_fishing_watch"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("global_fishing_watch", {}).get("coverage", "global"), "optional": src.get("global_fishing_watch", {}).get("optional", True)})
-    reports.append({"source": "Marine Regions", "ok": all(x["marine_regions"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("marine_regions", {}).get("coverage", "global"), "optional": src.get("marine_regions", {}).get("optional", False)})
-    reports.append({"source": "EMODnet Human Activities", "ok": all(x["emodnet_human_activities"].get("ok", True) for x in site_external), "sites": len(site_external), "coverage": src.get("emodnet_human_activities", {}).get("coverage", "Europe"), "optional": src.get("emodnet_human_activities", {}).get("optional", True)})
+    reports.append({"source": "Copernicus STAC", "ok": all(x["copernicus"].get("ok", True) for x in site_external), "sites": len(active_sites), "coverage": src.get("copernicus_stac", {}).get("coverage", "global"), "optional": src.get("copernicus_stac", {}).get("optional", False)})
+    reports.append({"source": "Global Fishing Watch", "ok": all(x["global_fishing_watch"].get("ok", True) for x in site_external), "sites": len(active_sites), "coverage": src.get("global_fishing_watch", {}).get("coverage", "global"), "optional": src.get("global_fishing_watch", {}).get("optional", True)})
+    reports.append({"source": "Marine Regions", "ok": all(x["marine_regions"].get("ok", True) for x in site_external), "sites": len(active_sites), "coverage": src.get("marine_regions", {}).get("coverage", "global"), "optional": src.get("marine_regions", {}).get("optional", False)})
+    reports.append({"source": "EMODnet Human Activities", "ok": all(x["emodnet_human_activities"].get("ok", True) for x in site_external), "sites": len(active_sites), "coverage": src.get("emodnet_human_activities", {}).get("coverage", "Europe"), "optional": src.get("emodnet_human_activities", {}).get("optional", True)})
     return site_external, reports
