@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071826">
+<meta name="description" content="Pocket-UCH — global underwater cultural heritage monitoring, environmental signals and Convention-aware foresight.">
+<title>Pocket-UCH | Underwater Cultural Heritage Radar</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['DM Sans','sans-serif'],
+        display: ['Space Grotesk','sans-serif']
+      },
+      colors: {
+        ocean: {
+          950:'#03101a',
+          900:'#071826',
+          800:'#0b2536',
+          700:'#123b50',
+          600:'#17627d',
+          500:'#1c93b8',
+          400:'#46c5dc',
+          300:'#8be5ec'
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+:root{
+  --bg:#06131d;
+  --panel:#0b1d2a;
+  --panel2:#0f2635;
+  --line:rgba(139,229,236,.12);
+  --text:#ecfeff;
+  --muted:#86a9b6;
+  --cyan:#55d8e6;
+  --cyan2:#8be5ec;
+  --green:#63e6be;
+  --amber:#ffd166;
+  --red:#ff718b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+body{min-height:100vh;overflow-x:hidden}
+.font-display{font-family:'Space Grotesk',sans-serif}
+.glass{background:linear-gradient(180deg,rgba(14,38,53,.9),rgba(8,24,35,.92));border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.soft{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.065)}
+.mini{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6f98a7;font-weight:700}
+.muted{color:var(--muted)}
+.pill{border:1px solid rgba(139,229,236,.16);background:rgba(139,229,236,.05)}
+.map-wrap{min-height:520px}
+#map{height:520px;background:#06131d}
+.leaflet-container{font-family:'DM Sans',sans-serif;background:#071826}
+.leaflet-control-zoom a{background:#0b1d2a!important;color:#dffcff!important;border:1px solid rgba(139,229,236,.14)!important}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0b1d2a;color:#dffcff;border:1px solid rgba(139,229,236,.14)}
+.leaflet-popup-content{margin:14px;min-width:220px}
+.site-point{width:18px;height:18px;border-radius:999px;background:#55d8e6;border:3px solid #dffcff;box-shadow:0 0 0 0 rgba(85,216,230,.65);animation:pulse 2.4s infinite}
+.site-point.watch{background:#ffd166;box-shadow:0 0 0 0 rgba(255,209,102,.55)}
+.site-point.elevated{background:#ff718b;box-shadow:0 0 0 0 rgba(255,113,139,.55)}
+@keyframes pulse{70%{box-shadow:0 0 0 12px rgba(85,216,230,0)}100%{box-shadow:0 0 0 0 rgba(85,216,230,0)}}
+.hero-grid{background-image:linear-gradient(rgba(139,229,236,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(139,229,236,.045) 1px,transparent 1px);background-size:36px 36px}
+.glow{filter:drop-shadow(0 0 18px rgba(85,216,230,.18))}
+.radar-sweep{transform-origin:100px 100px;animation:sweep 5s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.ring{fill:none;stroke:rgba(139,229,236,.16);stroke-width:1}
+.scan-line{stroke:rgba(139,229,236,.22);stroke-width:1;stroke-dasharray:3 7}
+.topo{fill:none;stroke:rgba(139,229,236,.12);stroke-width:1}
+.metric-value{font-family:'Space Grotesk',sans-serif;font-weight:700}
+.scroll-x{overflow-x:auto;scrollbar-width:thin}
+.nav-link{color:#7da0ad}
+.nav-link.active{color:#dffcff;background:rgba(85,216,230,.09);border-color:rgba(85,216,230,.16)}
+.progress-track{height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#17627d,#55d8e6)}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.status-stable{background:#63e6be}.status-watch{background:#ffd166}.status-elevated{background:#ff718b}
+.tag{font-size:10px;font-weight:700;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.05);color:#a8c7d1;border:1px solid rgba(255,255,255,.06)}
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.09),rgba(255,255,255,.04));background-size:200% 100%;animation:shimmer 1.8s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+@media(max-width:900px){.map-wrap,#map{min-height:430px;height:430px}}
+@media(max-width:640px){.map-wrap,#map{min-height:360px;height:360px}.hero-grid{background-size:24px 24px}}
+</style>
+</head>
+<body>
+
+<header class="sticky top-0 z-[1000] border-b border-white/5 bg-[#06131d]/92 backdrop-blur-xl">
+  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-300/15 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 40 40" class="w-7 h-7 text-cyan-300 fill-none stroke-current" aria-hidden="true">
+          <circle cx="20" cy="20" r="14" stroke-width="1.5"></circle>
+          <circle cx="20" cy="20" r="5" stroke-width="1.5"></circle>
+          <path d="M20 4v7M20 29v7M4 20h7M29 20h7M8.7 8.7l5 5M26.3 26.3l5 5M31.3 8.7l-5 5M13.7 26.3l-5 5" stroke-width="1"></path>
+        </svg>
+      </div>
+      <div class="min-w-0">
+        <div class="font-display font-bold tracking-tight text-base sm:text-lg truncate">Pocket-UCH</div>
+        <div class="mini truncate">Underwater Cultural Heritage Radar</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <div id="global-badge" class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl pill">
+        <span class="status-dot status-stable" id="live-dot"></span>
+        <span class="text-xs font-semibold text-slate-200">Global monitoring</span>
+      </div>
+      <button id="refresh-btn" class="px-3 py-2 rounded-xl soft hover:bg-white/7 transition text-xs font-semibold flex items-center gap-2" title="Reload data">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-none stroke-current" stroke-width="1.8"><path d="M20 11a8.1 8.1 0 0 0-14.6-4.8L3 9m0 0V4m0 5h5M4 13a8.1 8.1 0 0 0 14.6 4.8L21 15m0 0v5m0-5h-5"/></svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
+
+<section class="glass rounded-3xl overflow-hidden hero-grid relative">
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <svg viewBox="0 0 1200 420" class="absolute inset-0 w-full h-full opacity-80" preserveAspectRatio="none">
+      <path d="M0 315 C140 270 225 350 360 305 S615 268 760 320 S1040 355 1200 295" class="topo"></path>
+      <path d="M0 350 C150 302 250 384 390 335 S640 305 780 350 S1010 390 1200 325" class="topo"></path>
+      <path d="M0 385 C160 345 260 410 420 365 S670 345 820 382 S1040 420 1200 362" class="topo"></path>
+    </svg>
+  </div>
+
+  <div class="relative grid lg:grid-cols-[1fr_300px] gap-5 p-5 sm:p-7 lg:p-9">
+    <div class="flex flex-col justify-center">
+      <div class="mini mb-3">Protection · Research · Education · Responsible Access</div>
+      <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight max-w-4xl">
+        Monitoring the <span class="text-cyan-300">underwater past</span> through today's signals.
+      </h1>
+      <p class="muted max-w-3xl mt-4 text-sm sm:text-base leading-7">
+        A non-AI monitoring layer combining hazards, satellite availability, maritime activity and web intelligence with a UNESCO 2001 Convention-aware context.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-5">
+        <span class="tag">NO LLM</span>
+        <span class="tag">GLOBAL MODE</span>
+        <span class="tag">SITE-CENTRIC</span>
+        <span class="tag">CONVENTION-AWARE</span>
+      </div>
+    </div>
+
+    <div class="hidden sm:flex justify-center items-center">
+      <svg viewBox="0 0 200 200" class="w-52 h-52 glow" aria-label="Monitoring radar illustration">
+        <circle cx="100" cy="100" r="84" class="ring"></circle>
+        <circle cx="100" cy="100" r="63" class="ring"></circle>
+        <circle cx="100" cy="100" r="42" class="ring"></circle>
+        <line x1="16" y1="100" x2="184" y2="100" class="scan-line"></line>
+        <line x1="100" y1="16" x2="100" y2="184" class="scan-line"></line>
+        <g class="radar-sweep">
+          <path d="M100 100 L174 55 A87 87 0 0 1 180 78 Z" fill="rgba(85,216,230,.12)"></path>
+          <line x1="100" y1="100" x2="178" y2="66" stroke="#55d8e6" stroke-width="1.6"></line>
+        </g>
+        <circle cx="131" cy="64" r="3.5" fill="#63e6be"></circle>
+        <circle cx="68" cy="124" r="3" fill="#ffd166"></circle>
+        <circle cx="120" cy="139" r="3" fill="#55d8e6"></circle>
+        <circle cx="100" cy="100" r="4" fill="#dffcff"></circle>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
+  <div class="glass rounded-2xl p-4"><div class="mini">Sites</div><div id="m-sites" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">monitored</div></div>
+  <div class="glass rounded-2xl p-4"><div class="mini">Stable</div><div id="m-stable" class="metric-value text-2xl text-emerald-300 mt-1">—</div><div class="muted text-[11px] mt-1">no active trigger</div></div>
+  <div class="glass rounded-2xl p-4"><div class="mini">Watch</div><div id="m-watch" class="metric-value text-2xl text-amber-300 mt-1">—</div><div class="muted text-[11px] mt-1">review signals</div></div>
+  <div class="glass rounded-2xl p-4"><div class="mini">Elevated</div><div id="m-elevated" class="metric-value text-2xl text-rose-300 mt-1">—</div><div class="muted text-[11px] mt-1">priority attention</div></div>
+  <div class="glass rounded-2xl p-4 col-span-2 lg:col-span-1"><div class="mini">Signals</div><div id="m-signals" class="metric-value text-2xl text-cyan-300 mt-1">—</div><div class="muted text-[11px] mt-1">deterministic</div></div>
+</section>
+
+<section class="grid xl:grid-cols-[1.6fr_.8fr] gap-4 mt-4">
+  <div class="glass rounded-3xl overflow-hidden">
+    <div class="p-4 sm:p-5 flex flex-wrap justify-between gap-3 border-b border-white/5">
+      <div>
+        <div class="mini">Geospatial monitor</div>
+        <h2 class="font-display text-lg sm:text-xl font-semibold mt-1">Global UCH Watch Map</h2>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 text-[11px]">
+        <span class="flex items-center gap-1.5"><span class="status-dot status-stable"></span>Stable</span>
+        <span class="flex items-center gap-1.5"><span class="status-dot status-watch"></span>Watch</span>
+        <span class="flex items-center gap-1.5"><span class="status-dot status-elevated"></span>Elevated</span>
+        <span class="tag">Protected = area</span>
+      </div>
+    </div>
+    <div class="map-wrap p-2"><div id="map" class="rounded-2xl overflow-hidden"></div></div>
+  </div>
+
+  <div class="glass rounded-3xl p-4 sm:p-5">
+    <div class="mini">Site health</div>
+    <div id="site-health" class="mt-4 space-y-3"></div>
+    <div class="mt-5 soft rounded-2xl p-4">
+      <div class="mini mb-2">Status legend</div>
+      <div class="text-xs leading-6 muted">
+        Stable means no deterministic active trigger was produced in the current snapshot. Watch means review is recommended. Elevated indicates a higher-priority trigger such as a nearby significant hazard.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="grid xl:grid-cols-[1.15fr_.85fr] gap-4 mt-4">
+  <div class="glass rounded-3xl p-4 sm:p-5">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <div class="mini">Signal radar</div>
+        <h2 class="font-display text-lg font-semibold mt-1">What the system is seeing</h2>
+      </div>
+      <div class="text-right"><div class="mini">Current</div><div id="signal-total" class="metric-value text-xl text-cyan-300">—</div></div>
+    </div>
+    <div id="signal-list" class="mt-4 space-y-2"></div>
+  </div>
+
+  <div class="glass rounded-3xl p-4 sm:p-5">
+    <div class="mini">Convention context</div>
+    <h2 class="font-display text-lg font-semibold mt-1">UNESCO 2001 lens</h2>
+    <div id="convention-summary" class="mt-4"></div>
+    <div class="mt-5 grid grid-cols-2 gap-3">
+      <div class="soft rounded-2xl p-4"><div class="mini">Articles</div><div id="c-articles" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">triggered contexts</div></div>
+      <div class="soft rounded-2xl p-4"><div class="mini">Annex rules</div><div id="c-rules" class="metric-value text-2xl mt-1">—</div><div class="muted text-[11px] mt-1">triggered contexts</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="grid xl:grid-cols-[.9fr_1.1fr] gap-4 mt-4">
+  <div class="glass rounded-3xl p-4 sm:p-5">
+    <div class="mini">Foresight layer</div>
+    <h2 class="font-display text-lg font-semibold mt-1">Operational recommendations</h2>
+    <div id="recommendations" class="mt-4 space-y-3"></div>
+  </div>
+
+  <div class="glass rounded-3xl p-4 sm:p-5">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <div class="mini">Source health</div>
+        <h2 class="font-display text-lg font-semibold mt-1">External data feeds</h2>
+      </div>
+      <div id="source-count" class="tag">—</div>
+    </div>
+    <div id="source-list" class="mt-4 grid md:grid-cols-2 gap-2"></div>
+  </div>
+</section>
+
+<section class="glass rounded-3xl p-4 sm:p-5 mt-4">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <div class="mini">Responsible disclosure</div>
+      <h2 class="font-display text-lg font-semibold mt-1">Protection without fake coordinates</h2>
+    </div>
+    <div class="tag">PUBLIC POINT · PROTECTED AREA</div>
+  </div>
+  <div class="grid md:grid-cols-3 gap-3 mt-4">
+    <div class="soft rounded-2xl p-4"><div class="text-cyan-300 mb-2"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/></svg></div><div class="font-semibold text-sm">Public site</div><div class="muted text-xs leading-5 mt-1">The actual published point can be shown when disclosure is appropriate.</div></div>
+    <div class="soft rounded-2xl p-4"><div class="text-amber-300 mb-2"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current" stroke-width="1.7"><path d="M4 8l8-4 8 4-8 4-8-4Z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/></svg></div><div class="font-semibold text-sm">Protected site</div><div class="muted text-xs leading-5 mt-1">The map shows a truthful generalized area, never an invented point.</div></div>
+    <div class="soft rounded-2xl p-4"><div class="text-emerald-300 mb-2"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current" stroke-width="1.7"><path d="M12 3l8 4v5c0 4.6-3.4 7.7-8 9-4.6-1.3-8-4.4-8-9V7l8-4Z"/><path d="m8 12 2.5 2.5L16 9"/></svg></div><div class="font-semibold text-sm">Operational separation</div><div class="muted text-xs leading-5 mt-1">Exact protected coordinates can remain in the private operational layer.</div></div>
+  </div>
+</section>
+
+<footer class="py-8 text-center">
+  <div class="mini">Pocket-UCH</div>
+  <div class="muted text-[11px] mt-2">Operational monitoring aid · not a legal compliance determination · no AI/LLM required</div>
+</footer>
+
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const DATA_URL = 'data/data.json';
+const state = { data:null, map:null, layers:[] };
+
+function esc(v){
+  return String(v ?? '').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function fmtDate(v){
+  if(!v) return '—';
+  const d = new Date(v);
+  if(Number.isNaN(d.getTime())) return esc(v);
+  return new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(d);
+}
+function statusClass(s){ return s==='elevated'?'status-elevated':s==='watch'?'status-watch':'status-stable'; }
+function badge(status){
+  const cls=statusClass(status);
+  return '<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full bg-white/5 border border-white/7"><span class="status-dot '+cls+'"></span>'+esc(status||'stable')+'</span>';
+}
+function siteAreaCenter(geometry){
+  if(!geometry || !geometry.coordinates) return null;
+  const pts=[];
+  const walk=(x)=>Array.isArray(x)&&typeof x[0] === 'number' ? pts.push(x):Array.isArray(x)&&x.forEach(walk);
+  walk(geometry.coordinates);
+  if(!pts.length) return null;
+  const lon=pts.reduce((a,p)=>a+p[0],0)/pts.length;
+  const lat=pts.reduce((a,p)=>a+p[1],0)/pts.length;
+  return [lat,lon];
+}
+
+function initMap(){
+  state.map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([10,0],2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19,
+    attribution:'© OpenStreetMap contributors'
+  }).addTo(state.map);
+}
+
+function siteMarkerIcon(status){
+  return L.divIcon({
+    className:'',
+    html:'<div class="site-point '+esc(status||'stable')+'"></div>',
+    iconSize:[18,18],
+    iconAnchor:[9,9]
+  });
+}
+
+function addSiteToMap(site,status){
+  const loc=site.location;
+  if(!loc || !loc.geometry) return;
+  let layer;
+  if(loc.representation==='point' && loc.geometry.type==='Point'){
+    const [lon,lat]=loc.geometry.coordinates;
+    layer=L.marker([lat,lon],{icon:siteMarkerIcon(status)}).bindPopup(
+      '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div><div class="text-xs text-slate-400 mt-3">Public location · real point</div></div>'
+    );
+  }else{
+    const style={color:'#55d8e6',weight:1.2,fillColor:'#55d8e6',fillOpacity:.06};
+    if(status==='watch'){style.color='#ffd166';style.fillColor='#ffd166'}
+    if(status==='elevated'){style.color='#ff718b';style.fillColor='#ff718b'}
+    layer=L.geoJSON(loc.geometry,{style}).bindPopup(
+      '<div><div class="mini">UCH SITE</div><div class="font-display font-bold text-base mt-1">'+esc(site.name)+'</div><div class="mt-2">'+badge(status)+'</div><div class="text-xs text-slate-400 mt-3">Protected location · generalized area</div></div>'
+    );
+  }
+  if(layer){ layer.addTo(state.map); state.layers.push(layer); }
+}
+
+function renderMap(data){
+  if(!state.map) initMap();
+  state.layers.forEach(l=>state.map.removeLayer(l)); state.layers=[];
+  const statusById=Object.fromEntries((data.site_status||[]).map(x=>[String(x.site_id),x]));
+  (data.sites||[]).forEach(site=>addSiteToMap(site,statusById[String(site.id)]?.status||'stable'));
+  if((data.sites||[]).length===1){
+    const s=data.sites[0], loc=s.location, center=loc.representation==='point'&&loc.geometry.type==='Point'
+      ? [loc.geometry.coordinates[1],loc.geometry.coordinates[0]]
+      : siteAreaCenter(loc.geometry);
+    if(center) state.map.setView(center,loc.representation==='point'?10:7);
+  }
+}
+
+function renderMetrics(data){
+  const sc=data.summary?.status_counts||{};
+  document.getElementById('m-sites').textContent=data.summary?.site_count ?? data.sites?.length ?? 0;
+  document.getElementById('m-stable').textContent=sc.stable ?? 0;
+  document.getElementById('m-watch').textContent=sc.watch ?? 0;
+  document.getElementById('m-elevated').textContent=sc.elevated ?? 0;
+  document.getElementById('m-signals').textContent=data.summary?.signal_count ?? data.signals?.length ?? 0;
+  document.getElementById('signal-total').textContent=data.summary?.signal_count ?? data.signals?.length ?? 0;
+}
+
+function renderSiteHealth(data){
+  const el=document.getElementById('site-health');
+  const statusById=Object.fromEntries((data.site_status||[]).map(x=>[String(x.site_id),x]));
+  el.innerHTML=(data.sites||[]).map(site=>{
+    const st=statusById[String(site.id)]||{};
+    const sig=site.location?.visibility==='protected'?'Protected area':'Public point';
+    const c=st.status==='elevated'?'text-rose-300':st.status==='watch'?'text-amber-300':'text-emerald-300';
+    return '<div class="soft rounded-2xl p-3.5">'+
+      '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><div class="font-semibold text-sm truncate">'+esc(site.name)+'</div><div class="muted text-[11px] mt-1">'+esc(site.country||'Global')+' · '+sig+'</div></div>'+badge(st.status||'stable')+'</div>'+
+      '<div class="grid grid-cols-3 gap-2 mt-3 text-center">'+
+        '<div><div class="mini">Events</div><div class="metric-value mt-1 '+c+'">'+(st.event_count??0)+'</div></div>'+
+        '<div><div class="mini">Web</div><div class="metric-value mt-1 '+c+'">'+(st.web_signal_count??0)+'</div></div>'+
+        '<div><div class="mini">Rules</div><div class="metric-value mt-1 '+c+'">'+((st.convention_assessment?.triggered_rules||[]).length)+'</div></div>'+
+      '</div>'+
+    '</div>';
+  }).join('') || '<div class="soft rounded-2xl p-4 muted text-sm">No monitored sites yet.</div>';
+}
+
+function renderSignals(data){
+  const el=document.getElementById('signal-list');
+  const signals=(data.signals||[]).slice().sort((a,b)=>String(b.detected_at).localeCompare(String(a.detected_at))).slice(0,10);
+  const colors={high:'#ff718b',moderate:'#ffd166',informational:'#55d8e6'};
+  el.innerHTML=signals.map(s=>{
+    const color=colors[s.severity]||'#55d8e6';
+    return '<div class="soft rounded-2xl p-3 flex items-start gap-3">'+
+      '<div class="w-2 h-2 rounded-full mt-1.5 shrink-0" style="background:'+color+';box-shadow:0 0 14px '+color+'"></div>'+
+      '<div class="min-w-0 flex-1"><div class="flex items-center justify-between gap-2"><div class="font-semibold text-sm truncate">'+esc((s.category||'signal').replaceAll('_',' '))+'</div><span class="tag">'+esc(s.severity||'info')+'</span></div>'+
+      '<div class="muted text-[11px] mt-1">'+esc(s.site_id||'global')+' · '+fmtDate(s.detected_at)+'</div></div>'+
+    '</div>';
+  }).join('') || '<div class="soft rounded-2xl p-4 muted text-sm">No active signals in this snapshot.</div>';
+}
+
+function renderConvention(data){
+  const assessments=data.convention?.site_assessments||[];
+  const arts=[...new Set(assessments.flatMap(x=>x.triggered_articles||[]))];
+  const rules=[...new Set(assessments.flatMap(x=>x.triggered_rules||[]))];
+  document.getElementById('c-articles').textContent=arts.length;
+  document.getElementById('c-rules').textContent=rules.length;
+  document.getElementById('convention-summary').innerHTML=
+    '<div class="soft rounded-2xl p-4">'+
+      '<div class="text-sm font-semibold">Operational Convention context</div>'+
+      '<div class="muted text-xs leading-5 mt-2">Signals are mapped to potentially relevant Convention Articles and Annex Rules. This is monitoring context, not a legal compliance determination.</div>'+
+      '<div class="flex flex-wrap gap-1.5 mt-3">'+
+        arts.slice(0,12).map(x=>'<span class="tag">Art. '+esc(x)+'</span>').join('')+
+        rules.slice(0,12).map(x=>'<span class="tag">Rule '+esc(x)+'</span>').join('')+
+      '</div>'+
+    '</div>';
+}
+
+function renderRecommendations(data){
+  const el=document.getElementById('recommendations');
+  const recs=(data.recommendations||[]).slice(0,6);
+  el.innerHTML=recs.map(r=>{
+    const cls=r.priority==='high'?'border-rose-300/20 bg-rose-300/5':r.priority==='medium'?'border-amber-300/20 bg-amber-300/5':'border-cyan-300/15 bg-cyan-300/5';
+    return '<div class="rounded-2xl border '+cls+' p-3.5">'+
+      '<div class="flex items-center justify-between gap-2"><div class="font-semibold text-sm">'+esc(r.site_id||'Global')+'</div><span class="tag">'+esc(r.priority||'low')+'</span></div>'+
+      '<div class="mt-2 space-y-1">'+(r.actions||[]).slice(0,2).map(a=>'<div class="text-xs leading-5 text-slate-200"><span class="text-cyan-300">→</span> '+esc(a.guidance)+'</div>').join('')+'</div>'+
+      '</div>';
+  }).join('') || '<div class="soft rounded-2xl p-4 muted text-sm">No recommendations generated yet.</div>';
+}
+
+function renderSources(data){
+  const list=data.provenance||data.source_status||[];
+  document.getElementById('source-count').textContent=list.length+' sources';
+  document.getElementById('source-list').innerHTML=list.map(s=>{
+    const ok=s.status==='ok';
+    const skipped=s.status==='skipped';
+    const color=ok?'status-stable':skipped?'status-watch':'status-elevated';
+    return '<div class="soft rounded-2xl p-3">'+
+      '<div class="flex items-center justify-between gap-3"><div class="text-xs font-semibold truncate">'+esc(s.source)+'</div><div class="flex items-center gap-1.5 shrink-0"><span class="status-dot '+color+'"></span><span class="muted text-[10px]">'+esc(s.status||'unknown')+'</span></div></div>'+
+      '<div class="flex items-center justify-between gap-3 mt-2"><span class="muted text-[10px]">'+esc(s.coverage||'unspecified')+'</span><span class="muted text-[10px]">'+(s.optional?'optional':'required')+'</span></div>'+
+      '</div>';
+  }).join('');
+}
+
+async function loadData(){
+  const btn=document.getElementById('refresh-btn');
+  btn.disabled=true;
+  try{
+    const response=await fetch(DATA_URL+'?v='+Date.now(),{cache:'no-store'});
+    if(!response.ok) throw new Error('HTTP '+response.status);
+    const data=await response.json();
+    state.data=data;
+    renderMetrics(data); renderMap(data); renderSiteHealth(data); renderSignals(data); renderConvention(data); renderRecommendations(data); renderSources(data);
+    document.getElementById('live-dot').className='status-dot status-stable';
+  }catch(err){
+    console.error(err);
+    document.getElementById('source-list').innerHTML='<div class="soft rounded-2xl p-4 text-sm text-rose-200">Could not load data/data.json. Run the scraper first or check GitHub Pages deployment.</div>';
+    document.getElementById('live-dot').className='status-dot status-elevated';
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+document.getElementById('refresh-btn').addEventListener('click',loadData);
+initMap();
+loadData();
+</script>
+</body>
+</html>
