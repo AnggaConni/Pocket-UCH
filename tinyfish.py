@@ -130,7 +130,7 @@ def collect(
 
     api_key = os.environ.get("TINYFISH_API_KEY")
     if not api_key:
-        return [], state, [{"source": "TinyFish", "ok": False, "message": "TINYFISH_API_KEY not set"}]
+        return [], state, [{"source": "TinyFish", "ok": False, "message": "TINYFISH_API_KEY not set", "coverage": "global", "optional": True}]
 
     tz_name = str(cfg.get("project", {}).get("timezone", "UTC"))
     try:
@@ -139,7 +139,7 @@ def collect(
         local_tz = timezone.utc
     today = datetime.now(local_tz).date().isoformat()
     if block.get("run_once_per_day", True) and state.get("last_run_date") == today:
-        return state.get("signals", []), state, [{"source": "TinyFish", "ok": True, "message": "already ran today"}]
+        return state.get("signals", []), state, [{"source": "TinyFish", "ok": True, "message": "already ran today", "coverage": "global", "optional": True}]
 
     max_searches = int(block.get("max_searches_per_run", 6))
     max_results = int(block.get("max_results_per_query", 5))
@@ -165,10 +165,10 @@ def collect(
         for query in queries:
             discovered.extend(search(api_key, block["search_endpoint"], query, max_results))
         source_reports.append(
-            {"source": "TinyFish Search", "ok": True, "message": f"{len(discovered)} search result(s)"}
+            {"source": "TinyFish Search", "ok": True, "message": f"{len(discovered)} search result(s)", "coverage": "global", "optional": True}
         )
     except Exception as exc:
-        source_reports.append({"source": "TinyFish Search", "ok": False, "message": str(exc)})
+        source_reports.append({"source": "TinyFish Search", "ok": False, "message": str(exc), "coverage": "global", "optional": True})
 
     unique: dict[str, dict[str, Any]] = {}
     for row in discovered:
@@ -183,10 +183,10 @@ def collect(
                 if row.get("url"):
                     fetched[row["url"]] = row
             source_reports.append(
-                {"source": "TinyFish Fetch", "ok": True, "message": f"{len(fetched)} page(s) fetched"}
+                {"source": "TinyFish Fetch", "ok": True, "message": f"{len(fetched)} page(s) fetched", "coverage": "global", "optional": True}
             )
         except Exception as exc:
-            source_reports.append({"source": "TinyFish Fetch", "ok": False, "message": str(exc)})
+            source_reports.append({"source": "TinyFish Fetch", "ok": False, "message": str(exc), "coverage": "global", "optional": True})
 
     signals: list[dict[str, Any]] = []
     now = datetime.now(timezone.utc).isoformat()
