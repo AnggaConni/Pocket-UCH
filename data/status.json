@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T06:24:55.163634+00:00",
+  "generated_at": "2026-10-06T18:24:32.209669+00:00",
   "source_status": [
     {
       "source": "Australian Government MCH Features",
@@ -18,8 +18,8 @@
     {
       "source": "USGS",
       "ok": true,
-      "message": "13 earthquakes",
-      "checked_at": "2026-10-06T06:24:50.222478+00:00",
+      "message": "16 earthquakes",
+      "checked_at": "2026-10-06T18:24:29.504609+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -27,15 +27,15 @@
       "source": "BMKG earthquake",
       "ok": true,
       "message": "1 event(s)",
-      "checked_at": "2026-10-06T06:24:50.290399+00:00",
+      "checked_at": "2026-10-06T18:24:29.644389+00:00",
       "coverage": "Indonesia",
       "optional": true
     },
     {
       "source": "NASA EONET",
       "ok": true,
-      "message": "56 event(s)",
-      "checked_at": "2026-10-06T06:24:53.244967+00:00",
+      "message": "57 event(s)",
+      "checked_at": "2026-10-06T18:24:29.879387+00:00",
       "coverage": "global",
       "optional": false
     },
@@ -76,7 +76,7 @@
     }
   ],
   "site_count": 500,
-  "event_count": 70,
+  "event_count": 74,
   "linked_event_count": 0,
   "web_signal_count": 0,
   "web_actionable_signal_count": 0,
